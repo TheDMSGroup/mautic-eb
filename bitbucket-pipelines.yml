@@ -1,0 +1,33 @@
+# You can use a Docker image from Docker Hub or your own container registry
+image: heathdutton/phpunit-docker
+
+# So long as we have a tag every 100 commits, this will suffice.
+clone:
+  depth: 100
+
+pipelines:
+  # Automated deployments from branches.
+  branches:
+    stage:
+      - step:
+          # @todo - Use composer in the root application rather than a clone.
+          script:
+            - git describe --long
+            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+            - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+            - bash scripts/known-hosts.sh
+            - git clone https://github.com/mautic/mautic.git mautic
+            - cd mautic
+            - git reset --hard 2.9.2
+            - composer install --no-interaction --no-progress --ansi --no-dev
+            - echo "# This file is here to ensure EB obtains all contents herein and disregards the .gitignore" > .ebignore
+            - bash scripts/deploy.sh mautic-stage mautic.yourdomain.com
+#   @todo - Manual deployments.
+#  custom:
+#    deploy-to-staging:
+#      - step:
+#          script:
+#    deploy-to-production:
+#      - step:
+#          script:

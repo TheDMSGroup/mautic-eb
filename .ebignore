@@ -1,0 +1,12 @@
+# This file exists so that AWS EB will ignore the .gitignore in this path in regards to the mautic folder.
+
+.DS_Store
+.idea
+nbproject
+node_modules
+bower_components
+npm-debug.log
+
+# Elastic Beanstalk Files.
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.global.yml

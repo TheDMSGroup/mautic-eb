@@ -1,0 +1,13 @@
+.DS_Store
+.idea
+nbproject
+node_modules
+bower_components
+npm-debug.log
+
+# Projects not invented here.
+mautic
+
+# Elastic Beanstalk Files.
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.global.yml
