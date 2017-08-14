@@ -7,14 +7,14 @@
 
 if [ -z "$NR_INSTALL_KEY" ]
 then
-    echo "Please set the global variable NR_INSTALL_KEY"
-    exit 1
+    echo "Please set the global variable NR_INSTALL_KEY if you wish to use NewRelic reporting."
+    exit 0
 fi
 
-if [ -z "$APP_URL" ]
+if [ -z "$NR_APPNAME" ]
 then
-    echo "Please set the global variable APP_URL"
-    exit 1
+    echo "Please set the global variable APP_URL if you wish to use NewRelic reporting."
+    exit 0
 fi
 
 # Configure the Application monitor.
@@ -25,9 +25,9 @@ extension = "newrelic.so"
 [newrelic]
 newrelic.license = "$NR_INSTALL_KEY"
 newrelic.logfile = "/var/log/newrelic/php_agent.log"
-newrelic.appname = "$APP_URL;Engage"
+newrelic.appname = "$NR_APPNAME"
 newrelic.error_collector.record_database_errors = false
-newrelic.framework = "laravel"
+newrelic.framework = "symfony2"
 EOM
 
 chmod 000644 /etc/php.d/newrelic.ini

@@ -55,12 +55,12 @@ fi
 
 # Discern if this is dev/staging/production/other by the url.
 NR_API_KEY=$NR_API_KEY_STAGE
-if [[ $APP_URL == *"dev."* ]]
+if [[ $APP_URL == *"dev"* ]]
 then
     EB_ENV_NAME=Development
     EB_ENV_COLOR=44C42B
 else
-    if [[ $APP_URL == *"stage."* ]]
+    if [[ $APP_URL == *"stage"* ]]
     then
       EB_ENV_NAME=Staging
       EB_ENV_COLOR=24E289

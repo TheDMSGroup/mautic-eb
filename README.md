@@ -15,10 +15,12 @@ This repo can be used to automatically build and deploy Mautic to Elastic Beanst
 
     AWS_ACCESS_KEY_ID     - The raw AWS key ID.
     AWS_SECRET_ACCESS_KEY - The raw AWS Secret Access Key.
-    AWS_EB_KEY            - The private SSH key for the AWS Elastic Beanstalk environment. Base64 encoded.
-    BB_KEY                - The private SSH key Bitbucket (optional, unless repo is public). Base64 encoded.
+    / AWS_EB_KEY            - The private SSH key for the AWS Elastic Beanstalk environment. Base64 encoded.
+    / BB_KEY                - The private SSH key Bitbucket (optional, unless repo is public). Base64 encoded.
+    NR_APPNAME            - APP name/url to report to.
     NR_API_KEY_STAGE      - The NewRelic API key for staging (optional).
     NR_API_KEY_PROD       - The NewRelic API key for production (optional).
     SLACK_WEBHOOK_URL     - The URL to use for sending a slack deployment notification (optional).
     CF_USER               - CloudFlare account user email (optional).
     CF_TOKEN              - CloudFlare account user API key (optional).
+    CF_ZONE               - CloudFlare DNS zone to purge (optional).

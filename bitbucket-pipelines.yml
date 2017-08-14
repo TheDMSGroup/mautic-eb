@@ -13,8 +13,8 @@ pipelines:
           # @todo - Use composer in the root application rather than a clone.
           script:
             - git describe --long
-            - bash scripts/save-key.sh id_rsa "$BB_KEY"
-            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+#            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+#            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
             - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
             - bash scripts/known-hosts.sh
             - git clone https://github.com/mautic/mautic.git mautic
