@@ -1,0 +1,58 @@
+{
+  "name": "heathdutton/mautic-eb",
+  "type": "project",
+  "description": "Mautic Open Source Distribution - Modified for scalability",
+  "require": {
+    "mautic/core": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "type": "library",
+        "name": "mautic/core",
+        "version": "dev-master",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/mautic/mautic.git",
+          "reference": "master"
+        },
+        "require": {
+          "mnsami/composer-custom-directory-installer": "1.1.*",
+          "wikimedia/composer-merge-plugin": "dev-master"
+        }
+      }
+    }
+  ],
+  "extra": {
+    "installer-paths": {
+      "./mautic": [
+        "mautic/core"
+      ]
+    },
+    "merge-plugin": {
+      "include": [
+        "./mautic/composer.json"
+      ],
+      "recurse": true,
+      "replace": false,
+      "ignore-duplicates": false,
+      "merge-dev": true,
+      "merge-extra": true,
+      "merge-extra-deep": true,
+      "merge-scripts": true
+    }
+  },
+  "scripts": {
+    "vendor": "rm -rf ./mautic/vendor ; ln -s ../vendor ./mautic/vendor",
+    "custom": "rsync -avh --exclude 'README.md' --progress mautic_custom/ mautic/",
+    "post-install-cmd": ["@vendor", "@custom"],
+    "post-update-cmd": ["@vendor", "@custom"]
+  },
+  "config": {
+    "preferred-install": "dist",
+    "vendor-dir": "./vendor"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
