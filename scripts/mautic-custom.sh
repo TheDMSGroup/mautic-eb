@@ -6,16 +6,26 @@
 BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
-cd $BASEDIR/mautic_custom
 
+echo "Cleaning modified files from mautic/core."
+cd $BASEDIR/mautic
+git clean -fd
+git reset --hard HEAD
+
+echo "Symlinking the vendor folder."
+rm -rf vendor
+ln -s ../vendor vendor
+
+echo "Reseting mautic_custom links..."
 # Create directories (if they don't already exist) in ./mautic for all directories inside ./mautic_custom
+cd $BASEDIR/mautic_custom
 find * -mindepth 1 -depth -type d -exec echo {} \; | while read dir
 do
     echo "    /mautic/$dir/"
     mkdir -p "../mautic/$dir"
 done
-
 # Create relative symlinks in ./mautic for all files inside ./mautic_custom recursively.
+cd $BASEDIR/mautic_custom
 find * -type f ! -iname ".DS_Store" ! -iname "README.md" -exec echo {} \; | while read file
 do
     filepath=$(dirname "$file")

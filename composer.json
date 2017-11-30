@@ -44,17 +44,27 @@
     }
   },
   "scripts": {
+    "cache-clear": [
+      "@php ./mautic/app/console cache:clear"
+    ],
     "reset": [
-      "rm -rf ./mautic/vendor",
-      "git clean -fd ./mautic",
-      "git reset ./mautic",
-      "git checkout ./mautic",
-      "git pull ./mautic",
-      "ln -s ../vendor ./mautic/vendor",
       "bash ./scripts/mautic-custom.sh"
     ],
-    "post-install-cmd": ["@reset", "@custom"],
-    "post-update-cmd": ["@reset", "@custom"]
+    "iplookup": [
+      "@php ./mautic/app/console mautic:iplookup:download"
+    ],
+    "migrate": [
+      "@php ./mautic/app/console doctrine:migrations:migrate"
+    ],
+    "post-install-cmd": [
+      "@reset",
+      "@cache-clear",
+      "@iplookup"
+    ],
+    "post-update-cmd": [
+      "@reset",
+      "@migrate"
+    ]
   },
   "config": {
     "preferred-install": "dist",

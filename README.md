@@ -29,3 +29,15 @@ This repo can be used to automatically build and deploy Mautic to Elastic Beanst
     CF_USER               - CloudFlare account user email (optional).
     CF_TOKEN              - CloudFlare account user API key (optional).
     CF_ZONE               - CloudFlare DNS zone to purge (optional).
+
+## Mautic Customizations
+Custom files and configuration can be placed in /mautic_custom
+
+The contents of this folder will be linked as if it is in the /mautic folder on composer install/update.
+
+If new files are added to the /mautic_custom folder you can run `composer reset` to ensure they are reflected
+in the core /mautic folder.
+
+Custom dependencies can be included in the root composer.json.
+
+Do not run `composer install` from within the mautic folder, only in the root project folder.
