@@ -1,5 +1,6 @@
 <?php
 
+
 $paths = array_merge($paths, [
     'themes'       => 'themes',
     'assets'       => 'media',

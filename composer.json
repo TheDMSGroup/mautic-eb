@@ -44,10 +44,17 @@
     }
   },
   "scripts": {
-    "vendor": "rm -rf ./mautic/vendor ; ln -s ../vendor ./mautic/vendor",
-    "custom": "rsync -avh --exclude 'README.md' --progress mautic_custom/ mautic/",
-    "post-install-cmd": ["@vendor", "@custom"],
-    "post-update-cmd": ["@vendor", "@custom"]
+    "reset": [
+      "rm -rf ./mautic/vendor",
+      "git clean -fd ./mautic",
+      "git reset ./mautic",
+      "git checkout ./mautic",
+      "git pull ./mautic",
+      "ln -s ../vendor ./mautic/vendor",
+      "bash ./scripts/mautic-custom.sh"
+    ],
+    "post-install-cmd": ["@reset", "@custom"],
+    "post-update-cmd": ["@reset", "@custom"]
   },
   "config": {
     "preferred-install": "dist",
