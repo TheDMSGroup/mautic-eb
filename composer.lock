@@ -2286,16 +2286,16 @@
         },
         {
             "name": "jms/serializer",
-            "version": "1.9.2",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "995270cddce65b9c14a58c11cf77116d28d9336c"
+                "reference": "62c7ff6d61f8692eac8be024c542b3d9d0ab8c8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/995270cddce65b9c14a58c11cf77116d28d9336c",
-                "reference": "995270cddce65b9c14a58c11cf77116d28d9336c",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/62c7ff6d61f8692eac8be024c542b3d9d0ab8c8a",
+                "reference": "62c7ff6d61f8692eac8be024c542b3d9d0ab8c8a",
                 "shasum": ""
             },
             "require": {
@@ -2318,6 +2318,8 @@
                 "jackalope/jackalope-doctrine-dbal": "^1.1.5",
                 "phpunit/phpunit": "^4.8|^5.0",
                 "propel/propel1": "~1.7",
+                "psr/container": "^1.0",
+                "symfony/dependency-injection": "^2.7|^3.3|^4.0",
                 "symfony/expression-language": "^2.6|^3.0",
                 "symfony/filesystem": "^2.1",
                 "symfony/form": "~2.1|^3.0",
@@ -2334,7 +2336,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.9-dev"
+                    "dev-master": "1.10-dev"
                 }
             },
             "autoload": {
@@ -2365,7 +2367,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2017-11-22T16:45:19+00:00"
+            "time": "2017-11-30T18:23:40+00:00"
         },
         {
             "name": "jms/serializer-bundle",
@@ -5119,16 +5121,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v3.3.13",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "49aadc35cc8ae6646cdc39ebdeaceb6712769c9f"
+                "reference": "1accdf8ee7d479e2f6d867a18c99a9a859ba99c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/49aadc35cc8ae6646cdc39ebdeaceb6712769c9f",
-                "reference": "49aadc35cc8ae6646cdc39ebdeaceb6712769c9f",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/1accdf8ee7d479e2f6d867a18c99a9a859ba99c0",
+                "reference": "1accdf8ee7d479e2f6d867a18c99a9a859ba99c0",
                 "shasum": ""
             },
             "require": {
@@ -5154,7 +5156,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -5185,7 +5187,7 @@
                 "caching",
                 "psr6"
             ],
-            "time": "2017-11-07T14:16:22+00:00"
+            "time": "2017-11-19T21:17:36+00:00"
         },
         {
             "name": "symfony/class-loader",
@@ -5612,28 +5614,28 @@
         },
         {
             "name": "symfony/dotenv",
-            "version": "v3.3.13",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dotenv.git",
-                "reference": "ac86b6e484ae9224be290f3a0686858ba18d49d5"
+                "reference": "b6b1d1a58c974ddf3f49ab251dbe868f74a4f69a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dotenv/zipball/ac86b6e484ae9224be290f3a0686858ba18d49d5",
-                "reference": "ac86b6e484ae9224be290f3a0686858ba18d49d5",
+                "url": "https://api.github.com/repos/symfony/dotenv/zipball/b6b1d1a58c974ddf3f49ab251dbe868f74a4f69a",
+                "reference": "b6b1d1a58c974ddf3f49ab251dbe868f74a4f69a",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.5.9|>=7.0.8"
             },
             "require-dev": {
-                "symfony/process": "^3.2"
+                "symfony/process": "~3.2|~4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -5665,7 +5667,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2017-09-05T07:59:31+00:00"
+            "time": "2017-11-30T14:59:23+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -9869,16 +9871,16 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v3.3.13",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "66e6e046032ebdf1f562c26928549f613d428bd1"
+                "reference": "7134b93e90ea7e7881fcb2da006d21b4c5f31908"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/66e6e046032ebdf1f562c26928549f613d428bd1",
-                "reference": "66e6e046032ebdf1f562c26928549f613d428bd1",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/7134b93e90ea7e7881fcb2da006d21b4c5f31908",
+                "reference": "7134b93e90ea7e7881fcb2da006d21b4c5f31908",
                 "shasum": ""
             },
             "require": {
@@ -9887,7 +9889,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -9918,20 +9920,20 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2017-11-05T15:47:03+00:00"
+            "time": "2017-11-05T16:10:10+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v3.3.13",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "805de6bd6869073e60610df1b14ab7d969c61b01"
+                "reference": "ec650a975a8e04e0c114d35eab732981243db3a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/805de6bd6869073e60610df1b14ab7d969c61b01",
-                "reference": "805de6bd6869073e60610df1b14ab7d969c61b01",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/ec650a975a8e04e0c114d35eab732981243db3a2",
+                "reference": "ec650a975a8e04e0c114d35eab732981243db3a2",
                 "shasum": ""
             },
             "require": {
@@ -9947,12 +9949,13 @@
             },
             "suggest": {
                 "ext-iconv": "To convert non-UTF-8 strings to UTF-8 (or symfony/polyfill-iconv in case ext-iconv cannot be used).",
+                "ext-intl": "To show region name in time zone dump",
                 "ext-symfony_debug": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -9986,7 +9989,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2017-11-07T14:16:22+00:00"
+            "time": "2017-11-30T14:59:23+00:00"
         },
         {
             "name": "symfony/web-profiler-bundle",

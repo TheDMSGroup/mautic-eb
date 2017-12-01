@@ -45,25 +45,33 @@
   },
   "scripts": {
     "cache-clear": [
-      "@php ./mautic/app/console cache:clear"
+      "@php ./mautic/app/console cache:clear --no-interaction --env=dev --no-warmup",
+      "@php -r 'opcache_reset();'"
     ],
-    "reset": [
+    "custom": [
       "bash ./scripts/mautic-custom.sh"
     ],
     "iplookup": [
       "@php ./mautic/app/console mautic:iplookup:download"
     ],
     "migrate": [
-      "@php ./mautic/app/console doctrine:migrations:migrate"
+      "@php ./mautic/app/console doctrine:migrations:migrate --no-interaction"
+    ],
+    "setup": [
+      "@php ./mautic/app/console doctrine:database:create --no-interaction",
+      "@php ./mautic/app/console mautic:install:data --force",
+      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction"
+    ],
+    "drop": [
+      "@php ./mautic/app/console doctrine:database:drop --force --no-interaction"
     ],
     "post-install-cmd": [
-      "@reset",
-      "@cache-clear",
+      "@custom",
       "@iplookup"
     ],
     "post-update-cmd": [
-      "@reset",
-      "@migrate"
+      "@custom",
+      "@iplookup"
     ]
   },
   "config": {

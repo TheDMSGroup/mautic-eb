@@ -10,6 +10,18 @@ Deploy Mautic in a fully-scalable Amazon Elastic Beanstalk cluster.
 3) AWS EFS Volume (used for shared media and spool storage)
 4) Bitbucket pipelines (optional, used to automate deployment)
 
+## Environment variables in Elastic Beanstalk for a single site.
+
+    DB_HOST               - RDS Host.
+    DB_USER               - RDS User.
+    DB_PASSWD             - RDS Password.
+    DB_NAME               - RDS Database name.
+    SECRET_KEY            - Hash key for encryption.
+    DB_PORT               - RDS port.
+    MAILER_FROM_NAME      - Default "from" email name.
+    MAILER_FROM_EMAIL     - Default "from" email address.
+    APP_URL               - Domain upon which you are running by default.
+
 ### Bitbucket Pipelines Environment Variables
 This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, BitBucket Pipelines must be enabled for this repo, and the following environment variables must be added to Pipeline settings:
 
@@ -30,7 +42,7 @@ This repo can be used to automatically build and deploy Mautic to Elastic Beanst
     CF_TOKEN              - CloudFlare account user API key (optional).
     CF_ZONE               - CloudFlare DNS zone to purge (optional).
 
-## Mautic Customizations
+### Mautic Customizations
 Custom files and configuration can be placed in /mautic_custom
 
 The contents of this folder will be linked as if it is in the /mautic folder on composer install/update.
