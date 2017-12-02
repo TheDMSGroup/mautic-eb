@@ -21,6 +21,7 @@ Deploy Mautic in a fully-scalable Amazon Elastic Beanstalk cluster.
     MAILER_FROM_NAME      - Default "from" email name.
     MAILER_FROM_EMAIL     - Default "from" email address.
     APP_URL               - Domain upon which you are running by default.
+    EFS_DNS_NAME          - The full DNS of the EFS mount.
 
 ### Bitbucket Pipelines Environment Variables
 This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, BitBucket Pipelines must be enabled for this repo, and the following environment variables must be added to Pipeline settings:
@@ -53,3 +54,27 @@ in the core /mautic folder.
 Custom dependencies can be included in the root composer.json.
 
 Do not run `composer install` from within the mautic folder, only in the root project folder.
+
+### Multisite Abstraction *(expirimental)*
+
+You may need to run several "sites" off of the same Elastic Beanstalk cluster.
+
+To that end, the RDS databases will be as follows:
+* _sites
+  * id 
+  * active      - boolean, to indicate if the site is enabled or not.
+  * name
+* _domains
+  * domain 
+  * site_id
+ 
+
+mautic/app/spool*
+mautic/app/logs*
+mautic/themes*
+mautic/media*
+
+#### Environment variables for multisite
+
+    EB_MULTI            - Set to true to enable multisite (off by default).
+    
