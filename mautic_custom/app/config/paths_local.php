@@ -2,11 +2,11 @@
 /**
  * Override internal paths when multisite is in use.
  */
-if (is_defined('EB_MULTI_PATH')) {
+if (isset($GLOBALS['mautic_eb_mult_site'])) {
     $paths = array_merge($paths, [
         // @todo - folders must be created and permissions set for new sites.
-        'themes'       => EB_MULTI_PATH . '/themes',
-        'assets'       => EB_MULTI_PATH . '/media',
-        'local_config' => EB_MULTI_PATH . '/config/local.php',
+        'themes'       => 'multi/' . $GLOBALS['mautic_eb_mult_site']['id'] . '/themes',
+        'assets'       => 'multi/' . $GLOBALS['mautic_eb_mult_site']['id'] . '/media',
+        'local_config' => 'multi/' . $GLOBALS['mautic_eb_mult_site']['id'] . '/config/local.php',
     ]);
 }
