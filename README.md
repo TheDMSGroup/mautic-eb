@@ -1,11 +1,11 @@
-Mautic EB
+Mautic EB [![Build Status](https://travis-ci.org/heathdutton/mautic-eb.svg?branch=master)](https://travis-ci.org/heathdutton/mautic-eb)
 =========
 
 Deploy Mautic in a fully-scalable Amazon Elastic Beanstalk cluster.
 
 ## Requirements
 
-1) AWS EB environment running PHP7.0 (PHP 7.1 not yet supported)
+1) AWS EB environment running PHP 7.1
 2) AWS RDS MySQL instance (Aurora or MariaDB recommended)
 3) AWS EFS Volume (used for shared media and spool storage)
 4) Bitbucket pipelines (optional, used to automate deployment)

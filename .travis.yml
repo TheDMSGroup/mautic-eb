@@ -6,7 +6,6 @@ services:
   - mysql
 
 php:
-  - 7.0
   - 7.1
 
 before_install:
@@ -25,7 +24,8 @@ before_install:
 install:
   - composer install
 
-before_script: cd mautic
+before_script:
+  - cd mautic
 
 script:
 
