@@ -40,43 +40,44 @@
       "merge-dev": true,
       "merge-extra": true,
       "merge-extra-deep": true,
-      "merge-scripts": true
-    }
+      "merge-scripts": false
+    },
+    "symfony-app-dir": "./mautic/app",
+    "symfony-web-dir": "./"
   },
   "scripts": {
     "cache-clear": [
-      "@php ./mautic/app/console cache:clear --no-interaction --env=dev --no-warmup",
-      "@php -r 'opcache_reset();'"
+      "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+      "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache"
     ],
-    "custom": [
-      "bash ./scripts/mautic-custom.sh"
-    ],
-    "iplookup": [
-      "@php ./mautic/app/console mautic:iplookup:download"
-    ],
-    "migrate": [
-      "@php ./mautic/app/console doctrine:migrations:migrate --no-interaction"
-    ],
-    "setup": [
+    "custom": "bash ./scripts/mautic-custom.sh",
+    "git-hooks": "@php -r \"if(file_exists('./mautic/.git')&&file_exists('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''))){copy('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''),'./mautic/.git/hooks/pre-commit');}\"",
+    "iplookup": "@php ./mautic/app/console mautic:iplookup:download",
+    "migrate": "@php ./mautic/app/console doctrine:migrations:migrate --no-interaction",
+    "db-setup": [
       "@php ./mautic/app/console doctrine:database:create --no-interaction",
       "@php ./mautic/app/console mautic:install:data --force",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction"
     ],
-    "drop": [
-      "@php ./mautic/app/console doctrine:database:drop --force --no-interaction"
-    ],
+    "db-drop": "@php ./mautic/app/console doctrine:database:drop --force --no-interaction",
+    "test-local": "bin/phpunit --bootstrap vendor/autoload.php --configuration mautic/app/phpunit.xml",
+    "test-dist": "bin/phpunit --bootstrap vendor/autoload.php --configuration mautic/app/phpunit.xml.dist",
     "post-install-cmd": [
       "@custom",
-      "@iplookup"
+      "@git-hooks",
+      "@iplookup",
+      "@cache-clear"
     ],
     "post-update-cmd": [
       "@custom",
-      "@iplookup"
+      "@git-hooks",
+      "@cache-clear"
     ]
   },
   "config": {
     "preferred-install": "dist",
-    "vendor-dir": "./vendor"
+    "vendor-dir": "./vendor",
+    "bin-dir": "./bin"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

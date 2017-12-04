@@ -8,6 +8,7 @@ npm-debug.log
 # Projects not invented here.
 mautic
 vendor
+bin
 
 # Elastic Beanstalk Files.
 .elasticbeanstalk/*

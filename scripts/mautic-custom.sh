@@ -12,16 +12,17 @@ cd $BASEDIR/mautic
 git clean -fd
 git reset --hard HEAD
 
-echo "Symlinking the vendor folder."
-rm -rf vendor
+echo "Symlinking the vendor/bin contents."
+cd $BASEDIR/mautic
+rm -rf vendor bin
 ln -s ../vendor vendor
+ln -s ../bin bin
 
-echo "Reseting mautic_custom links..."
+echo "Linking mautic_custom contents."
 # Create directories (if they don't already exist) in ./mautic for all directories inside ./mautic_custom
 cd $BASEDIR/mautic_custom
 find * -mindepth 1 -depth -type d -exec echo {} \; | while read dir
 do
-    echo "    /mautic/$dir/"
     mkdir -p "../mautic/$dir"
 done
 # Create relative symlinks in ./mautic for all files inside ./mautic_custom recursively.
@@ -34,7 +35,7 @@ do
     rm -f "$filename"
     slashes=$( echo "$file" | tr -d -c '/' )
     relative=${slashes//\//..\/}
-    echo "    /mautic/$file"
+    echo "Linking $file"
     ln -s "$relative../mautic_custom/$file" "$filename"
 done
 
