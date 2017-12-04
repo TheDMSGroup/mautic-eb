@@ -54,10 +54,15 @@
     "git-hooks": "@php -r \"if(file_exists('./mautic/.git')&&file_exists('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''))){copy('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''),'./mautic/.git/hooks/pre-commit');}\"",
     "iplookup": "@php ./mautic/app/console mautic:iplookup:download",
     "migrate": "@php ./mautic/app/console doctrine:migrations:migrate --no-interaction",
-    "db-setup": [
-      "@php ./mautic/app/console doctrine:database:create --no-interaction",
-      "@php ./mautic/app/console mautic:install:data --force",
-      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction"
+    "db-setup-test": [
+      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --env=test --if-not-exists",
+      "@php ./mautic/app/console mautic:install:data --force --env=test",
+      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test"
+    ],
+    "db-setup-dev": [
+      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --env=dev --if-not-exists",
+      "@php ./mautic/app/console mautic:install:data --force --env=dev",
+      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=dev"
     ],
     "db-drop": "@php ./mautic/app/console doctrine:database:drop --force --no-interaction",
     "test-dist": [
