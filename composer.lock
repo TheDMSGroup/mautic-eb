@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e22d7af3d94b04fbc0c1dc26c9fd6320",
+    "content-hash": "8678ebd97d86576a5018612be378d72e",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -8743,6 +8743,43 @@
                 "stub"
             ],
             "time": "2017-11-24T13:59:53+00:00"
+        },
+        {
+            "name": "phpstan/phpstan-shim",
+            "version": "0.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan-shim.git",
+                "reference": "e3bea4f40f14316cf76390e7fd58181dca840977"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan-shim/zipball/e3bea4f40f14316cf76390e7fd58181dca840977",
+                "reference": "e3bea4f40f14316cf76390e7fd58181dca840977",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.0"
+            },
+            "replace": {
+                "phpstan/phpstan": "self.version"
+            },
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.9-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan Phar distribution",
+            "time": "2017-12-02T20:14:45+00:00"
         },
         {
             "name": "phpunit/dbunit",

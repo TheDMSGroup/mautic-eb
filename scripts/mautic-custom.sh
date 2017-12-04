@@ -7,11 +7,6 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
-echo "Cleaning modified files from mautic/core."
-cd $BASEDIR/mautic
-git clean -fd
-git reset --hard HEAD
-
 echo "Symlinking the vendor/bin contents."
 cd $BASEDIR/mautic
 rm -rf vendor bin

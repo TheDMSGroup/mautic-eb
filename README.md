@@ -78,3 +78,6 @@ mautic/media*
 
     EB_MULTI            - Set to true to enable multisite (off by default).
     
+#### Local setup
+
+Host at http://mautic.loc

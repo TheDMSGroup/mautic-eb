@@ -60,8 +60,14 @@
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction"
     ],
     "db-drop": "@php ./mautic/app/console doctrine:database:drop --force --no-interaction",
-    "test-local": "bin/phpunit --bootstrap vendor/autoload.php --configuration mautic/app/phpunit.xml",
-    "test-dist": "bin/phpunit --bootstrap vendor/autoload.php --configuration mautic/app/phpunit.xml.dist",
+    "test-dist": [
+      "cd ./mautic && bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist"
+    ],
+    "test": [
+      "@php ./mautic/app/console cache:clear --no-interaction --env=test --no-warmup",
+      "cd ./mautic ; bin/codecept run",
+      "./mautic/bin/phpstan analyse ./mautic"
+    ],
     "post-install-cmd": [
       "@custom",
       "@git-hooks",
@@ -80,5 +86,8 @@
     "bin-dir": "./bin"
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "require-dev": {
+    "phpstan/phpstan-shim": "^0.9.1"
+  }
 }

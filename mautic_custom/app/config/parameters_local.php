@@ -2,7 +2,8 @@
 /**
  * Global default environment variable overrides for Mautic EB
  */
-$parameters = [
+
+$parameters = array_merge($parameters ?? [], [
     'db_driver' => 'pdo_mysql',
     'db_table_prefix' => null,
     'db_host' => getenv('DB_HOST') ?? getenv('RDS_HOSTNAME') ?? '127.0.0.1',
@@ -28,7 +29,7 @@ $parameters = [
     'site_url' => getenv('APP_URL') ?: 'http://mautic.vm',
     // Always use the core system tmp path.
     'tmp_path' => '/tmp',
-];
+]);
 
 /**
  * Multisite environment variable overrides based on the inbound domain.

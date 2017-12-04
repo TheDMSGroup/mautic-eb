@@ -9,6 +9,7 @@ npm-debug.log
 mautic
 vendor
 bin
+selenium
 
 # Elastic Beanstalk Files.
 .elasticbeanstalk/*
