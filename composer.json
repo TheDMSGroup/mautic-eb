@@ -69,7 +69,7 @@
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test",
       "@php ./mautic/app/console cache:clear --no-interaction --no-warmup --env=test",
       "cd ./mautic ; bin/codecept run --env=test",
-      "./mautic/bin/phpstan analyse ./mautic/app/bundles/*Bundle --no-interaction"
+      "# ./mautic/bin/phpstan analyse ./mautic/app/bundles/*Bundle --no-interaction"
     ],
     "post-install-cmd": [
       "@custom",
