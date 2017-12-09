@@ -1,21 +1,26 @@
-.DS_Store
-.idea
-nbproject
-node_modules
-bower_components
-npm-debug.log
+.*
+!.gitignore
+!.ebignore
+!.ebextensions
+!.github
+!.gitkeep
+!.travis.yml
+/nbproject
+/composer.phar
 
 # Projects not invented here.
-mautic
-vendor
-bin
-selenium
-
-# Elastic Beanstalk Files.
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.global.yml
+/mautic
+/mautic/bower_components
+/mautic/node_modules
+/mautic/npm-debug.log
+/vendor
+/bin
+/selenium
+/mautic_custom/*
+!/mautic_custom/README.md
+/composer.custom
 
 # Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
+/.elasticbeanstalk/*
+!/.elasticbeanstalk/*.cfg.yml
+!/.elasticbeanstalk/*.global.yml

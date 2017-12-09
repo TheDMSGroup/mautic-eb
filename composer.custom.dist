@@ -1,0 +1,30 @@
+{
+    "require": {
+      "heathdutton/mautic-eb-custom": "dev-master"
+    },
+    "repositories": [
+      {
+        "type": "package",
+        "package": {
+          "type": "library",
+          "name": "heathdutton/mautic-eb-custom",
+          "version": "dev-master",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/heathdutton/mautic-eb-custom.git",
+            "reference": "master"
+          },
+          "require": {
+            "mnsami/composer-custom-directory-installer": "1.1.*"
+          }
+        }
+      }
+    ],
+    "extra": {
+        "installer-paths": {
+            "./mautic_custom": [
+                "heathdutton/mautic-eb-custom"
+            ]
+        }
+    }
+}

@@ -51,7 +51,7 @@ The contents of this folder will be linked as if it is in the /mautic folder on 
 If new files are added to the /mautic_custom folder you can run `composer reset` to ensure they are reflected
 in the core /mautic folder.
 
-Custom dependencies can be included in the root composer.json.
+Custom dependencies can be included in a root composer.custom
 
 Do not run `composer install` from within the mautic folder, only in the root project folder.
 
@@ -69,11 +69,6 @@ To that end, the RDS databases will be as follows:
   * site_id
  
 
-mautic/app/spool*
-mautic/app/logs*
-mautic/themes*
-mautic/media*
-
 #### Environment variables for multisite
 
     EB_MULTI            - Set to true to enable multisite (off by default).
@@ -81,3 +76,12 @@ mautic/media*
 #### Local setup
 
 Host at http://mautic.loc
+
+#### Custom folders
+
+File structure in /mautic_eb will be copied (destructively) into the /mautic folder on composer install or update.
+For configuration files and other changes that cannot be plugin-based.
+Similarly you can use /mautic_custom for customizations that are brand-specific.
+
+* mautic_eb/*  -->  mautic/*
+* mautic_custom/*  -->  mautic/*

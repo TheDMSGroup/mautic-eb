@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Mount our EFS volume for use across Elastic Beanstalk instances.
+
 if [ -f "/opt/elasticbeanstalk/support/envvars" ]
 then
     . /opt/elasticbeanstalk/support/envvars
