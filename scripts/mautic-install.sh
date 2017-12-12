@@ -14,21 +14,34 @@ fi
 # Store the previous value established (if available)
 if [ "$MAUTIC_INSTALL" == "1" ]
 then
-    DBCREATE=$( php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists )
+    DBCREATE=$( console doctrine:database:create --no-interaction --if-not-exists )
     echo "$DBCREATE"
     if [[ $? == 0 && $DBCREATE == *"Skipped."* ]]
     then
-        php ./mautic/app/console mautic:install:data -n -vvv
+        console mautic:install:data -n -vvv
         if [ $? == 0 ]
         then
-            php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction -n -vvv
+            console doctrine:migrations:version --add --all --no-interaction -vvv
         else
             echo "Failure to install Mautic data."
             exit 1
         fi
     else
-        echo "No installation required."
-        exit 0
+        if [[ $DBCREATE == *"database exists"* ]]
+        then
+            echo "Likely pre-existing default db"
+            console mautic:install:data -n -vvv
+            if [ $? == 0 ]
+            then
+                console doctrine:migrations:version --add --all --no-interaction -vvv
+            else
+                echo "Failure to install Mautic data."
+                exit 1
+            fi
+        else
+            echo "No installation required."
+            exit 0
+        fi
     fi
 else
     echo "MAUTIC_INSTALL variable is not 1, assuming we have already installed."
