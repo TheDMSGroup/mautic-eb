@@ -9,12 +9,12 @@
 /composer.phar
 
 # Projects not invented here.
-/mautic
+# /mautic
 /mautic/bower_components
 /mautic/node_modules
 /mautic/npm-debug.log
-/vendor
-/bin
+# /vendor
+# /bin
 /selenium
 /mautic_custom/*
 !/mautic_custom/README.md
@@ -25,13 +25,7 @@
 !/.elasticbeanstalk/*.cfg.yml
 !/.elasticbeanstalk/*.global.yml
 
-# The above is identical to .gitignore file. Below are exceptions needed in all Elastic Beanstalk environments.
-!/mautic
-!/vendor
-!/bin
-
-/mautic/bower_components
-/mautic/node_modules
+# The above is similar to the .gitignore file. Below are exceptions needed in all Elastic Beanstalk environments.
 
 /mautic/app/bootstrap*
 /mautic/app/tests.bootstrap*
