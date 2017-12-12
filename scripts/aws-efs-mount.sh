@@ -44,8 +44,8 @@ fi
 mountpoint -q ${EFS_MOUNT_DIR}
 if [ $? -ne 0 ]
 then
-    echo "mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${EFS_DNS_NAME}:/ ${EFS_MOUNT_DIR}"
-    mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${EFS_DNS_NAME}:/ ${EFS_MOUNT_DIR}
+    echo "mount -v -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${EFS_DNS_NAME}:/ ${EFS_MOUNT_DIR}"
+    mount -v -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${EFS_DNS_NAME}:/ ${EFS_MOUNT_DIR}
     if [[ $? -ne 0 ]]
     then
         echo 'ERROR: Mount command failed!'

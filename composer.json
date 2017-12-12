@@ -63,7 +63,7 @@
     "iplookup": "@php ./mautic/app/console mautic:iplookup:download",
     "migrate": "@php ./mautic/app/console doctrine:migrations:migrate --no-interaction",
     "db-setup-dev": [
-      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --if-not-exists --env=dev",
+      "@php ./mautic/app/console doctrine:database:create --no-interaction  --if-not-exists --env=dev",
       "@php ./mautic/app/console mautic:install:data --force --env=dev",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=dev"
     ],
@@ -72,7 +72,7 @@
     ],
     "test": [
       "@php ./mautic/app/console doctrine:database:drop --force --no-interaction --env=test",
-      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --env=test",
+      "@php ./mautic/app/console doctrine:database:create --no-interaction --env=test",
       "@php ./mautic/app/console mautic:install:data --force --env=test",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test",
       "@php ./mautic/app/console cache:clear --no-interaction --no-warmup --env=test",

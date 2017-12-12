@@ -34,7 +34,8 @@ $parameters = array_merge($parameters ?? [], [
  * Low level logic is intentional since we are in a bootstrap requirement.
  */
 if (!function_exists('mauticEBMultisite')) {
-    function mauticEBMultisite(&$parameters){
+    function mauticEBMultisite(&$parameters)
+    {
         if (
             boolval(getenv('EB_MULT'))
             && isset($_SERVER['HTTP_HOST'])
@@ -42,7 +43,7 @@ if (!function_exists('mauticEBMultisite')) {
             $site = null;
             $host = strtolower(filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
             $key = 'mautic_eb_mult_host_' . $host;
-            if (isset($GLOBALS['mautic_eb_mult_site'])){
+            if (isset($GLOBALS['mautic_eb_mult_site'])) {
                 $site = $GLOBALS['mautic_eb_mult_site'];
             }
             if (!$site && function_exists('apcu_fetch')) {
@@ -58,7 +59,8 @@ if (!function_exists('mauticEBMultisite')) {
                     'db_user' => getenv('EB_MULTI_DB_USER') ?: $parameters['db_user'],
                     'db_password' => getenv('EB_MULTI_DB_PASSWD') ?: $parameters['db_password'],
                 ];
-                $mysqli = new mysqli($ebParams['db_host'], $ebParams['db_user'], $ebParams['db_password'], $ebParams['db_name'], $ebParams['db_port']);
+                $mysqli = new mysqli($ebParams['db_host'], $ebParams['db_user'], $ebParams['db_password'],
+                    $ebParams['db_name'], $ebParams['db_port']);
                 if (mysqli_connect_error()) {
                     throw Exception('Unable to connect to EB_MULTI host.', mysqli_connect_error());
                 } else {
@@ -153,5 +155,6 @@ if (!function_exists('mauticEBMultisite')) {
             }
         }
     }
+
     mauticEBMultisite($parameters);
 }

@@ -1,11 +1,11 @@
 .*
 !.gitignore
 !.ebignore
-!.ebextensions
-!.github
 !.gitkeep
 !.travis.yml
-/nbproject
+!/.ebextensions
+!/.ebextensions/*
+!/.github
 /composer.phar
 
 # Projects not invented here.
