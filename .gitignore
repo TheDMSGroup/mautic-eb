@@ -1,6 +1,7 @@
 .*
 !.gitignore
 !.ebignore
+!.htaccess
 !.gitkeep
 !.travis.yml
 !/.ebextensions
@@ -17,7 +18,6 @@
 /bin
 /selenium
 /mautic_custom/*
-!/mautic_custom/README.md
 /composer.custom
 
 # Elastic Beanstalk Files

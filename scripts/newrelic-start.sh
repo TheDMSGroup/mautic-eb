@@ -13,7 +13,7 @@ fi
 
 if [ -z "$NR_APPNAME" ]
 then
-    echo "Please set the global variable APP_URL if you wish to use NewRelic reporting."
+    echo "Please set the global variable NR_APPNAME if you wish to use NewRelic reporting."
     exit 0
 fi
 

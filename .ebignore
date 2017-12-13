@@ -1,7 +1,9 @@
+# Similar to a .gitignore, this describes what to ignore when zipping up a release for Elastic Beanstalk.
 .*
 !.gitignore
 !.ebignore
-!.gitkeep
+!.htaccess
+# !.gitkeep
 !.travis.yml
 !/.ebextensions
 !/.ebextensions/*
@@ -16,16 +18,14 @@
 # /vendor
 # /bin
 /selenium
-/mautic_custom/*
-!/mautic_custom/README.md
-/composer.custom
+# /mautic_custom/*
+# !/mautic_custom/README.md
+# /composer.custom
 
 # Elastic Beanstalk Files
 /.elasticbeanstalk/*
 !/.elasticbeanstalk/*.cfg.yml
 !/.elasticbeanstalk/*.global.yml
-
-# The above is similar to the .gitignore file. Below are exceptions needed in all Elastic Beanstalk environments.
 
 /mautic/app/bootstrap*
 /mautic/app/tests.bootstrap*
@@ -38,22 +38,19 @@
 !/mautic/app/bundles/CoreBundle/Assets/css/libraries/froala/plugins/gated_video.css
 !/mautic/app/bundles/CoreBundle/Assets/css/*.css
 
-/mautic/app/cache/*
-!/mautic/app/cache/.gitkeep
+/mautic/app/cache
 
 /mautic/app/config/local*.php
 /mautic/app/config/config_local.php
 !/mautic/app/config/paths_local.php
 !/mautic/app/config/parameters_local.php
 
-/mautic/app/logs/*
-!/mautic/app/logs/.gitkeep
+/mautic/app/logs
 
 /mautic/app/Resources/SensioGeneratorBundle
 /mautic/app/spool/*
 
 /mautic/bundles
-/mautic/node_modules
 /mautic/build/coverage
 /mautic/build/packaging
 /mautic/build/packages/*

@@ -23,6 +23,7 @@ Deploy Mautic in a fully-scalable Amazon Elastic Beanstalk cluster.
     APP_URL               - Domain upon which you are running by default.
     EFS_DNS_NAME          - The full DNS of the EFS mount.
     MAUTIC_INSTALL        - Set to "1" to initialize mautic for the first time.
+    NR_INSTALL_KEY        - Optional NewRelic install key.
 
 ### Bitbucket Pipelines / Travis CI Environment Variables
 This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, BitBucket Pipelines must be enabled for this repo, and the following environment variables must be added to Pipeline settings:
