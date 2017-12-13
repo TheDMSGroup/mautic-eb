@@ -31,13 +31,6 @@
 /mautic/app/tests.bootstrap*
 /mautic/app/phpunit.xml
 
-/mautic/app/bundles/CoreBundle/Assets/css/app/less/**/*.css
-/mautic/app/bundles/CoreBundle/Assets/css/libraries/**/*.css
-/mautic/app/bundles/CoreBundle/Assets/css/libraries/Froala/plugins/*.css
-!/mautic/app/bundles/CoreBundle/Assets/css/libraries/builder.css
-!/mautic/app/bundles/CoreBundle/Assets/css/libraries/froala/plugins/gated_video.css
-!/mautic/app/bundles/CoreBundle/Assets/css/*.css
-
 /mautic/app/cache
 
 /mautic/app/config/local*.php
