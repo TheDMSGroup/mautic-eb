@@ -52,13 +52,13 @@ then
         exit 1
     fi
     chmod 777 ${EFS_MOUNT_DIR}
-    runuser -l ec2-user -c "touch ${EFS_MOUNT_DIR}/.efc_test"
+    sudo -u webapp bash -c "touch ${EFS_MOUNT_DIR}/.efc_test"
     if [[ $? -ne 0 ]]
     then
         echo 'ERROR: Permission Error!'
         exit 1
     else
-        runuser -l ec2-user -c "rm -f ${EFS_MOUNT_DIR}/.efc_test"
+        sudo -u webapp bash  -c "rm -f ${EFS_MOUNT_DIR}/.efc_test"
     fi
 else
     echo "Directory ${EFS_MOUNT_DIR} is already a valid mountpoint!"

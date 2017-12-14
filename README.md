@@ -16,13 +16,13 @@ Deploy Mautic in a fully-scalable Amazon Elastic Beanstalk cluster.
     DB_USER               - RDS User.
     DB_PASSWD             - RDS Password.
     DB_NAME               - RDS Database name.
-    SECRET_KEY            - Hash key for encryption.
     DB_PORT               - RDS port.
+    SECRET_KEY            - Hash key for encryption.
     MAILER_FROM_NAME      - Default "from" email name.
     MAILER_FROM_EMAIL     - Default "from" email address.
     APP_URL               - Domain upon which you are running by default.
     EFS_DNS_NAME          - The full DNS of the EFS mount.
-    MAUTIC_INSTALL        - Set to "1" to initialize mautic for the first time.
+    MAUTIC_INSTALL        - Set to "1" to initialize mautic (for the first deployment only).
     NR_APM_INSTALL_KEY    - Optional NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY    - Optional NewRelic install key for Infrastructure.
 
