@@ -27,13 +27,13 @@ before_install:
   # Include optional custom composer dependencies.
   - bash ./scripts/composer-custom.sh
 
-  # Go to mautic root.
-  - cd mautic
-  
 install:
   - composer install
 
 script:
+
+  # Go to mautic root.
+  - cd mautic
 
   # Run PHPUnit
   - bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning
