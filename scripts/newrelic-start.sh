@@ -30,7 +30,7 @@ then
     chmod 000644 /etc/php.d/newrelic.ini
     chown root:root /etc/php.d/newrelic.ini
 
-    export NR_INSTALL_KEY=$NR_INSTALL_KEY
+    export NR_INSTALL_KEY=$NR_APM_INSTALL_KEY
     export NR_INSTALL_SILENT=true
 
     # Start the Application monitor.
