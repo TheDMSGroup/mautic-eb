@@ -2013,6 +2013,22 @@
             "time": "2017-03-20T17:10:46+00:00"
         },
         {
+            "name": "heathdutton/mautic-contact-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heathdutton/mautic-contact-client.git",
+                "reference": "master"
+            },
+            "require": {
+                "heathdutton/mautic-eb-custom": "dev-master",
+                "mautic/core": "dev-master",
+                "mnsami/composer-custom-directory-installer": "1.1.*"
+            },
+            "type": "library",
+            "time": "2017-12-20T19:52:59+00:00"
+        },
+        {
             "name": "heathdutton/mautic-eb-custom",
             "version": "dev-master",
             "source": {
@@ -2024,7 +2040,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2017-12-15T16:24:35+00:00"
+            "time": "2017-12-19T22:24:46+00:00"
         },
         {
             "name": "heathdutton/mautic-extended-fields",
@@ -10504,7 +10520,8 @@
         "mautic/core": 20,
         "willdurand/oauth-server-bundle": 20,
         "heathdutton/mautic-eb-custom": 20,
-        "heathdutton/mautic-extended-fields": 20
+        "heathdutton/mautic-extended-fields": 20,
+        "heathdutton/mautic-contact-client": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
