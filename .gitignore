@@ -19,6 +19,7 @@
 /selenium
 /mautic_custom/*
 /composer.custom
+/composer.lock
 
 # Elastic Beanstalk Files
 /.elasticbeanstalk/*
