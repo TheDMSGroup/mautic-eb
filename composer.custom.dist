@@ -1,19 +1,19 @@
 {
     "require": {
-      "heathdutton/mautic-eb-custom": "dev-master",
-      "heathdutton/mautic-extended-fields": "dev-master",
-      "heathdutton/mautic-contact-client": "dev-master"
+      "thedmsgroup/mautic-eb-custom": "dev-master",
+      "thedmsgroup/mautic-extended-fields": "dev-master",
+      "thedmsgroup/mautic-contact-client": "dev-master"
     },
     "repositories": [
       {
         "type": "package",
         "package": {
           "type": "library",
-          "name": "heathdutton/mautic-eb-custom",
+          "name": "thedmsgroup/mautic-eb-custom",
           "version": "dev-master",
           "source": {
             "type": "git",
-            "url": "https://github.com/heathdutton/mautic-eb-custom.git",
+            "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
             "reference": "master"
           },
           "require": {
@@ -25,15 +25,15 @@
         "type": "package",
         "package": {
           "type": "library",
-          "name": "heathdutton/mautic-extended-fields",
+          "name": "thedmsgroup/mautic-extended-fields",
           "version": "dev-master",
           "source": {
             "type": "git",
-            "url": "https://github.com/heathdutton/mautic-extended-fields.git",
+            "url": "https://github.com/thedmsgroup/mautic-extended-fields.git",
             "reference": "master"
           },
           "require": {
-            "heathdutton/mautic-eb-custom": "dev-master",
+            "thedmsgroup/mautic-eb-custom": "dev-master",
             "mautic/core": "dev-master",
             "mnsami/composer-custom-directory-installer": "1.1.*"
           }
@@ -43,15 +43,15 @@
         "type": "package",
         "package": {
           "type": "library",
-          "name": "heathdutton/mautic-contact-client",
+          "name": "thedmsgroup/mautic-contact-client",
           "version": "dev-master",
           "source": {
             "type": "git",
-            "url": "https://github.com/heathdutton/mautic-contact-client.git",
+            "url": "https://github.com/thedmsgroup/mautic-contact-client.git",
             "reference": "master"
           },
           "require": {
-            "heathdutton/mautic-eb-custom": "dev-master",
+            "thedmsgroup/mautic-eb-custom": "dev-master",
             "mautic/core": "dev-master",
             "mnsami/composer-custom-directory-installer": "1.1.*"
           }
@@ -61,13 +61,13 @@
     "extra": {
         "installer-paths": {
             "./mautic_custom": [
-                "heathdutton/mautic-eb-custom"
+                "thedmsgroup/mautic-eb-custom"
             ],
             "./mautic/plugins/MauticExtendedFieldsBundle": [
-                "heathdutton/mautic-extended-fields"
+                "thedmsgroup/mautic-extended-fields"
             ],
             "./mautic/plugins/MauticContactClientBundle": [
-                "heathdutton/mautic-contact-client"
+                "thedmsgroup/mautic-contact-client"
             ]
         }
     }

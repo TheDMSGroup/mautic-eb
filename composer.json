@@ -1,5 +1,5 @@
 {
-  "name": "heathdutton/mautic-eb",
+  "name": "thedmsgroup/mautic-eb",
   "type": "project",
   "description": "Mautic Open Source Distribution - Modified for scalability",
   "require": {
