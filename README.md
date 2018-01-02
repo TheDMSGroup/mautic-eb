@@ -1,12 +1,12 @@
-Mautic EB [![Build Status](https://travis-ci.org/heathdutton/mautic-eb.svg?branch=master)](https://travis-ci.org/heathdutton/mautic-eb)
+Mautic EB [![Build Status](https://travis-ci.org/TheDMSGroup/mautic-eb.svg?branch=master)](https://travis-ci.org/TheDMSGroup/mautic-eb)
 =========
 
-Deploy Mautic in an auto-scaling Amazon Elastic Beanstalk cluster.
-
+#### Deploy Mautic in an auto-scaling Amazon Elastic Beanstalk cluster.
+![Mautic and AWS](https://i.imgur.com/LkFNgHr.jpg "Mautic and AWS")
 The goal here is to make it simple and safe to scale Mautic up to millions of leads per week, 
-while maintaining HIPAA & PCI compliance.
+while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFlare and Newrelic are supported, but optional.
 
-There is much work to be done to get us to that point.
+There is still much work to be done to get us to that point.
 
 ## Requirements
 
