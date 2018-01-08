@@ -33,8 +33,8 @@
     "merge-plugin": {
       "include": [
         "./mautic/composer.json",
-        "./composer.custom",
-        "./mautic/plugins/**/composer.json"
+        "./mautic/plugins/**/composer.json",
+        "./composer.custom"
       ],
       "recurse": true,
       "replace": false,
@@ -80,6 +80,9 @@
       "cd ./mautic ; bin/codecept run --env=test",
       "# ./mautic/bin/phpstan analyse ./mautic/app/bundles/*Bundle --no-interaction"
     ],
+    "update-dist": [
+      "cp composer.lock composer.lock.dist"
+    ],
     "less": [
       "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove",
       "@cache-clear"
@@ -88,11 +91,13 @@
       "@custom",
       "@git-hooks",
       "@iplookup",
+      "@update-dist",
       "@cache-clear"
     ],
     "post-update-cmd": [
       "@custom",
       "@git-hooks",
+      "@update-dist",
       "@cache-clear"
     ]
   },
