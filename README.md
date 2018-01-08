@@ -62,23 +62,6 @@ Similarly you can use /mautic_custom for customizations that are brand-specific.
 
 Custom dependencies can be included in a root composer.custom
 
-### Multisite Abstraction *(expirimental)*
-
-You may need to run several "sites" off of the same Elastic Beanstalk cluster.
-
-To that end, the RDS databases will be as follows:
-* _sites
-  * id 
-  * active      - boolean, to indicate if the site is enabled or not.
-  * name
-* _domains
-  * domain 
-  * site_id
-
-#### Environment variables for multisite
-
-    EB_MULTI            - Set to true to enable multisite (off by default).
-    
 ### Quick local setup
 
 1. Set up local host at http://mautic.loc
@@ -86,10 +69,36 @@ To that end, the RDS databases will be as follows:
 3. Create a `./mautic/.env` file containing your local database credentials. 
 5. Run: `composer db-setup-dev` to create your local database.
 
-#### Tips
+#### Local tips
 
 `composer.custom` can be created to pull in third-party dependencies and customizations without altering this repo.
 `composer custom` to update symlinks for all customizations to mautic core.
 `composer less` to compile LESS styles (should you need to extend the core styles).
 `composer test` to run the full codeception suite.
 Do not run `composer install` from within the ./mautic folder, only in the root project folder.
+
+### Additional Plugins *(work in progress)*
+
+Need to process a million new contacts every day? 
+Need to add a custom integration every day, without writing code?
+
+These are the kinds of requirements we have on the bleeding edge of Performance Marketing.
+With that in mind, we are actively working on some [additional plugins](https://github.com/thedmsgroup?q=mautic&type=public)
+to augment this build. Eventually we hope these can be robust enough to make their way into core. For now, 
+we can access and test them by renaming `composer.custom.dist` to `composer.custom` and running `composer install`. 
+
+### Multisite *(work in progress)*
+
+You may need to run several "sites" off of the same Elastic Beanstalk cluster.
+This isn't likely a common need, we just wanted to make sure there was *some* room made for this.
+More documentation incoming.
+
+If you go multisite you'll need. Your database structure in RDS will look like this:
+
+    mautic_eb_multi     - Database mapping hostnames to sites, based on [this](https://gist.github.com/heathdutton/46fc4514d8372cdda26b61cc0fe6a0cd).
+    mautic_eb_site_0    - Default first site in the cluster.
+    mautic_eb_site_1    - Second site... and so on.
+
+Multisite environment variables:
+
+    EB_MULTI            - Set to true to enable multisite (off by default).
