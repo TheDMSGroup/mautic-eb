@@ -8,7 +8,8 @@ if (file_exists(__DIR__.'/security_local.php')) {
     $loader->import('security.php');
 }
 
-if (function_exists('apcu_fetch')) {
+// Check for APCu BC.
+if (function_exists('apc_fetch') && function_exists('apc_fetch')) {
     $container->loadFromExtension("framework", array(
         "validation" => array(
             "cache" => "apc"
