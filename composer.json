@@ -33,7 +33,8 @@
     "merge-plugin": {
       "include": [
         "./mautic/composer.json",
-        "./composer.custom"
+        "./composer.custom",
+        "./mautic/plugins/**/composer.json"
       ],
       "recurse": true,
       "replace": false,
