@@ -69,13 +69,14 @@ Custom dependencies can be included in a root composer.custom
 3. Create a `./mautic/.env` file containing your local database credentials. 
 5. Run: `composer db-setup-dev` to create your local database.
 
-#### Local tips
+#### Local tips & commands
 
-`composer.custom` can be created to pull in third-party dependencies and customizations without altering this repo.
-`composer custom` to update symlinks for all customizations to mautic core.
-`composer less` to compile LESS styles (should you need to extend the core styles).
-`composer test` to run the full codeception suite.
-Do not run `composer install` from within the ./mautic folder, only in the root project folder.
+* `composer cc` to clear all Mautic/Symfony caches.
+* `composer custom` to update symlinks for all customizations to mautic core.
+* `composer less` to compile LESS styles (should you need to extend the core styles).
+* `composer test` to run the full codeception suite.
+* The file `composer.custom` can be created to pull in third-party dependencies and customizations without altering this repo.
+* Do not run `composer install` from within the `./mautic` folder, only in the root project folder.
 
 ### Additional Plugins *(work in progress)*
 

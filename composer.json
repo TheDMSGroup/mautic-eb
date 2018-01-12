@@ -48,9 +48,10 @@
     "symfony-web-dir": "./"
   },
   "scripts": {
-    "cache-clear": [
+    "cc": [
       "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-      "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache"
+      "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+      "rm -rf ./mautic/app/cache/"
     ],
     "custom": [
       "rm -rf ./mautic/vendor ./mautic/bin",
@@ -85,20 +86,20 @@
     ],
     "less": [
       "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove",
-      "@cache-clear"
+      "@cc"
     ],
     "post-install-cmd": [
       "@custom",
       "@git-hooks",
       "@iplookup",
       "@update-dist",
-      "@cache-clear"
+      "@cc"
     ],
     "post-update-cmd": [
       "@custom",
       "@git-hooks",
       "@update-dist",
-      "@cache-clear"
+      "@cc"
     ]
   },
   "config": {
