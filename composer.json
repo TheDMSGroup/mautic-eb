@@ -49,9 +49,30 @@
   },
   "scripts": {
     "cc": [
+      "rm -rf ./mautic/app/cache/",
+      "@php ./mautic/app/console cache:clear --no-interaction --no-warmup -vvv",
       "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-      "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-      "rm -rf ./mautic/app/cache/"
+      "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache"
+    ],
+    "crons": [
+      "# Firing typical Mautic cront tasks for local testing.",
+      "@php ./mautic/app/console mautic:segments:update",
+      "# To keep campaigns updated with applicable contacts.",
+      "@php ./mautic/app/console mautic:campaigns:rebuild",
+      "# To execute campaigns events.",
+      "@php ./mautic/app/console mautic:campaigns:trigger",
+      "# To send frequency rules rescheduled marketing campaign messages.",
+      "@php ./mautic/app/console mautic:messages:send",
+      "# Process Email Queue.",
+      "@php ./mautic/app/console mautic:emails:send --time-limit 60",
+      "# Fetch and Process Monitored Email.",
+      "@php ./mautic/app/console mautic:email:fetch",
+      "# Send scheduled broadcasts / segment emails.",
+      "@php ./mautic/app/console mautic:broadcasts:send",
+      "# Iterates through social monitors.",
+      "@php ./mautic/app/console mautic:social:monitoring",
+      "# Send webhook payloads.",
+      "@php ./mautic/app/console mautic:webhooks:process"
     ],
     "custom": [
       "rm -rf ./mautic/vendor ./mautic/bin",

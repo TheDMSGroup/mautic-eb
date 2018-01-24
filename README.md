@@ -69,7 +69,7 @@ Custom dependencies can be included in a root composer.custom
 3. Create a `./mautic/.env` file containing your local database credentials. 
 5. Run: `composer db-setup-dev` to create your local database.
 
-#### Local tips & commands
+#### Local tips and commands
 
 * `composer cc` to clear all Mautic/Symfony caches.
 * `composer custom` to update symlinks for all customizations to mautic core.
