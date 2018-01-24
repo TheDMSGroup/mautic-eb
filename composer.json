@@ -109,6 +109,10 @@
       "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove",
       "@cc"
     ],
+    "js": [
+      "rm -rf ./mautic/media/js/app.js ./mautic/media/js/libraries.js",
+      "@php ./mautic/app/console mautic:assets:generate"
+    ],
     "post-install-cmd": [
       "@custom",
       "@git-hooks",
