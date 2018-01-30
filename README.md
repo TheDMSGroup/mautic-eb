@@ -31,8 +31,9 @@ There is still much work to be done to get us to that point.
     NR_APM_INSTALL_KEY    - Optional: NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY    - Optional: NewRelic install key for Infrastructure.
 
-### Bitbucket Pipelines / Travis CI Environment Variables
-This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, BitBucket Pipelines must be enabled for this repo, and the following environment variables must be added to Pipeline settings:
+### Travis CI / Bitbucket Pipelines Environment Variables
+This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, the following environment variables must be added to your CI:
+Note, we're using Travis CI since this is a 100% open source project and will remain so.
 
     AWS_ACCESS_KEY_ID     - The raw AWS key ID.
     AWS_SECRET_ACCESS_KEY - The raw AWS Secret Access Key.
@@ -56,17 +57,19 @@ This repo can be used to automatically build and deploy Mautic to Elastic Beanst
 File structure in /mautic_eb will be copied (destructively) into the /mautic folder on composer install or update.
 For configuration files and other changes that cannot be plugin-based.
 Similarly you can use /mautic_custom for customizations that are brand-specific.
+Third party plugins that use the "mautic-plugin" installer will have their folders symlinked into the correct location.
 
 * mautic_eb/*  -->  mautic/*
 * mautic_custom/*  -->  mautic/*
+* plugins/* --> mautic/plugins/*
 
 Custom dependencies can be included in a root composer.custom
 
 ### Quick local setup
 
-1. Set up local host at http://mautic.loc
-2. Run: `composer install` to get all the dependencies together.
-3. Create a `./mautic/.env` file containing your local database credentials. 
+1. Set up local host at http://mautic.loc that points to `./mautic`
+2. Create a `./mautic/.env` file containing your local database credentials. 
+3. Run: `composer install` to get all the dependencies together.
 5. Run: `composer db-setup-dev` to create your local database.
 
 #### Local tips and commands

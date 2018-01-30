@@ -8,26 +8,65 @@ clone:
 pipelines:
   # Automated deployments from branches.
   branches:
-    stage:
+    dev:
       - step:
-          # @todo - Use composer in the root application rather than a clone.
           script:
             - git describe --long
-#            - bash scripts/save-key.sh id_rsa "$BB_KEY"
-#            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
             - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
             - bash scripts/known-hosts.sh
-            - git clone https://github.com/mautic/mautic.git mautic
-            - cd mautic
-            - git reset --hard 2.11.0
+            - bash scripts/composer-custom.sh
             - composer install --no-interaction --no-progress --ansi --no-dev
             - echo "# This file is here to ensure EB obtains all contents herein and disregards the .gitignore" > .ebignore
             - bash scripts/deploy.sh $APP_ENV_STAGE $APP_URL_STAGE
-#   @todo - Manual deployments.
-#  custom:
-#    deploy-to-staging:
-#      - step:
-#          script:
-#    deploy-to-production:
-#      - step:
-#          script:
+    stage:
+      - step:
+          script:
+            - git describe --long
+            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+            - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+            - bash scripts/known-hosts.sh
+            - bash scripts/composer-custom.sh
+            - composer install --no-interaction --no-progress --ansi --no-dev
+            - echo "# This file is here to ensure EB obtains all contents herein and disregards the .gitignore" > .ebignore
+            - bash scripts/deploy.sh $APP_ENV_STAGE $APP_URL_STAGE
+  # Manual deployments.
+  custom:
+    deploy-to-dev:
+      - step:
+          script:
+            - git describe --long
+            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+            - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+            - bash scripts/known-hosts.sh
+            - bash scripts/composer-custom.sh
+            - composer install --no-interaction --no-progress --ansi --no-dev
+            - echo "# This file is here to ensure EB obtains all contents herein and disregards the .gitignore" > .ebignore
+            - bash scripts/deploy.sh $APP_ENV_DEV $APP_URL_DEV
+    deploy-to-staging:
+      - step:
+          script:
+            - git describe --long
+            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+            - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+            - bash scripts/known-hosts.sh
+            - bash scripts/composer-custom.sh
+            - composer install --no-interaction --no-progress --ansi --no-dev
+            - echo "# This file is here to ensure EB obtains all contents herein and disregards the .gitignore" > .ebignore
+            - bash scripts/deploy.sh $APP_ENV_STAGE $APP_URL_STAGE
+    deploy-to-production:
+      - step:
+          script:
+            - git describe --long
+            - bash scripts/save-key.sh id_rsa "$BB_KEY"
+            - bash scripts/save-key.sh aws-eb.pem "$AWS_EB_KEY"
+            - bash scripts/aws-credentials.sh "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"
+            - bash scripts/known-hosts.sh
+            - bash scripts/composer-custom.sh
+            - composer install --no-interaction --no-progress --ansi --no-dev
+            - echo "# This file is here to ensure EB obtains all contents herein and disregards the .gitignore" > .ebignore
+            - bash scripts/deploy.sh $APP_ENV_PROD $APP_URL_PROD
