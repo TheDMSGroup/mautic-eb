@@ -80,6 +80,7 @@
       "cd ./mautic ; ln -s ../bin bin",
       "bash ./scripts/mautic-custom.sh mautic_eb",
       "bash ./scripts/mautic-custom.sh mautic_custom",
+      "bash ./scripts/mautic-custom-plugins.sh",
       "echo 'deny from all' > ./mautic/vendor/.htaccess"
     ],
     "git-hooks": "@php -r \"if(file_exists('./mautic/.git')&&file_exists('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''))){copy('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''),'./mautic/.git/hooks/pre-commit');}\"",
