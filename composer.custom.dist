@@ -21,33 +21,12 @@
             "mnsami/composer-custom-directory-installer": "1.1.*"
           }
         }
-      },
-      {
-        "type": "package",
-        "package": {
-          "type": "library",
-          "name": "thedmsgroup/mautic-extended-fields",
-          "version": "dev-master",
-          "source": {
-            "type": "git",
-            "url": "https://github.com/thedmsgroup/mautic-extended-fields.git",
-            "reference": "master"
-          },
-          "require": {
-            "thedmsgroup/mautic-eb-custom": "dev-master",
-            "mautic/core": "dev-master",
-            "mnsami/composer-custom-directory-installer": "1.1.*"
-          }
-        }
       }
     ],
     "extra": {
         "installer-paths": {
             "./mautic_custom": [
                 "thedmsgroup/mautic-eb-custom"
-            ],
-            "./mautic/plugins/MauticExtendedFieldsBundle": [
-                "thedmsgroup/mautic-extended-fields"
             ]
         }
     }
