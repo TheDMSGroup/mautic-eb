@@ -2,7 +2,8 @@
     "require": {
       "thedmsgroup/mautic-eb-custom": "dev-master",
       "thedmsgroup/mautic-extended-fields": "dev-master",
-      "thedmsgroup/mautic-contact-client": "dev-master"
+      "thedmsgroup/mautic-contact-client": "dev-master",
+      "thedmsgroup/mautic-enhancer": "dev-master"
     },
     "repositories": [
       {
@@ -38,24 +39,6 @@
             "mnsami/composer-custom-directory-installer": "1.1.*"
           }
         }
-      },
-      {
-        "type": "package",
-        "package": {
-          "type": "library",
-          "name": "thedmsgroup/mautic-contact-client",
-          "version": "dev-master",
-          "source": {
-            "type": "git",
-            "url": "https://github.com/thedmsgroup/mautic-contact-client.git",
-            "reference": "master"
-          },
-          "require": {
-            "thedmsgroup/mautic-eb-custom": "dev-master",
-            "mautic/core": "dev-master",
-            "mnsami/composer-custom-directory-installer": "1.1.*"
-          }
-        }
       }
     ],
     "extra": {
@@ -65,9 +48,6 @@
             ],
             "./mautic/plugins/MauticExtendedFieldsBundle": [
                 "thedmsgroup/mautic-extended-fields"
-            ],
-            "./mautic/plugins/MauticContactClientBundle": [
-                "thedmsgroup/mautic-contact-client"
             ]
         }
     }
