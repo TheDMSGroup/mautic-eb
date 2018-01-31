@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rebuild all assets in place (to test composer changes)
+# Rebuild all assets in place to test composer changes and prep for release.
 
 BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
@@ -13,6 +13,5 @@ touch ./mautic_custom/.gitkeep
 
 cp composer.custom.dist composer.custom
 
-composer install
-composer less
-composer cc
+composer install --ansi --optimize-autoloader --no-dev
+composer less --ansi

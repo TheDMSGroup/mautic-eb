@@ -108,8 +108,7 @@
       "cp composer.lock composer.lock.dist"
     ],
     "less": [
-      "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove",
-      "@cc"
+      "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove"
     ],
     "js": [
       "rm -rf ./mautic/media/js/app.js ./mautic/media/js/libraries.js",
@@ -124,9 +123,7 @@
     ],
     "post-update-cmd": [
       "@custom",
-      "@git-hooks",
-      "@update-dist",
-      "@cc"
+      "@update-dist"
     ]
   },
   "config": {
