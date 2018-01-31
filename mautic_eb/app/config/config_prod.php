@@ -8,20 +8,61 @@ if (file_exists(__DIR__.'/security_local.php')) {
     $loader->import('security.php');
 }
 
-// Check for APCu BC.
-if (function_exists('apc_fetch') && function_exists('apc_fetch')) {
-    $container->loadFromExtension("framework", array(
-        "validation" => array(
-            "cache" => "apc"
+// Check for APC/APCuBC.
+if (function_exists('apc_fetch')) {
+    $container->loadFromExtension('framework', array(
+        'validation' => array(
+            'cache' => 'apc'
         )
     ));
 
-    $container->loadFromExtension("doctrine", array(
-        "orm" => array(
-            "metadata_cache_driver" => "apc",
-            "result_cache_driver"   => "apc",
-            "query_cache_driver"    => "apc"
+    $container->loadFromExtension('doctrine', array(
+        'orm' => array(
+            'metadata_cache_driver' => 'apc',
+            'result_cache_driver'   => 'apc',
+            'query_cache_driver'    => 'apc'
         )
+    ));
+}
+
+// Read Only db cluster support.
+// In future this may be best as a modification of the core config.php.
+$dbHostRO = $container->hasParameter('mautic.db_host_ro') ? $container->getParameter('mautic.db_host_ro') : null;
+if (!empty($dbHostRO)) {
+    // Default from config.php
+    $dbalSettings = [
+        'driver'   => '%mautic.db_driver%',
+        'host'     => '%mautic.db_host%',
+        'port'     => '%mautic.db_port%',
+        'dbname'   => '%mautic.db_name%',
+        'user'     => '%mautic.db_user%',
+        'password' => '%mautic.db_password%',
+        'charset'  => 'UTF8',
+        'types'    => [
+            'array'    => 'Mautic\CoreBundle\Doctrine\Type\ArrayType',
+            'datetime' => 'Mautic\CoreBundle\Doctrine\Type\UTCDateTimeType',
+        ],
+        // Prevent Doctrine from crapping out with "unsupported type" errors due to it examining all tables in the database and not just Mautic's
+        'mapping_types' => [
+            'enum'  => 'string',
+            'point' => 'string',
+            'bit'   => 'string',
+        ],
+        'server_version' => '%mautic.db_server_version%',
+    ];
+
+    // Add a single slave (which is a load balanced Aurora read-only cluster).
+    $dbalSettings['slaves'] = [
+        'slave1' => [
+            'host'     => $dbHostRO,
+            'port'     => '%mautic.db_port%',
+            'dbname'   => '%mautic.db_name%',
+            'user'     => '%mautic.db_user%',
+            'password' => '%mautic.db_password%',
+        ]
+    ];
+    $container->loadFromExtension('doctrine', array(
+        'dbal' => $dbalSettings
     ));
 }
 

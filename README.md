@@ -19,6 +19,7 @@ There is still much work to be done to get us to that point.
 
     APP_URL               - The default full URL for your site.
     DB_HOST               - RDS Host.
+    DB_HOST_RO            - Optional: RDS Host for read-only slave cluster.
     DB_USER               - RDS User.
     DB_PASSWD             - RDS Password.
     DB_NAME               - RDS Database name.
