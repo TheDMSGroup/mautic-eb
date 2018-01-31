@@ -87,10 +87,13 @@
     "git-hooks": "@php -r \"if(file_exists('./mautic/.git')&&file_exists('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''))){copy('./mautic/build/hooks/pre-commit'.(PHP_OS=='WINNT'?'.win':''),'./mautic/.git/hooks/pre-commit');}\"",
     "iplookup": "@php ./mautic/app/console mautic:iplookup:download",
     "migrate": "@php ./mautic/app/console doctrine:migrations:migrate --no-interaction",
+    "db-drop-dev": [
+      "@php ./mautic/app/console doctrine:database:drop --force --no-interaction --env=dev"
+    ],
     "db-setup-dev": [
-      "@php ./mautic/app/console doctrine:database:create --no-interaction  --if-not-exists --env=dev",
-      "@php ./mautic/app/console mautic:install:data --force --env=dev",
-      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=dev"
+      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --env=dev -vvv",
+      "@php ./mautic/app/console mautic:install:data --force --env=dev -vvv",
+      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=dev -vvv"
     ],
     "test-dist": [
       "cd ./mautic && bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist"
