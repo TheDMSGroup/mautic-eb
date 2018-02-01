@@ -33,8 +33,8 @@
 
 /mautic/app/cache
 
-/mautic/app/config/local*.php
-/mautic/app/config/config_local.php
+!/mautic/app/config/local*.php
+!/mautic/app/config/config_local.php
 !/mautic/app/config/paths_local.php
 !/mautic/app/config/parameters_local.php
 
