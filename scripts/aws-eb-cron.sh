@@ -115,7 +115,7 @@ if [[ "$AWS_EB_CRON" == "1" ]]
 then
     if [[ ! -z "$@" ]]
     then
-        echo "Executing: sudo -u webapp bash -c \"$@\""
-        sudo -u webapp bash -c "$@"
+        echo "Executing: sudo -u webapp bash -c \". /opt/elasticbeanstalk/support/envvars ; $@\""
+        sudo -u webapp bash -c ". /opt/elasticbeanstalk/support/envvars ; $@"
     fi
 fi
