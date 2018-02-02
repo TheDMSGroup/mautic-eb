@@ -3124,7 +3124,7 @@
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-01-04T19:49:11+00:00"
+            "time": "2018-01-23T12:15:24+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -8113,12 +8113,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "9e6fcdc84413902d0478fc6bd301ec4d53b02bd9"
+                "reference": "13a7d20db20f81004364b4fca3404655f30dd513"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/9e6fcdc84413902d0478fc6bd301ec4d53b02bd9",
-                "reference": "9e6fcdc84413902d0478fc6bd301ec4d53b02bd9",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/13a7d20db20f81004364b4fca3404655f30dd513",
+                "reference": "13a7d20db20f81004364b4fca3404655f30dd513",
                 "shasum": ""
             },
             "require": {
@@ -8143,7 +8143,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-01T20:02:04+00:00"
+            "time": "2018-02-02T17:46:06+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8157,7 +8157,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2017-12-21T14:33:01+00:00"
+            "time": "2018-01-31T19:52:38+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",

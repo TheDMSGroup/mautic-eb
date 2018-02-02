@@ -12,6 +12,7 @@
 
 # Projects not invented here.
 # /mautic
+/mautic/.env*
 /mautic/bower_components
 /mautic/node_modules
 /mautic/npm-debug.log
