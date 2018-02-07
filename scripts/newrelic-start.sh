@@ -17,7 +17,7 @@ cat > /etc/php.d/newrelic.ini <<- EOM
 ; https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration
 extension = "newrelic.so"
 [newrelic]
-newrelic.license = "$NR_INSTALL_KEY"
+newrelic.license = "$NR_APM_INSTALL_KEY"
 newrelic.logfile = "/var/log/newrelic/php_agent.log"
 newrelic.appname = "$NR_APPNAME"
 newrelic.error_collector.record_database_errors = false
@@ -42,11 +42,11 @@ fi
 if [ !-z "$NR_INF_INSTALL_KEY" ]
 then
     # Start the System monitor.
-    nrsysmond-config --set license_key=$NR_INSTALL_KEY
+    nrsysmond-config --set license_key=$NR_INF_INSTALL_KEY
     sudo /etc/init.d/newrelic-sysmond restart
 
     # Start the Infrastructure monitor.
-    echo "license_key: $NR_INSTALL_KEY" | sudo tee -a /etc/newrelic-infra.yml
+    echo "license_key: $NR_INF_INSTALL_KEY" | sudo tee -a /etc/newrelic-infra.yml
     printf "[newrelic-infra]\nname=New Relic Infrastructure\nbaseurl=http://download.newrelic.com/infrastructure_agent/linux/yum/el/6/x86_64\nenable=1\ngpgcheck=0" | sudo tee -a /etc/yum.repos.d/newrelic-infra.repo
 
     yum-config-manager --save --setopt=newrelic-infra.skip_if_unavailable=true
