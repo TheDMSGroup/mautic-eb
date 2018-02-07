@@ -13,7 +13,7 @@ touch ./mautic_custom/.gitkeep
 
 cp composer.custom.dist composer.custom
 
-composer install --ansi --optimize-autoloader
-#composer install --ansi --optimize-autoloader --no-dev
-composer less --ansi
-composer js --ansi
+composer install
+composer less
+composer js
+composer install --optimize-autoloader --no-dev

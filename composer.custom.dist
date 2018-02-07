@@ -1,7 +1,7 @@
 {
     "require": {
       "thedmsgroup/mautic-eb-custom": "dev-master",
-      "thedmsgroup/mautic-extended-fields-bundle": "dev-master",
+      "thedmsgroup/mautic-extended-field-bundle": "dev-master",
       "thedmsgroup/mautic-contact-client-bundle": "dev-master",
       "thedmsgroup/mautic-enhancer-bundle": "dev-master"
     },
