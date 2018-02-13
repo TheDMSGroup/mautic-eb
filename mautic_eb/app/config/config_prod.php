@@ -85,14 +85,14 @@ $container->loadFromExtension('monolog', [
         ],
         'nested' => [
             'type'      => 'rotating_file',
-            'path'      => '%kernel.logs_dir%/%kernel.environment%.php',
+            'path'      => '%kernel.logs_dir%/%kernel.environment%.log',
             'level'     => ($debugMode) ? 'debug' : 'error',
             'max_files' => 7,
         ],
         'mautic' => [
             'formatter' => $debugMode ? 'mautic.monolog.fulltrace.formatter' : null,
             'type'      => 'rotating_file',
-            'path'      => '%kernel.logs_dir%/mautic_%kernel.environment%.php',
+            'path'      => '%kernel.logs_dir%/mautic_%kernel.environment%.log',
             'level'     => ($debugMode) ? 'debug' : 'notice',
             'channels'  => [
                 'mautic',
