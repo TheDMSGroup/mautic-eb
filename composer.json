@@ -95,6 +95,11 @@
       "@php ./mautic/app/console mautic:install:data --force --env=dev -vvv",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=dev -vvv"
     ],
+    "db-setup-test": [
+      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --env=test -vvv",
+      "@php ./mautic/app/console mautic:install:data --force --env=test -vvv",
+      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test -vvv"
+    ],
     "test-dist": [
       "cd ./mautic && bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist"
     ],
