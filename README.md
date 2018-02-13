@@ -7,13 +7,12 @@ Mautic EB [![Build Status](https://travis-ci.org/TheDMSGroup/mautic-eb.svg?branc
 The goal here is to make it simple and safe to scale Mautic up to millions of leads per week, 
 while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFlare and Newrelic are supported, but optional.
 
-There is still much work to be done to get us to that point.
-
 ## Requirements
 
 1) AWS EB environment running PHP 7.1 with environment variables described below.
 2) AWS RDS MySQL instance (Aurora recommended, encrypted in a private VPC)
 3) AWS EFS Volume (used for shared media and spool storage)
+4) Add the AmazonEC2ReadOnlyAccess policy to the aws-elasticbeanstalk-ec2-role (for the cron script to self regulate)
 
 ## Environment variables in Elastic Beanstalk.
 
