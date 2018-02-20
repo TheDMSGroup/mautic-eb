@@ -1,0 +1,34 @@
+{
+    "require": {
+      "thedmsgroup/mautic-eb-custom": "dev-master",
+      "thedmsgroup/mautic-extended-field-bundle": "dev-master",
+      "thedmsgroup/mautic-contact-client-bundle": "dev-master",
+      "thedmsgroup/mautic-contact-source-bundle": "dev-master",
+      "thedmsgroup/mautic-enhancer-bundle": "dev-master"
+    },
+    "repositories": [
+      {
+        "type": "package",
+        "package": {
+          "type": "library",
+          "name": "thedmsgroup/mautic-eb-custom",
+          "version": "dev-master",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
+            "reference": "master"
+          },
+          "require": {
+            "mnsami/composer-custom-directory-installer": "1.1.*"
+          }
+        }
+      }
+    ],
+    "extra": {
+        "installer-paths": {
+            "./mautic_custom": [
+                "thedmsgroup/mautic-eb-custom"
+            ]
+        }
+    }
+}
