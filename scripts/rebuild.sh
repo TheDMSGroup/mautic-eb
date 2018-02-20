@@ -13,6 +13,7 @@ touch ./mautic_custom/.gitkeep
 
 cp composer.custom.dist composer.custom
 
+composer clear-cache
 composer install
 composer less
 composer js
