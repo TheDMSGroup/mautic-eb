@@ -5223,22 +5223,22 @@
         },
         {
             "name": "stack/run",
-            "version": "v1.0.1",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stackphp/run.git",
-                "reference": "a1bc94ee4493aa0988dffd89b6b8a6cdcdb3c905"
+                "reference": "ca5b0b958c024940c72eadead646e19ad1889d29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stackphp/run/zipball/a1bc94ee4493aa0988dffd89b6b8a6cdcdb3c905",
-                "reference": "a1bc94ee4493aa0988dffd89b6b8a6cdcdb3c905",
+                "url": "https://api.github.com/repos/stackphp/run/zipball/ca5b0b958c024940c72eadead646e19ad1889d29",
+                "reference": "ca5b0b958c024940c72eadead646e19ad1889d29",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
-                "symfony/http-foundation": "~2.1",
-                "symfony/http-kernel": "~2.1"
+                "symfony/http-foundation": "~2.7|~3.0|~4.0",
+                "symfony/http-kernel": "~2.7|~3.0|~4.0"
             },
             "require-dev": {
                 "stack/callable-http-kernel": "~1.0@dev"
@@ -5246,7 +5246,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -5261,15 +5261,14 @@
             "authors": [
                 {
                     "name": "Igor Wiedler",
-                    "email": "igor@wiedler.ch",
-                    "homepage": "http://wiedler.ch/igor/"
+                    "email": "igor@wiedler.ch"
                 }
             ],
             "description": "Shortcut function for handling HttpKernel front-controller boilerplate.",
             "keywords": [
                 "stack"
             ],
-            "time": "2013-10-25T14:31:28+00:00"
+            "time": "2018-02-20T10:28:14+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -8112,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "f9aa4b6f71c4e934ad5fec51d6fdc73e6d3aefee"
+                "reference": "de9e133ab9b030b4189343f0a87c71cb6fa30e77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/f9aa4b6f71c4e934ad5fec51d6fdc73e6d3aefee",
-                "reference": "f9aa4b6f71c4e934ad5fec51d6fdc73e6d3aefee",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/de9e133ab9b030b4189343f0a87c71cb6fa30e77",
+                "reference": "de9e133ab9b030b4189343f0a87c71cb6fa30e77",
                 "shasum": ""
             },
             "require": {
@@ -8142,20 +8141,20 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-14T21:39:14+00:00"
+            "time": "2018-02-20T19:34:19+00:00"
         },
         {
-            "name": "thedmsgroup/mautic-contact-server-bundle",
+            "name": "thedmsgroup/mautic-contact-source-bundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-contact-server.git",
-                "reference": "5204ebebe793237243b200beb7e5667e2a5cef3e"
+                "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
+                "reference": "1b8589146061d4ad09b762f64fd77711345cb9e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-server/zipball/5204ebebe793237243b200beb7e5667e2a5cef3e",
-                "reference": "5204ebebe793237243b200beb7e5667e2a5cef3e",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/1b8589146061d4ad09b762f64fd77711345cb9e7",
+                "reference": "1b8589146061d4ad09b762f64fd77711345cb9e7",
                 "shasum": ""
             },
             "require": {
@@ -8172,14 +8171,14 @@
                     "email": "heathdutton@gmail.com"
                 }
             ],
-            "description": "Customize API endpoints for receiving contacts from third parties.",
+            "description": "Creates API endpoints for receiving contacts from external sources.",
             "keywords": [
                 "Marketing Automation",
                 "Mautic",
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-15T22:19:17+00:00"
+            "time": "2018-02-20T19:29:48+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8201,12 +8200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "01ea7274917ec498827e5a0eaea107cb739c3b0e"
+                "reference": "96286cc04429a17d727de660def0a3db94d77b5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/01ea7274917ec498827e5a0eaea107cb739c3b0e",
-                "reference": "01ea7274917ec498827e5a0eaea107cb739c3b0e",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/96286cc04429a17d727de660def0a3db94d77b5b",
+                "reference": "96286cc04429a17d727de660def0a3db94d77b5b",
                 "shasum": ""
             },
             "require": {
@@ -8234,7 +8233,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-15T23:54:52+00:00"
+            "time": "2018-02-16T15:06:24+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8242,12 +8241,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-fields.git",
-                "reference": "99ea215c2bc8b4dff59bbf6cb52dc83f61391faf"
+                "reference": "b97341cbf4fc7f5819c4e3b66006729e111b0f4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-fields/zipball/99ea215c2bc8b4dff59bbf6cb52dc83f61391faf",
-                "reference": "99ea215c2bc8b4dff59bbf6cb52dc83f61391faf",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-fields/zipball/b97341cbf4fc7f5819c4e3b66006729e111b0f4b",
+                "reference": "b97341cbf4fc7f5819c4e3b66006729e111b0f4b",
                 "shasum": ""
             },
             "require": {
@@ -8279,7 +8278,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-14T19:54:57+00:00"
+            "time": "2018-02-19T21:53:04+00:00"
         },
         {
             "name": "twig/twig",
@@ -8788,23 +8787,23 @@
         },
         {
             "name": "codeception/stub",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Stub.git",
-                "reference": "673ea54cdd7141e0a5138ad78aaa60751912f573"
+                "reference": "95fb7a36b81890dd2e5163e7ab31310df6f1bb99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Stub/zipball/673ea54cdd7141e0a5138ad78aaa60751912f573",
-                "reference": "673ea54cdd7141e0a5138ad78aaa60751912f573",
+                "url": "https://api.github.com/repos/Codeception/Stub/zipball/95fb7a36b81890dd2e5163e7ab31310df6f1bb99",
+                "reference": "95fb7a36b81890dd2e5163e7ab31310df6f1bb99",
                 "shasum": ""
             },
             "require": {
-                "phpunit/phpunit-mock-objects": "^2.3|^3.0|^4.0|^5.0"
+                "phpunit/phpunit-mock-objects": ">2.3 <7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8|^5.0|^6.0|^7.0"
+                "phpunit/phpunit": ">=4.8 <8.0"
             },
             "type": "library",
             "autoload": {
@@ -8817,7 +8816,7 @@
                 "MIT"
             ],
             "description": "Flexible Stub wrapper for PHPUnit's Mock Builder",
-            "time": "2018-01-27T00:37:17+00:00"
+            "time": "2018-02-18T13:56:56+00:00"
         },
         {
             "name": "composer/semver",
@@ -9351,16 +9350,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.7.4",
+            "version": "1.7.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "9f901e29c93dae4aa77c0bb161df4276f9c9a1be"
+                "reference": "dfd6be44111a7c41c2e884a336cc4f461b3b2401"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9f901e29c93dae4aa77c0bb161df4276f9c9a1be",
-                "reference": "9f901e29c93dae4aa77c0bb161df4276f9c9a1be",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/dfd6be44111a7c41c2e884a336cc4f461b3b2401",
+                "reference": "dfd6be44111a7c41c2e884a336cc4f461b3b2401",
                 "shasum": ""
             },
             "require": {
@@ -9410,7 +9409,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2018-02-11T18:49:29+00:00"
+            "time": "2018-02-19T10:16:54+00:00"
         },
         {
             "name": "phpstan/phpstan-shim",
@@ -10872,7 +10871,7 @@
         "thedmsgroup/mautic-eb-custom": 20,
         "thedmsgroup/mautic-extended-field-bundle": 20,
         "thedmsgroup/mautic-contact-client-bundle": 20,
-        "thedmsgroup/mautic-contact-server-bundle": 20,
+        "thedmsgroup/mautic-contact-source-bundle": 20,
         "thedmsgroup/mautic-enhancer-bundle": 20
     },
     "prefer-stable": true,
