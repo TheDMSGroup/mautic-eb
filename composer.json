@@ -111,10 +111,15 @@
       "cp composer.lock composer.lock.dist"
     ],
     "less": [
-      "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove"
+      "rm -rf ./mautic/media/css/app.css ./mautic/media/css/libraries.css",
+      "cd ./mautic ; npm install ; npm install grunt-cli ; grunt less"
     ],
     "js": [
-      "rm -rf ./mautic/media/js/app.js ./mautic/media/js/libraries.js",
+      "rm -rf ./mautic/media/js/app.js ./mautic/media/js/libraries.js"
+    ],
+    "assets":  [
+      "@less",
+      "@js",
       "@php ./mautic/app/console mautic:assets:generate"
     ],
     "post-install-cmd": [
