@@ -31,6 +31,10 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     NR_APM_INSTALL_KEY    - Optional: NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY    - Optional: NewRelic install key for Infrastructure.
 
+### EB Container Options:
+
+- Document Root: `/mautic`
+
 ### Travis CI / Bitbucket Pipelines Environment Variables
 This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, the following environment variables must be added to your CI:
 Note, we're using Travis CI since this is a 100% open source project and will remain so.
@@ -77,6 +81,7 @@ Custom dependencies can be included in a root composer.custom
 * `composer cc` to clear all Mautic/Symfony caches.
 * `composer custom` to update symlinks for all customizations to mautic core.
 * `composer less` to compile LESS styles (should you need to extend the core styles).
+* `composer assets` to regenerate core CSS and JS files for deployment.
 * `composer test` to run the full codeception suite.
 * The file `composer.custom` can be created to pull in third-party dependencies and customizations without altering this repo.
 * Do not run `composer install` from within the `./mautic` folder, only in the root project folder.

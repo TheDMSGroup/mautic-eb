@@ -13,7 +13,7 @@ touch ./mautic_custom/.gitkeep
 
 cp composer.custom.dist composer.custom
 
-composer install
-composer less
-composer js
-composer install --optimize-autoloader --no-dev
+composer install --optimize-autoloader
+composer assets
+# Only needed if building for production:
+# composer install --optimize-autoloader --no-dev

@@ -95,6 +95,11 @@
       "@php ./mautic/app/console mautic:install:data --force --env=dev -vvv",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=dev -vvv"
     ],
+    "db-setup-test": [
+      "@php ./mautic/app/console doctrine:database:create --no-interaction --if-not-exists --env=test -vvv",
+      "@php ./mautic/app/console mautic:install:data --force --env=test -vvv",
+      "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test -vvv"
+    ],
     "test-dist": [
       "cd ./mautic && bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist"
     ],
@@ -111,10 +116,15 @@
       "cp composer.lock composer.lock.dist"
     ],
     "less": [
-      "cd ./mautic ; npm install ; npm install grunt-cli grunt-remove ; grunt less ; grunt remove"
+      "rm -rf ./mautic/media/css/app.css ./mautic/media/css/libraries.css",
+      "cd ./mautic ; npm install ; npm install grunt-cli ; grunt less"
     ],
     "js": [
-      "rm -rf ./mautic/media/js/app.js ./mautic/media/js/libraries.js",
+      "rm -rf ./mautic/media/js/app.js ./mautic/media/js/libraries.js"
+    ],
+    "assets":  [
+      "@less",
+      "@js",
       "@php ./mautic/app/console mautic:assets:generate"
     ],
     "post-install-cmd": [
