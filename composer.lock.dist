@@ -3026,24 +3026,24 @@
         },
         {
             "name": "lightsaml/symfony-bridge",
-            "version": "1.0.4",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lightSAML/SymfonyBridgeBundle.git",
-                "reference": "01ad843a0bafc5268bda65e49a9be3c0c57e2381"
+                "reference": "9b64b2e258e5afed56ea57206d47e5bccd04d34d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lightSAML/SymfonyBridgeBundle/zipball/01ad843a0bafc5268bda65e49a9be3c0c57e2381",
-                "reference": "01ad843a0bafc5268bda65e49a9be3c0c57e2381",
+                "url": "https://api.github.com/repos/lightSAML/SymfonyBridgeBundle/zipball/9b64b2e258e5afed56ea57206d47e5bccd04d34d",
+                "reference": "9b64b2e258e5afed56ea57206d47e5bccd04d34d",
                 "shasum": ""
             },
             "require": {
                 "lightsaml/lightsaml": "~1.1",
                 "php": ">=5.5.1",
-                "symfony/dependency-injection": "~2.3|~3.0",
-                "symfony/framework-bundle": "~2.3|~3.0",
-                "symfony/yaml": "~2.3|~3.0"
+                "symfony/dependency-injection": "~2.3|~3.0|~4.0",
+                "symfony/framework-bundle": "~2.3|~3.0|~4.0",
+                "symfony/yaml": "~2.3|~3.0|~4.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.5",
@@ -3073,7 +3073,7 @@
             ],
             "description": "Light SAML Symfony bridge bundle",
             "homepage": "http://www.lightsaml.com",
-            "time": "2016-11-18T15:11:05+00:00"
+            "time": "2018-02-23T07:13:33+00:00"
         },
         {
             "name": "mautic/composer-plugin",
@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "f9d2dfb8065e49a0bfe3bbc6b4f61a39e6ede501"
+                "reference": "a2b64be2a233a7de4087a182bff2d12fe5c4c9a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/f9d2dfb8065e49a0bfe3bbc6b4f61a39e6ede501",
-                "reference": "f9d2dfb8065e49a0bfe3bbc6b4f61a39e6ede501",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/a2b64be2a233a7de4087a182bff2d12fe5c4c9a2",
+                "reference": "a2b64be2a233a7de4087a182bff2d12fe5c4c9a2",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-21T19:32:12+00:00"
+            "time": "2018-02-26T19:13:03+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8149,12 +8149,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "1264dde9a58682dab47c7ca4b65db3305849c650"
+                "reference": "9f5d93b43017a6f4718f6c1bb0efa258f6dfa221"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/1264dde9a58682dab47c7ca4b65db3305849c650",
-                "reference": "1264dde9a58682dab47c7ca4b65db3305849c650",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/9f5d93b43017a6f4718f6c1bb0efa258f6dfa221",
+                "reference": "9f5d93b43017a6f4718f6c1bb0efa258f6dfa221",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8178,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-22T13:42:57+00:00"
+            "time": "2018-02-26T19:12:38+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8200,12 +8200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "96286cc04429a17d727de660def0a3db94d77b5b"
+                "reference": "7cc28e7babfb1149c161d1aeb5a799f8832f975c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/96286cc04429a17d727de660def0a3db94d77b5b",
-                "reference": "96286cc04429a17d727de660def0a3db94d77b5b",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/7cc28e7babfb1149c161d1aeb5a799f8832f975c",
+                "reference": "7cc28e7babfb1149c161d1aeb5a799f8832f975c",
                 "shasum": ""
             },
             "require": {
@@ -8233,20 +8233,20 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-16T15:06:24+00:00"
+            "time": "2018-02-27T16:30:49+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-extended-fields.git",
-                "reference": "1666720e002631c050ff0218f7f70cf82b7565c3"
+                "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
+                "reference": "bc2858612cc3265770a938914f04f3318222598c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-fields/zipball/1666720e002631c050ff0218f7f70cf82b7565c3",
-                "reference": "1666720e002631c050ff0218f7f70cf82b7565c3",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/bc2858612cc3265770a938914f04f3318222598c",
+                "reference": "bc2858612cc3265770a938914f04f3318222598c",
                 "shasum": ""
             },
             "require": {
@@ -8278,7 +8278,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-02-22T01:44:52+00:00"
+            "time": "2018-02-28T14:21:20+00:00"
         },
         {
             "name": "twig/twig",
@@ -8634,16 +8634,16 @@
         },
         {
             "name": "behat/gherkin",
-            "version": "v4.4.5",
+            "version": "v4.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Gherkin.git",
-                "reference": "5c14cff4f955b17d20d088dec1bde61c0539ec74"
+                "reference": "74ac03d52c5e23ad8abd5c5cce4ab0e8dc1b530a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Gherkin/zipball/5c14cff4f955b17d20d088dec1bde61c0539ec74",
-                "reference": "5c14cff4f955b17d20d088dec1bde61c0539ec74",
+                "url": "https://api.github.com/repos/Behat/Gherkin/zipball/74ac03d52c5e23ad8abd5c5cce4ab0e8dc1b530a",
+                "reference": "74ac03d52c5e23ad8abd5c5cce4ab0e8dc1b530a",
                 "shasum": ""
             },
             "require": {
@@ -8689,24 +8689,25 @@
                 "gherkin",
                 "parser"
             ],
-            "time": "2016-10-30T11:50:56+00:00"
+            "time": "2017-08-30T11:04:43+00:00"
         },
         {
             "name": "codeception/codeception",
-            "version": "2.3.8",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "43eade17a8cd68e9cde401e8585b09d11d41b12d"
+                "reference": "c50789a9a62cc0eefc0252e88a5f04f8c47b55f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/43eade17a8cd68e9cde401e8585b09d11d41b12d",
-                "reference": "43eade17a8cd68e9cde401e8585b09d11d41b12d",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/c50789a9a62cc0eefc0252e88a5f04f8c47b55f4",
+                "reference": "c50789a9a62cc0eefc0252e88a5f04f8c47b55f4",
                 "shasum": ""
             },
             "require": {
-                "behat/gherkin": "~4.4.0",
+                "behat/gherkin": "^4.4.0",
+                "codeception/phpunit-wrapper": "^6.0|^7.0",
                 "codeception/stub": "^1.0",
                 "ext-json": "*",
                 "ext-mbstring": "*",
@@ -8714,10 +8715,6 @@
                 "guzzlehttp/guzzle": ">=4.1.4 <7.0",
                 "guzzlehttp/psr7": "~1.0",
                 "php": ">=5.4.0 <8.0",
-                "phpunit/php-code-coverage": ">=2.2.4 <6.0",
-                "phpunit/phpunit": ">=4.8.28 <5.0.0 || >=5.6.3 <7.0",
-                "sebastian/comparator": ">1.1 <3.0",
-                "sebastian/diff": ">=1.4 <3.0",
                 "symfony/browser-kit": ">=2.7 <5.0",
                 "symfony/console": ">=2.7 <5.0",
                 "symfony/css-selector": ">=2.7 <5.0",
@@ -8783,7 +8780,46 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2018-01-27T22:47:33+00:00"
+            "time": "2018-02-27T00:09:12+00:00"
+        },
+        {
+            "name": "codeception/phpunit-wrapper",
+            "version": "6.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Codeception/phpunit-wrapper.git",
+                "reference": "44e2100c300413a6b40cf8874ad402695010f443"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/44e2100c300413a6b40cf8874ad402695010f443",
+                "reference": "44e2100c300413a6b40cf8874ad402695010f443",
+                "shasum": ""
+            },
+            "require": {
+                "phpunit/php-code-coverage": ">=2.2.4 <6.0",
+                "phpunit/phpunit": ">=4.8.28 <5.0.0 || >=5.6.3 <7.0",
+                "sebastian/comparator": ">1.1 <3.0",
+                "sebastian/diff": ">=1.4 <4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codeception\\PHPUnit\\": "src\\"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Davert",
+                    "email": "davert.php@resend.cc"
+                }
+            ],
+            "description": "PHPUnit classes used by Codeception",
+            "time": "2018-02-19T13:24:40+00:00"
         },
         {
             "name": "codeception/stub",
@@ -8937,16 +8973,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.2.16",
+            "version": "v2.2.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "f67918efb38a186c6c731e46e52eab4fee329a49"
+                "reference": "12f95d20d7c8f6c2ee68d00a0fad74179ca75339"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/f67918efb38a186c6c731e46e52eab4fee329a49",
-                "reference": "f67918efb38a186c6c731e46e52eab4fee329a49",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/12f95d20d7c8f6c2ee68d00a0fad74179ca75339",
+                "reference": "12f95d20d7c8f6c2ee68d00a0fad74179ca75339",
                 "shasum": ""
             },
             "require": {
@@ -8954,7 +8990,6 @@
                 "doctrine/annotations": "^1.2",
                 "ext-json": "*",
                 "ext-tokenizer": "*",
-                "gecko-packages/gecko-php-unit": "^2.0",
                 "php": "^5.3.6 || >=7.0 <7.3",
                 "sebastian/diff": "^1.4",
                 "symfony/console": "^2.4 || ^3.0 || ^4.0",
@@ -8989,11 +9024,6 @@
                 "php-cs-fixer"
             ],
             "type": "application",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "PhpCsFixer\\": "src/"
@@ -9002,6 +9032,7 @@
                     "tests/Test/AbstractFixerTestCase.php",
                     "tests/Test/AbstractIntegrationCaseFactory.php",
                     "tests/Test/AbstractIntegrationTestCase.php",
+                    "tests/Test/Constraint/SameStringsConstraint.php",
                     "tests/Test/IntegrationCase.php",
                     "tests/Test/IntegrationCaseFactory.php",
                     "tests/Test/IntegrationCaseFactoryInterface.php",
@@ -9024,54 +9055,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2018-02-03T08:20:15+00:00"
-        },
-        {
-            "name": "gecko-packages/gecko-php-unit",
-            "version": "v2.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/GeckoPackages/GeckoPHPUnit.git",
-                "reference": "a06beb80f63645140c251cfd757ba94a4a540be5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/GeckoPackages/GeckoPHPUnit/zipball/a06beb80f63645140c251cfd757ba94a4a540be5",
-                "reference": "a06beb80f63645140c251cfd757ba94a4a540be5",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.6 || ^7.0"
-            },
-            "conflict": {
-                "phpunit/phpunit": ">=6.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.4.3"
-            },
-            "suggest": {
-                "ext-dom": "When testing with xml.",
-                "ext-libxml": "When testing with xml.",
-                "phpunit/phpunit": "This is an extension for PHPUnit so make sure you have that in some way."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "GeckoPackages\\PHPUnit\\": "src/PHPUnit"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Additional PHPUnit asserts and constraints.",
-            "homepage": "https://github.com/GeckoPackages",
-            "keywords": [
-                "extension",
-                "filesystem",
-                "phpunit"
-            ],
-            "time": "2018-02-05T09:26:06+00:00"
+            "time": "2018-02-22T16:46:13+00:00"
         },
         {
             "name": "liip/functional-test-bundle",
