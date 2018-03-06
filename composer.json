@@ -32,10 +32,8 @@
       ]
     },
     "merge-plugin": {
-      "require": [
-        "./mautic/composer.json"
-      ],
       "include": [
+        "./mautic/composer.json",
         "./mautic/plugins/**/composer.json",
         "./composer.custom"
       ],
