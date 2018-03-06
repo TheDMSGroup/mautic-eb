@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c859fdab8937184b84148811fca9a21",
+    "content-hash": "5fe927df5228683d11bdce4c75d2df15",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -10851,12 +10851,12 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "mautic/core": 20,
+        "willdurand/oauth-server-bundle": 20,
         "thedmsgroup/mautic-eb-custom": 20,
         "thedmsgroup/mautic-extended-field-bundle": 20,
         "thedmsgroup/mautic-contact-client-bundle": 20,
         "thedmsgroup/mautic-contact-source-bundle": 20,
-        "thedmsgroup/mautic-enhancer-bundle": 20,
-        "willdurand/oauth-server-bundle": 20
+        "thedmsgroup/mautic-enhancer-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

@@ -4,29 +4,29 @@
  * To override for your instance use parameters_local.php
  */
 $parameters = [
-    'db_driver' => 'pdo_mysql',
-    'db_table_prefix' => null,
-    'db_host' => getenv('DB_HOST') ?: $parameters['db_host'] ?? '127.0.0.1',
-    'db_host_ro' => getenv('DB_HOST_RO') ?: null,
-    'db_port' => getenv('DB_PORT') ?: $parameters['db_port'] ?? '3306',
-    'db_name' => getenv('DB_NAME') ?: $parameters['db_name'] ?? 'mautic_eb_site_0',
-    'db_user' => getenv('DB_USER') ?: $parameters['db_user'] ?? 'root',
-    'db_password' => getenv('DB_PASSWD') ?: $parameters['db_password'] ?? '',
-    'mailer_from_name' => getenv('MAILER_FROM_NAME') ?: $parameters['mailer_from_name'] ?? 'Web Developer',
+    'db_driver'         => 'pdo_mysql',
+    'db_table_prefix'   => null,
+    'db_host'           => getenv('DB_HOST') ?: $parameters['db_host'] ?? '127.0.0.1',
+    'db_host_ro'        => getenv('DB_HOST_RO') ?: null,
+    'db_port'           => getenv('DB_PORT') ?: $parameters['db_port'] ?? '3306',
+    'db_name'           => getenv('DB_NAME') ?: $parameters['db_name'] ?? 'mautic_eb_site_0',
+    'db_user'           => getenv('DB_USER') ?: $parameters['db_user'] ?? 'root',
+    'db_password'       => getenv('DB_PASSWD') ?: $parameters['db_password'] ?? '',
+    'mailer_from_name'  => getenv('MAILER_FROM_NAME') ?: $parameters['mailer_from_name'] ?? 'Web Developer',
     'mailer_from_email' => getenv('MAILER_FROM_EMAIL') ?: $parameters['mailer_from_email'] ?? 'web@developer.com',
-    'mailer_transport' => 'mail',
-    'mailer_host' => null,
-    'mailer_port' => null,
-    'mailer_user' => 'root',
-    'mailer_password' => 'root',
+    'mailer_transport'  => 'mail',
+    'mailer_host'       => null,
+    'mailer_port'       => null,
+    'mailer_user'       => 'root',
+    'mailer_password'   => 'root',
     'mailer_encryption' => null,
-    'mailer_auth_mode' => null,
+    'mailer_auth_mode'  => null,
     'mailer_spool_type' => 'file',
     'mailer_spool_path' => '%kernel.root_dir%/spool',
-    'secret_key' => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
-    'site_url' => getenv('APP_URL') ?: 'http://mautic.loc',
+    'secret_key'        => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
+    'site_url'          => getenv('APP_URL') ?: 'http://mautic.loc',
     // Always use the core system tmp path.
-    'tmp_path' => '/tmp',
+    'tmp_path'          => '/tmp',
 ];
 
 /**
@@ -44,7 +44,7 @@ if (!function_exists('mauticEBMultisite')) {
         ) {
             $site = null;
             $host = strtolower(filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
-            $key = 'mautic_eb_mult_host_' . $host;
+            $key  = 'mautic_eb_mult_host_'.$host;
             if (isset($GLOBALS['mautic_eb_mult_site'])) {
                 $site = $GLOBALS['mautic_eb_mult_site'];
             }
@@ -55,37 +55,42 @@ if (!function_exists('mauticEBMultisite')) {
                 // Get parameters for the multi-site MySQL database.
                 // Optionally allow a completely different connection for this data.
                 $ebParams = [
-                    'db_host' => getenv('EB_MULTI_DB_HOST') ?: $parameters['db_host'],
-                    'db_port' => getenv('EB_MULTI_DB_PORT') ?: $parameters['db_port'],
-                    'db_name' => getenv('EB_MULTI_DB_NAME') ?: 'mautic_eb_multi',
-                    'db_user' => getenv('EB_MULTI_DB_USER') ?: $parameters['db_user'],
+                    'db_host'     => getenv('EB_MULTI_DB_HOST') ?: $parameters['db_host'],
+                    'db_port'     => getenv('EB_MULTI_DB_PORT') ?: $parameters['db_port'],
+                    'db_name'     => getenv('EB_MULTI_DB_NAME') ?: 'mautic_eb_multi',
+                    'db_user'     => getenv('EB_MULTI_DB_USER') ?: $parameters['db_user'],
                     'db_password' => getenv('EB_MULTI_DB_PASSWD') ?: $parameters['db_password'],
                 ];
-                $mysqli = new mysqli($ebParams['db_host'], $ebParams['db_user'], $ebParams['db_password'],
-                    $ebParams['db_name'], $ebParams['db_port']);
+                if (!is_string($ebParams['db_host']) || !is_string($ebParams['db_user']) || !is_string(
+                        $ebParams['db_password']
+                    ) || !is_string($ebParams['db_name']) || !is_string($ebParams['db_port'])) {
+                    throw \Exception('Invalid site host parameters.');
+                }
+                $mysqli = new mysqli(
+                    $ebParams['db_host'], $ebParams['db_user'], $ebParams['db_password'],
+                    $ebParams['db_name'], $ebParams['db_port']
+                );
                 if (mysqli_connect_error()) {
-                    throw Exception('Unable to connect to EB_MULTI host.', mysqli_connect_error());
+                    throw \Exception('Unable to connect to EB_MULTI host.', mysqli_connect_error());
                 } else {
-                    $query = "SELECT `sites`.* FROM `hosts` LEFT JOIN `sites` ON `hosts`.`site_id` = `sites`.`id` WHERE `hosts`.`host` = '" . $mysqli->real_escape_string($host) . "' LIMIT 1;";
+                    $query  = "SELECT `sites`.* FROM `hosts` LEFT JOIN `sites` ON `hosts`.`site_id` = `sites`.`id` WHERE `hosts`.`host` = '".$mysqli->real_escape_string(
+                            $host
+                        )."' LIMIT 1;";
                     $result = $mysqli->query($query);
                     if (!$result) {
-                        throw Exception('This domain is not currently supported.');
-                        return;
+                        throw \Exception('This domain is not currently supported.');
                     } else {
                         $array = $result->fetch_array();
                         // 0 = waiting for install, 1 = creating storage, 2 = creating database, 3 = running, 4 = halted, 5 = waiting to resume, 6 = waiting for decommission, 7 = decommission
                         switch ($array['status']) {
                             case 0:
-                                throw Exception('This site is awaiting setup.');
-                                break;
+                                throw \Exception('This site is awaiting setup.');
 
                             case 1:
-                                throw Exception('Storage is being allocated for this site.');
-                                break;
+                                throw \Exception('Storage is being allocated for this site.');
 
                             case 2:
-                                throw Exception('A database is being created for this site.');
-                                break;
+                                throw \Exception('A database is being created for this site.');
 
                             case 3:
                                 // Site is running and enabled.
@@ -93,20 +98,16 @@ if (!function_exists('mauticEBMultisite')) {
                                 break;
 
                             case 4:
-                                throw Exception('This site has been temporarily disabled.');
-                                break;
+                                throw \Exception('This site has been temporarily disabled.');
 
                             case 5:
-                                throw Exception('This site is being restored to active duty.');
-                                break;
+                                throw \Exception('This site is being restored to active duty.');
 
                             case 6:
-                                throw Exception('This site is being decommissioned permanently.');
-                                break;
+                                throw \Exception('This site is being decommissioned permanently.');
 
                             case 7:
-                                throw Exception('This site has been decommissioned permanently.');
-                                break;
+                                throw \Exception('This site has been decommissioned permanently.');
                         }
                     }
                 }
@@ -127,23 +128,23 @@ if (!function_exists('mauticEBMultisite')) {
                 if (!empty($site['parameters'])) {
                     $jsonParams = json_decode($site['parameters']);
                     if (!$jsonParams || !is_array($jsonParams)) {
-                        throw Exception('The custom parameters for this site are malformed.');
+                        throw \Exception('The custom parameters for this site are malformed.');
                     } else {
                         $parameters = array_merge($parameters, $jsonParams);
                     }
                 }
 
                 // Set the path for log entry output.
-                $parameters['log_path'] = 'multi/' . $site['id'] . '/logs';
+                $parameters['log_path'] = 'multi/'.$site['id'].'/logs';
 
                 // Set the path for images.
-                $parameters['image_path'] = 'multi/' . $site['id'] . '/media/images';
+                $parameters['image_path'] = 'multi/'.$site['id'].'/media/images';
 
                 // Set the path for generic uploads.
-                $parameters['upload_dir'] = 'multi/' . $site['id'] . '/media/files';
+                $parameters['upload_dir'] = 'multi/'.$site['id'].'/media/files';
 
                 // Set the database name.
-                $parameters['db_name'] = 'mautic_eb_site_' . $site['id'];
+                $parameters['db_name'] = 'mautic_eb_site_'.$site['id'];
 
                 // Explicitly set the site URL based on the inbound host, allow flexible SSL.
                 if (
