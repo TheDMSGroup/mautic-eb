@@ -32,7 +32,7 @@
     },
     "merge-plugin": {
       "include": [
-        "./mautic/composer.json",
+        "./mautic/composer.lock",
         "./mautic/plugins/**/composer.json",
         "./composer.custom"
       ],
