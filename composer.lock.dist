@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "43a37d3c209c27228aa38f2c778969b4",
+    "content-hash": "2c859fdab8937184b84148811fca9a21",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -8149,12 +8149,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "3c1c00d4f759142bd98cbf457734e61874726d38"
+                "reference": "886969b5ea848a64ea4a578c3c3b28f941c39795"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/3c1c00d4f759142bd98cbf457734e61874726d38",
-                "reference": "3c1c00d4f759142bd98cbf457734e61874726d38",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/886969b5ea848a64ea4a578c3c3b28f941c39795",
+                "reference": "886969b5ea848a64ea4a578c3c3b28f941c39795",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8178,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-06T00:56:23+00:00"
+            "time": "2018-03-06T17:06:50+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8192,7 +8192,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-03-02T18:50:12+00:00"
+            "time": "2018-03-06T17:24:45+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8200,12 +8200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "7fdea6736ee7cd2fe0de48033c3facbae1ef1093"
+                "reference": "6bbc2403bc9a2286158942ae887a8d39888e0058"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/7fdea6736ee7cd2fe0de48033c3facbae1ef1093",
-                "reference": "7fdea6736ee7cd2fe0de48033c3facbae1ef1093",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6bbc2403bc9a2286158942ae887a8d39888e0058",
+                "reference": "6bbc2403bc9a2286158942ae887a8d39888e0058",
                 "shasum": ""
             },
             "require": {
@@ -8233,7 +8233,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-06T02:42:36+00:00"
+            "time": "2018-03-06T17:09:47+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8241,12 +8241,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "33a6c2d63e6f140960f83e4cbfa7e1ba0c167eb7"
+                "reference": "4475f6234a3f2bab5ecec3f7bd535c3cc6d645c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/33a6c2d63e6f140960f83e4cbfa7e1ba0c167eb7",
-                "reference": "33a6c2d63e6f140960f83e4cbfa7e1ba0c167eb7",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/4475f6234a3f2bab5ecec3f7bd535c3cc6d645c9",
+                "reference": "4475f6234a3f2bab5ecec3f7bd535c3cc6d645c9",
                 "shasum": ""
             },
             "require": {
@@ -8278,7 +8278,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-06T14:54:18+00:00"
+            "time": "2018-03-06T17:08:41+00:00"
         },
         {
             "name": "twig/twig",
@@ -10851,12 +10851,12 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "mautic/core": 20,
-        "willdurand/oauth-server-bundle": 20,
         "thedmsgroup/mautic-eb-custom": 20,
         "thedmsgroup/mautic-extended-field-bundle": 20,
         "thedmsgroup/mautic-contact-client-bundle": 20,
         "thedmsgroup/mautic-contact-source-bundle": 20,
-        "thedmsgroup/mautic-enhancer-bundle": 20
+        "thedmsgroup/mautic-enhancer-bundle": 20,
+        "willdurand/oauth-server-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
