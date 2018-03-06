@@ -1,4 +1,4 @@
-Mautic EB [![Build Status](https://travis-ci.org/TheDMSGroup/mautic-eb.svg?branch=master)](https://travis-ci.org/TheDMSGroup/mautic-eb)
+Mautic EB [![Latest Stable Version](https://poser.pugx.org/thedmsgroup/mautic-eb/v/stable)](https://packagist.org/packages/thedmsgroup/mautic-eb) (https://packagist.org/packages/thedmsgroup/mautic-eb) [![Build Status](https://travis-ci.org/TheDMSGroup/mautic-eb.svg?branch=master)](https://travis-ci.org/TheDMSGroup/mautic-eb)
 =========
 
 #### Deploy Mautic in an auto-scaling Amazon Elastic Beanstalk cluster.
