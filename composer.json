@@ -2,6 +2,7 @@
   "name": "thedmsgroup/mautic-eb",
   "type": "project",
   "description": "Mautic Open Source Distribution - Modified for scalability",
+  "license": "GPL-3.0-only",
   "require": {
     "mautic/core": "dev-master"
   },
@@ -34,7 +35,6 @@
       "include": [
         "./mautic/composer.json",
         "./mautic/plugins/**/composer.json",
-        "./plugins/**/composer.json",
         "./composer.custom"
       ],
       "recurse": true,
@@ -142,7 +142,8 @@
   "config": {
     "preferred-install": "dist",
     "vendor-dir": "./vendor",
-    "bin-dir": "./bin"
+    "bin-dir": "./bin",
+    "optimize-autoloader": true
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

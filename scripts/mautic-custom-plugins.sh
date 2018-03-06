@@ -17,7 +17,7 @@ fi
 cd "$BASEDIR/plugins"
 for dir in *
 do
-    if [ ! -d "../mautic/plugins/$dir" ]
+    if [ ! -d "../mautic/plugins/$dir" ] && [ "$dir" != "*" ]
     then
         # Directory does not exist, symlink the entire folder.
         cd "$BASEDIR/mautic/plugins"
