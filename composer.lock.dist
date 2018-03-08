@@ -4810,16 +4810,16 @@
         },
         {
             "name": "sendgrid/php-http-client",
-            "version": "3.8.0",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/php-http-client.git",
-                "reference": "929018c62b7fcd99b3b356216ae75fff4d47b5a1"
+                "reference": "cc7138bef4475c37296239dae450e423c11a22cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/929018c62b7fcd99b3b356216ae75fff4d47b5a1",
-                "reference": "929018c62b7fcd99b3b356216ae75fff4d47b5a1",
+                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/cc7138bef4475c37296239dae450e423c11a22cf",
+                "reference": "cc7138bef4475c37296239dae450e423c11a22cf",
                 "shasum": ""
             },
             "require": {
@@ -4858,7 +4858,7 @@
                 "rest",
                 "sendgrid"
             ],
-            "time": "2017-09-13T16:52:38+00:00"
+            "time": "2018-03-08T21:19:05+00:00"
         },
         {
             "name": "sendgrid/sendgrid",
@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "8f62a09107e990c3553e048a943bebe6757e5e8d"
+                "reference": "ca5a3585035d452d5ec998a76e4877c8decbd530"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/8f62a09107e990c3553e048a943bebe6757e5e8d",
-                "reference": "8f62a09107e990c3553e048a943bebe6757e5e8d",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/ca5a3585035d452d5ec998a76e4877c8decbd530",
+                "reference": "ca5a3585035d452d5ec998a76e4877c8decbd530",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-06T23:34:08+00:00"
+            "time": "2018-03-08T21:06:30+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8200,12 +8200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "6bbc2403bc9a2286158942ae887a8d39888e0058"
+                "reference": "87bd7f1b23d5576f4a8d51ee1f2874a79ad07ce1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6bbc2403bc9a2286158942ae887a8d39888e0058",
-                "reference": "6bbc2403bc9a2286158942ae887a8d39888e0058",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/87bd7f1b23d5576f4a8d51ee1f2874a79ad07ce1",
+                "reference": "87bd7f1b23d5576f4a8d51ee1f2874a79ad07ce1",
                 "shasum": ""
             },
             "require": {
@@ -8233,7 +8233,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-06T17:09:47+00:00"
+            "time": "2018-03-07T20:17:43+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8241,12 +8241,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "9911ca8c4fbf43e43ebf9b9ab60163f3429f1bc9"
+                "reference": "e4115cdf51be5d254e0ec99b34479ed055d09143"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/9911ca8c4fbf43e43ebf9b9ab60163f3429f1bc9",
-                "reference": "9911ca8c4fbf43e43ebf9b9ab60163f3429f1bc9",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/e4115cdf51be5d254e0ec99b34479ed055d09143",
+                "reference": "e4115cdf51be5d254e0ec99b34479ed055d09143",
                 "shasum": ""
             },
             "require": {
@@ -8278,7 +8278,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-06T19:10:05+00:00"
+            "time": "2018-03-08T01:21:37+00:00"
         },
         {
             "name": "twig/twig",
@@ -8973,16 +8973,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.2.17",
+            "version": "v2.2.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "12f95d20d7c8f6c2ee68d00a0fad74179ca75339"
+                "reference": "44f73c3e881805da5957ebd16ea87da9270cd5f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/12f95d20d7c8f6c2ee68d00a0fad74179ca75339",
-                "reference": "12f95d20d7c8f6c2ee68d00a0fad74179ca75339",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/44f73c3e881805da5957ebd16ea87da9270cd5f3",
+                "reference": "44f73c3e881805da5957ebd16ea87da9270cd5f3",
                 "shasum": ""
             },
             "require": {
@@ -9008,7 +9008,7 @@
                 "hhvm": "<3.18"
             },
             "require-dev": {
-                "johnkary/phpunit-speedtrap": "^1.0.1",
+                "johnkary/phpunit-speedtrap": "^1.0.1 || ^2.0 || ^3.0",
                 "justinrainbow/json-schema": "^5.0",
                 "keradus/cli-executor": "^1.0",
                 "mikey179/vfsstream": "^1.6",
@@ -9055,7 +9055,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2018-02-22T16:46:13+00:00"
+            "time": "2018-03-08T11:07:46+00:00"
         },
         {
             "name": "liip/functional-test-bundle",
