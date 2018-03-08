@@ -24,4 +24,4 @@ then
 fi
 
 # Only needed if building for production:
-# composer install --optimize-autoloader --no-dev
+# composer install --no-dev
