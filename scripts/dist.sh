@@ -16,5 +16,12 @@ cp composer.custom.dist composer.custom
 composer clear-cache
 composer install
 composer assets
+
+if grep -Fxq '#00b49c' ./mautic/media/css/app.css
+then
+    echo "Warning. Default bootstrap styles detected. Theme compilation must have failed."
+    return 1
+fi
+
 # Only needed if building for production:
 # composer install --optimize-autoloader --no-dev
