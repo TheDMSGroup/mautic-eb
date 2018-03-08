@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "ca5a3585035d452d5ec998a76e4877c8decbd530"
+                "reference": "70223eb46442b347d7258cf96c111c09f94a67ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/ca5a3585035d452d5ec998a76e4877c8decbd530",
-                "reference": "ca5a3585035d452d5ec998a76e4877c8decbd530",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/70223eb46442b347d7258cf96c111c09f94a67ef",
+                "reference": "70223eb46442b347d7258cf96c111c09f94a67ef",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-08T21:06:30+00:00"
+            "time": "2018-03-08T21:22:18+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
