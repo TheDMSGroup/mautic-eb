@@ -17,10 +17,16 @@ composer clear-cache
 composer install
 composer assets
 
-if grep -Fxq '#00b49c' ./mautic/media/css/app.css
+if cat ./mautic/media/css/app.css | grep '#00b49c' > /dev/null 2>&1
 then
     echo "Warning. Default bootstrap styles detected. Theme compilation must have failed."
-    return 1
+    echo "Trying again..."
+    composer assets
+	if cat ./mautic/media/css/app.css | grep '#00b49c' > /dev/null 2>&1
+	then
+	    echo "No luck. Abort build!"
+	fi
+    exit 1
 fi
 
 # Only needed if building for production:

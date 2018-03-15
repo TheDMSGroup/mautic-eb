@@ -1620,16 +1620,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.9.1",
+            "version": "8.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "f50b45cc50d9058797c037fc15e34d0511a4423e"
+                "reference": "dc06ec4f106568fcd79be56e2574a51759d73f67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/f50b45cc50d9058797c037fc15e34d0511a4423e",
-                "reference": "f50b45cc50d9058797c037fc15e34d0511a4423e",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/dc06ec4f106568fcd79be56e2574a51759d73f67",
+                "reference": "dc06ec4f106568fcd79be56e2574a51759d73f67",
                 "shasum": ""
             },
             "require": {
@@ -1643,7 +1643,7 @@
                 "pear/versioncontrol_git": "^0.5",
                 "phing/phing": "^2.7",
                 "phpunit/phpunit": "^4.8|^5.0",
-                "satooshi/php-coveralls": "^1.0",
+                "satooshi/php-coveralls": "^1.0|^2.0",
                 "symfony/console": "^2.8|^3.0"
             },
             "type": "library",
@@ -1684,7 +1684,7 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2018-03-07T12:33:46+00:00"
+            "time": "2018-03-14T18:52:28+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -2914,16 +2914,16 @@
         },
         {
             "name": "lightsaml/lightsaml",
-            "version": "1.3.5",
+            "version": "1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lightSAML/lightSAML.git",
-                "reference": "a7f60056384db50baba0449ba06d4fc4076280f0"
+                "reference": "a889cb0c229806aadff0edbaed9361f076dbf5d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lightSAML/lightSAML/zipball/a7f60056384db50baba0449ba06d4fc4076280f0",
-                "reference": "a7f60056384db50baba0449ba06d4fc4076280f0",
+                "url": "https://api.github.com/repos/lightSAML/lightSAML/zipball/a889cb0c229806aadff0edbaed9361f076dbf5d8",
+                "reference": "a889cb0c229806aadff0edbaed9361f076dbf5d8",
                 "shasum": ""
             },
             "require": {
@@ -2973,7 +2973,7 @@
                 "lightSAML",
                 "php"
             ],
-            "time": "2018-03-05T16:29:08+00:00"
+            "time": "2018-03-13T09:04:19+00:00"
         },
         {
             "name": "lightsaml/sp-bundle",
@@ -4810,16 +4810,16 @@
         },
         {
             "name": "sendgrid/php-http-client",
-            "version": "3.9.1",
+            "version": "3.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/php-http-client.git",
-                "reference": "be17faf73cda83bce19ab0ba0e95ae0a43479e70"
+                "reference": "1d9aa9d2cb71691f4dd34a227d56a43f9c17c980"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/be17faf73cda83bce19ab0ba0e95ae0a43479e70",
-                "reference": "be17faf73cda83bce19ab0ba0e95ae0a43479e70",
+                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/1d9aa9d2cb71691f4dd34a227d56a43f9c17c980",
+                "reference": "1d9aa9d2cb71691f4dd34a227d56a43f9c17c980",
                 "shasum": ""
             },
             "require": {
@@ -4858,7 +4858,7 @@
                 "rest",
                 "sendgrid"
             ],
-            "time": "2018-03-09T21:25:59+00:00"
+            "time": "2018-03-11T15:36:54+00:00"
         },
         {
             "name": "sendgrid/sendgrid",
@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "b4ac4e3f223a8fb2e455c1b7bb05e20eace1951c"
+                "reference": "4ab83ea3804142a875cadc63328f018a43b8d4d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/b4ac4e3f223a8fb2e455c1b7bb05e20eace1951c",
-                "reference": "b4ac4e3f223a8fb2e455c1b7bb05e20eace1951c",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/4ab83ea3804142a875cadc63328f018a43b8d4d2",
+                "reference": "4ab83ea3804142a875cadc63328f018a43b8d4d2",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-09T21:57:10+00:00"
+            "time": "2018-03-14T18:38:08+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8149,12 +8149,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "1043286318c781f304ba9033e8adab7f51bcc3a7"
+                "reference": "4bda9385c13ae023ffdbc720c9bed6f54d5ecb92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/1043286318c781f304ba9033e8adab7f51bcc3a7",
-                "reference": "1043286318c781f304ba9033e8adab7f51bcc3a7",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/4bda9385c13ae023ffdbc720c9bed6f54d5ecb92",
+                "reference": "4bda9385c13ae023ffdbc720c9bed6f54d5ecb92",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8178,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-09T22:17:14+00:00"
+            "time": "2018-03-15T12:34:21+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8192,7 +8192,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-03-06T20:19:08+00:00"
+            "time": "2018-03-14T21:42:45+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8200,12 +8200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "87bd7f1b23d5576f4a8d51ee1f2874a79ad07ce1"
+                "reference": "4f411c87d85730dc2aa867c2de11edb34e9c9b35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/87bd7f1b23d5576f4a8d51ee1f2874a79ad07ce1",
-                "reference": "87bd7f1b23d5576f4a8d51ee1f2874a79ad07ce1",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/4f411c87d85730dc2aa867c2de11edb34e9c9b35",
+                "reference": "4f411c87d85730dc2aa867c2de11edb34e9c9b35",
                 "shasum": ""
             },
             "require": {
@@ -8233,7 +8233,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-07T20:17:43+00:00"
+            "time": "2018-03-09T23:10:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8784,16 +8784,16 @@
         },
         {
             "name": "codeception/phpunit-wrapper",
-            "version": "6.0.5",
+            "version": "6.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/phpunit-wrapper.git",
-                "reference": "44e2100c300413a6b40cf8874ad402695010f443"
+                "reference": "d020db336c52af4498aefe5905a17333b26486c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/44e2100c300413a6b40cf8874ad402695010f443",
-                "reference": "44e2100c300413a6b40cf8874ad402695010f443",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/d020db336c52af4498aefe5905a17333b26486c8",
+                "reference": "d020db336c52af4498aefe5905a17333b26486c8",
                 "shasum": ""
             },
             "require": {
@@ -8801,6 +8801,13 @@
                 "phpunit/phpunit": ">=4.8.28 <5.0.0 || >=5.6.3 <7.0",
                 "sebastian/comparator": ">1.1 <3.0",
                 "sebastian/diff": ">=1.4 <4.0"
+            },
+            "replace": {
+                "codeception/phpunit-wrapper": "*"
+            },
+            "require-dev": {
+                "codeception/specify": "*",
+                "vlucas/phpdotenv": "^2.4"
             },
             "type": "library",
             "autoload": {
@@ -8819,7 +8826,7 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
-            "time": "2018-02-19T13:24:40+00:00"
+            "time": "2018-03-13T02:15:58+00:00"
         },
         {
             "name": "codeception/stub",
