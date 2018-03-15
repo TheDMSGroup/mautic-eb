@@ -39,6 +39,6 @@ script:
   - cd mautic
 
   # Run PHPUnit
-  - bin/phpunit --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning
+  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning
 
   # Skipping PHPSTAN and code standards on core since that is taken care of upstream.
