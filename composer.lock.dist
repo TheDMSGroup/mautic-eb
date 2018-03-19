@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "54a60f70826a1e93266eda2c2a55d5e5b52e08e4"
+                "reference": "6fa63adb59100222a203096d74703e58e6bb4f24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/54a60f70826a1e93266eda2c2a55d5e5b52e08e4",
-                "reference": "54a60f70826a1e93266eda2c2a55d5e5b52e08e4",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/6fa63adb59100222a203096d74703e58e6bb4f24",
+                "reference": "6fa63adb59100222a203096d74703e58e6bb4f24",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-15T13:04:09+00:00"
+            "time": "2018-03-16T18:27:39+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8192,7 +8192,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-03-14T21:42:45+00:00"
+            "time": "2018-03-19T14:02:29+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
