@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "6fa63adb59100222a203096d74703e58e6bb4f24"
+                "reference": "1b5b17697a8ab08051b2c9f80bd5e6b7c4ca8700"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/6fa63adb59100222a203096d74703e58e6bb4f24",
-                "reference": "6fa63adb59100222a203096d74703e58e6bb4f24",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/1b5b17697a8ab08051b2c9f80bd5e6b7c4ca8700",
+                "reference": "1b5b17697a8ab08051b2c9f80bd5e6b7c4ca8700",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-16T18:27:39+00:00"
+            "time": "2018-03-22T15:58:21+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8149,12 +8149,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "a62a46215b921a6123af83ee5bc57fd4d755297e"
+                "reference": "d5d729ddf6a50ab7cc52a8aa8409adf15509e538"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/a62a46215b921a6123af83ee5bc57fd4d755297e",
-                "reference": "a62a46215b921a6123af83ee5bc57fd4d755297e",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/d5d729ddf6a50ab7cc52a8aa8409adf15509e538",
+                "reference": "d5d729ddf6a50ab7cc52a8aa8409adf15509e538",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8178,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-16T18:12:30+00:00"
+            "time": "2018-03-22T15:58:27+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8200,12 +8200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "0cb71a352c7c86912dee2fa16b19c0b6f05c7754"
+                "reference": "d4f9df8112bca9b6d3e8633c4a48d04292a04dbf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/0cb71a352c7c86912dee2fa16b19c0b6f05c7754",
-                "reference": "0cb71a352c7c86912dee2fa16b19c0b6f05c7754",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/d4f9df8112bca9b6d3e8633c4a48d04292a04dbf",
+                "reference": "d4f9df8112bca9b6d3e8633c4a48d04292a04dbf",
                 "shasum": ""
             },
             "require": {
@@ -8233,7 +8233,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-16T18:12:15+00:00"
+            "time": "2018-03-22T15:58:24+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8282,16 +8282,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.4.6",
+            "version": "v2.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f"
+                "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d2117ec118c1ff3d28ccddca8212d82787a4809f",
-                "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/69aacd44dbbaa3199d5afb68605c996d577896fc",
+                "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc",
                 "shasum": ""
             },
             "require": {
@@ -8300,8 +8300,8 @@
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~3.3@dev"
+                "symfony/debug": "^2.7",
+                "symfony/phpunit-bridge": "^3.3"
             },
             "type": "library",
             "extra": {
@@ -8344,7 +8344,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-03-03T16:23:01+00:00"
+            "time": "2018-03-20T04:31:17+00:00"
         },
         {
             "name": "twilio/sdk",
@@ -8980,16 +8980,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.2.18",
+            "version": "v2.2.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "44f73c3e881805da5957ebd16ea87da9270cd5f3"
+                "reference": "2de0ac9c1d0d48a9b969814f43698223c6e03d6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/44f73c3e881805da5957ebd16ea87da9270cd5f3",
-                "reference": "44f73c3e881805da5957ebd16ea87da9270cd5f3",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/2de0ac9c1d0d48a9b969814f43698223c6e03d6d",
+                "reference": "2de0ac9c1d0d48a9b969814f43698223c6e03d6d",
                 "shasum": ""
             },
             "require": {
@@ -9062,7 +9062,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2018-03-08T11:07:46+00:00"
+            "time": "2018-03-20T18:04:00+00:00"
         },
         {
             "name": "liip/functional-test-bundle",
