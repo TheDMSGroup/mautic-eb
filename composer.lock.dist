@@ -8144,17 +8144,54 @@
             "time": "2018-03-23T14:28:49+00:00"
         },
         {
+            "name": "thedmsgroup/mautic-contact-ledger-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
+                "reference": "0e78c94cb903eb77c0aeb7af5aa5c1115eb07907"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/0e78c94cb903eb77c0aeb7af5aa5c1115eb07907",
+                "reference": "0e78c94cb903eb77c0aeb7af5aa5c1115eb07907",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Nicholai Bush",
+                    "email": "nicholaibush@yahoo.com"
+                }
+            ],
+            "description": "Historical accounting for contacts",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-03-23T14:31:47+00:00"
+        },
+        {
             "name": "thedmsgroup/mautic-contact-source-bundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "d5d729ddf6a50ab7cc52a8aa8409adf15509e538"
+                "reference": "eef1c58276ce7164f00e5d10129f5d494afbb799"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/d5d729ddf6a50ab7cc52a8aa8409adf15509e538",
-                "reference": "d5d729ddf6a50ab7cc52a8aa8409adf15509e538",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/eef1c58276ce7164f00e5d10129f5d494afbb799",
+                "reference": "eef1c58276ce7164f00e5d10129f5d494afbb799",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8215,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-22T15:58:27+00:00"
+            "time": "2018-03-23T21:21:26+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8192,7 +8229,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-03-19T14:02:29+00:00"
+            "time": "2018-03-23T15:40:07+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -10862,6 +10899,7 @@
         "thedmsgroup/mautic-eb-custom": 20,
         "thedmsgroup/mautic-extended-field-bundle": 20,
         "thedmsgroup/mautic-contact-client-bundle": 20,
+        "thedmsgroup/mautic-contact-ledger-bundle": 20,
         "thedmsgroup/mautic-contact-source-bundle": 20,
         "thedmsgroup/mautic-enhancer-bundle": 20
     },
