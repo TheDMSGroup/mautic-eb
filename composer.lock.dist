@@ -4862,16 +4862,16 @@
         },
         {
             "name": "sendgrid/sendgrid",
-            "version": "6.0.0",
+            "version": "6.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/sendgrid-php.git",
-                "reference": "8db454e4b5674b545c207a162b64202b0d63259b"
+                "reference": "c53f3cdb0dd2f8ca1f09a00bfb4194ef541909de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/8db454e4b5674b545c207a162b64202b0d63259b",
-                "reference": "8db454e4b5674b545c207a162b64202b0d63259b",
+                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/c53f3cdb0dd2f8ca1f09a00bfb4194ef541909de",
+                "reference": "c53f3cdb0dd2f8ca1f09a00bfb4194ef541909de",
                 "shasum": ""
             },
             "require": {
@@ -4882,7 +4882,7 @@
                 "sendgrid/sendgrid-php": "*"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.*",
+                "phpunit/phpunit": "^5.7.9 || ^6.4.3",
                 "squizlabs/php_codesniffer": "2.*"
             },
             "type": "library",
@@ -4904,7 +4904,7 @@
                 "send",
                 "sendgrid"
             ],
-            "time": "2017-07-01T04:30:16+00:00"
+            "time": "2018-03-27T22:52:57+00:00"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -8111,12 +8111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "ee4b572ef8d0ccaea1e4720de041710061322e92"
+                "reference": "860b81b35e885696b4b6592b5c04a2539766b038"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/ee4b572ef8d0ccaea1e4720de041710061322e92",
-                "reference": "ee4b572ef8d0ccaea1e4720de041710061322e92",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/860b81b35e885696b4b6592b5c04a2539766b038",
+                "reference": "860b81b35e885696b4b6592b5c04a2539766b038",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8141,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-27T21:19:55+00:00"
+            "time": "2018-03-28T16:12:35+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8149,12 +8149,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "f12605224da3aea4b5fb503a99c27b88ee018382"
+                "reference": "a6fe46ad2f8e712e786d4f5f7adc1a4ea6b7bd68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/f12605224da3aea4b5fb503a99c27b88ee018382",
-                "reference": "f12605224da3aea4b5fb503a99c27b88ee018382",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/a6fe46ad2f8e712e786d4f5f7adc1a4ea6b7bd68",
+                "reference": "a6fe46ad2f8e712e786d4f5f7adc1a4ea6b7bd68",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8178,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-27T21:20:42+00:00"
+            "time": "2018-03-28T16:43:06+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8186,12 +8186,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "b43610e2dde6947029906d959f3e90a89fda6900"
+                "reference": "8bb54f1d93993932efc5d3dbd89ec8c2b04403a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/b43610e2dde6947029906d959f3e90a89fda6900",
-                "reference": "b43610e2dde6947029906d959f3e90a89fda6900",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/8bb54f1d93993932efc5d3dbd89ec8c2b04403a9",
+                "reference": "8bb54f1d93993932efc5d3dbd89ec8c2b04403a9",
                 "shasum": ""
             },
             "require": {
@@ -8215,7 +8215,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-26T21:28:16+00:00"
+            "time": "2018-03-28T16:23:49+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8237,12 +8237,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "e4721a9e5f83c2d26b8966c07a8725c2054617d3"
+                "reference": "fa5ca241b8c60b7c275d2f0ff59538008a90714a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/e4721a9e5f83c2d26b8966c07a8725c2054617d3",
-                "reference": "e4721a9e5f83c2d26b8966c07a8725c2054617d3",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/fa5ca241b8c60b7c275d2f0ff59538008a90714a",
+                "reference": "fa5ca241b8c60b7c275d2f0ff59538008a90714a",
                 "shasum": ""
             },
             "require": {
@@ -8270,7 +8270,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-27T21:20:19+00:00"
+            "time": "2018-03-28T16:23:56+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
