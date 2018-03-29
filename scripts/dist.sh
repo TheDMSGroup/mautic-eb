@@ -13,8 +13,10 @@ touch ./mautic_custom/.gitkeep
 
 cp composer.custom.dist composer.custom
 
-composer clear-cache
+rm -rf ~/.composer/cache/files/thedmsgroup/*
+# composer clear-cache
 composer install
+git status
 composer assets
 
 if cat ./mautic/media/css/app.css | grep '#00b49c' > /dev/null 2>&1
