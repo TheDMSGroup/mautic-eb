@@ -123,16 +123,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "943b2c4fcad1ef178d16a713c2468bf7e579c288"
+                "reference": "d2c0a83b7533d6912e8d516756ebd34f893e9169"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/943b2c4fcad1ef178d16a713c2468bf7e579c288",
-                "reference": "943b2c4fcad1ef178d16a713c2468bf7e579c288",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/d2c0a83b7533d6912e8d516756ebd34f893e9169",
+                "reference": "d2c0a83b7533d6912e8d516756ebd34f893e9169",
                 "shasum": ""
             },
             "require": {
@@ -141,7 +141,7 @@
                 "php": "^5.3.2 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5",
                 "psr/log": "^1.0",
                 "symfony/process": "^2.5 || ^3.0 || ^4.0"
             },
@@ -175,7 +175,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2017-11-29T09:37:33+00:00"
+            "time": "2018-03-29T19:57:20+00:00"
         },
         {
             "name": "debril/rss-atom-bundle",
@@ -8113,12 +8113,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "b193fd5b8c33e0d189ce96f71c04b0efa2bac246"
+                "reference": "733dbd7fc80415bd46b330518cf428805f648c51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/b193fd5b8c33e0d189ce96f71c04b0efa2bac246",
-                "reference": "b193fd5b8c33e0d189ce96f71c04b0efa2bac246",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/733dbd7fc80415bd46b330518cf428805f648c51",
+                "reference": "733dbd7fc80415bd46b330518cf428805f648c51",
                 "shasum": ""
             },
             "require": {
@@ -8143,7 +8143,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-29T16:45:30+00:00"
+            "time": "2018-03-29T23:01:19+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8188,12 +8188,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "cfa047376c027f8e6ccc7583e26b44918466b943"
+                "reference": "de36bed46725db87556cece1e09ee9a61ad74b8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/cfa047376c027f8e6ccc7583e26b44918466b943",
-                "reference": "cfa047376c027f8e6ccc7583e26b44918466b943",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/de36bed46725db87556cece1e09ee9a61ad74b8a",
+                "reference": "de36bed46725db87556cece1e09ee9a61ad74b8a",
                 "shasum": ""
             },
             "require": {
@@ -8217,7 +8217,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-29T16:45:23+00:00"
+            "time": "2018-03-29T23:01:52+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8239,12 +8239,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "fa5ca241b8c60b7c275d2f0ff59538008a90714a"
+                "reference": "2d58418a32c342f43ade8baa453f576b68626ae6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/fa5ca241b8c60b7c275d2f0ff59538008a90714a",
-                "reference": "fa5ca241b8c60b7c275d2f0ff59538008a90714a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/2d58418a32c342f43ade8baa453f576b68626ae6",
+                "reference": "2d58418a32c342f43ade8baa453f576b68626ae6",
                 "shasum": ""
             },
             "require": {
@@ -8272,7 +8272,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-28T16:23:56+00:00"
+            "time": "2018-03-29T23:11:02+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8280,12 +8280,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "1675e219269208d98b095d53766882703fa17261"
+                "reference": "ee44d3483102a8f5bbbdb4154c2f33db880f1d58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/1675e219269208d98b095d53766882703fa17261",
-                "reference": "1675e219269208d98b095d53766882703fa17261",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/ee44d3483102a8f5bbbdb4154c2f33db880f1d58",
+                "reference": "ee44d3483102a8f5bbbdb4154c2f33db880f1d58",
                 "shasum": ""
             },
             "require": {
@@ -8317,7 +8317,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-26T16:26:07+00:00"
+            "time": "2018-03-29T23:16:18+00:00"
         },
         {
             "name": "twig/twig",
