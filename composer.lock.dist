@@ -4862,16 +4862,16 @@
         },
         {
             "name": "sendgrid/sendgrid",
-            "version": "6.1.0",
+            "version": "6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/sendgrid-php.git",
-                "reference": "c53f3cdb0dd2f8ca1f09a00bfb4194ef541909de"
+                "reference": "4d500a972739ef2c596299f3ad822dd231aab4df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/c53f3cdb0dd2f8ca1f09a00bfb4194ef541909de",
-                "reference": "c53f3cdb0dd2f8ca1f09a00bfb4194ef541909de",
+                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/4d500a972739ef2c596299f3ad822dd231aab4df",
+                "reference": "4d500a972739ef2c596299f3ad822dd231aab4df",
                 "shasum": ""
             },
             "require": {
@@ -4889,7 +4889,9 @@
             "autoload": {
                 "files": [
                     "lib/SendGrid.php",
-                    "lib/helpers/mail/Mail.php"
+                    "lib/helpers/mail/Mail.php",
+                    "lib/helpers/contacts/Recipients.php",
+                    "lib/helpers/stats/Stats.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4904,7 +4906,7 @@
                 "send",
                 "sendgrid"
             ],
-            "time": "2018-03-27T22:52:57+00:00"
+            "time": "2018-03-29T00:08:28+00:00"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -8111,12 +8113,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "860b81b35e885696b4b6592b5c04a2539766b038"
+                "reference": "85ed277343129f086f33750e0ff9834675ee40a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/860b81b35e885696b4b6592b5c04a2539766b038",
-                "reference": "860b81b35e885696b4b6592b5c04a2539766b038",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/85ed277343129f086f33750e0ff9834675ee40a1",
+                "reference": "85ed277343129f086f33750e0ff9834675ee40a1",
                 "shasum": ""
             },
             "require": {
@@ -8141,7 +8143,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-28T16:12:35+00:00"
+            "time": "2018-03-29T11:50:23+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8149,12 +8151,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "a6fe46ad2f8e712e786d4f5f7adc1a4ea6b7bd68"
+                "reference": "c1e077e7f8d3a21c5291486127345699c74c518e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/a6fe46ad2f8e712e786d4f5f7adc1a4ea6b7bd68",
-                "reference": "a6fe46ad2f8e712e786d4f5f7adc1a4ea6b7bd68",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/c1e077e7f8d3a21c5291486127345699c74c518e",
+                "reference": "c1e077e7f8d3a21c5291486127345699c74c518e",
                 "shasum": ""
             },
             "require": {
@@ -8178,7 +8180,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-28T16:43:06+00:00"
+            "time": "2018-03-29T11:49:15+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8186,12 +8188,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "c751e610af5039902725d7e7e176d2dd264b0670"
+                "reference": "1b1f01d5e62906093aef10d7a7fbb8e8e3627f92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/c751e610af5039902725d7e7e176d2dd264b0670",
-                "reference": "c751e610af5039902725d7e7e176d2dd264b0670",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/1b1f01d5e62906093aef10d7a7fbb8e8e3627f92",
+                "reference": "1b1f01d5e62906093aef10d7a7fbb8e8e3627f92",
                 "shasum": ""
             },
             "require": {
@@ -8215,7 +8217,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-03-28T19:28:45+00:00"
+            "time": "2018-03-29T11:50:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
