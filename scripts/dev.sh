@@ -5,6 +5,9 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
+rm -rf ./mautic_custom
+git clone -b master https://github.com/TheDMSGroup/mautic-eb-custom.git ./mautic_custom
+
 rm -rf ./plugins/MauticContactClientBundle
 git clone -b master https://github.com/TheDMSGroup/mautic-contact-client.git ./plugins/MauticContactClientBundle
 
