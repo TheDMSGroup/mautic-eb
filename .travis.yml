@@ -42,3 +42,17 @@ script:
   - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning
 
   # Skipping PHPSTAN and code standards on core since that is taken care of upstream.
+
+deploy:
+
+  provider: elasticbeanstalk
+
+  access_key_id: $AWS_ACCESS_KEY_ID
+
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+
+  region: $AWS_REGION
+
+  app: $ELASTIC_BEANSTALK_APP
+
+  bucket_name: $AWS_S3_BUCKET_NAME

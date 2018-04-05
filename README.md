@@ -35,9 +35,17 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
 
 - Document Root: `/mautic`
 
-### Travis CI / Bitbucket Pipelines Environment Variables
-This repo can be used to automatically build and deploy Mautic to Elastic Beanstalk using Bitbucket pipelines. To do so, the following environment variables must be added to your CI:
-Note, we're using Travis CI since this is a 100% open source project and will remain so.
+### Travis CI Environment Variables
+
+    AWS_ACCESS_KEY_ID             - From your IAM console (keep hidden).
+    AWS_SECRET_ACCESS_KEY         - From your IAM console (keep hidden).
+    AWS_REGION                    - The region to deploy to (us-east-1).
+    ELASTIC_BEANSTALK_APP         - App name to deploy (mautic-eb).
+    ELASTIC_BEANSTALK_ENV         - Elastic beanstalk environment name (mautic-eb-dev).
+    ELASTIC_BEANSTALK_LABEL       - Label name of the new version (optional). Defaults to `git describe --long`
+    ELASTIC_BEANSTALK_DESCRIPTION - Description of the new version (optional). Defaults to the last commit message.
+
+### Bitbucket Pipelines Environment Variables
 
     AWS_ACCESS_KEY_ID     - The raw AWS key ID.
     AWS_SECRET_ACCESS_KEY - The raw AWS Secret Access Key.
