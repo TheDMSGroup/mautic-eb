@@ -8104,12 +8104,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "52c87d5a4d63b168371eaf13410931ff460f62a0"
+                "reference": "54968c6c34d9e4086b727ffecf2c26d27060a4dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/52c87d5a4d63b168371eaf13410931ff460f62a0",
-                "reference": "52c87d5a4d63b168371eaf13410931ff460f62a0",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/54968c6c34d9e4086b727ffecf2c26d27060a4dc",
+                "reference": "54968c6c34d9e4086b727ffecf2c26d27060a4dc",
                 "shasum": ""
             },
             "require": {
@@ -8134,7 +8134,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-09T16:04:23+00:00"
+            "time": "2018-04-09T23:47:31+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8230,12 +8230,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "618df231d7ef31c8f90bf453fb26b361de8b8f88"
+                "reference": "dc6bffa01cd14b82ad53fe09d055e641d9153bef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/618df231d7ef31c8f90bf453fb26b361de8b8f88",
-                "reference": "618df231d7ef31c8f90bf453fb26b361de8b8f88",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/dc6bffa01cd14b82ad53fe09d055e641d9153bef",
+                "reference": "dc6bffa01cd14b82ad53fe09d055e641d9153bef",
                 "shasum": ""
             },
             "require": {
@@ -8263,7 +8263,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-09T14:18:18+00:00"
+            "time": "2018-04-09T18:11:03+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
