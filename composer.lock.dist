@@ -8271,12 +8271,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "d77a4d335223ee1e252cbcfa7004f3b41f3f627b"
+                "reference": "39beaf64c44b650bd0f2616046a08f5f96b3795d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/d77a4d335223ee1e252cbcfa7004f3b41f3f627b",
-                "reference": "d77a4d335223ee1e252cbcfa7004f3b41f3f627b",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/39beaf64c44b650bd0f2616046a08f5f96b3795d",
+                "reference": "39beaf64c44b650bd0f2616046a08f5f96b3795d",
                 "shasum": ""
             },
             "require": {
@@ -8308,7 +8308,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-09T15:28:23+00:00"
+            "time": "2018-04-11T18:25:12+00:00"
         },
         {
             "name": "twig/twig",
