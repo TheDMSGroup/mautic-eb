@@ -3,8 +3,15 @@
       "thedmsgroup/mautic-eb-custom": "dev-master",
       "thedmsgroup/mautic-extended-field-bundle": "dev-master",
       "thedmsgroup/mautic-contact-client-bundle": "dev-master",
+      "thedmsgroup/mautic-contact-ledger-bundle": "dev-master",
       "thedmsgroup/mautic-contact-source-bundle": "dev-master",
       "thedmsgroup/mautic-enhancer-bundle": "dev-master"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist",
+            "thedmsgroup/*": "source"
+        }
     },
     "repositories": [
       {
