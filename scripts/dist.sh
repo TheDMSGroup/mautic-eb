@@ -16,6 +16,7 @@ cp composer.custom.dist composer.custom
 rm -rf ~/.composer/cache/files/thedmsgroup/*
 composer install
 git status
+cd ./mautic_custom ; git pull ; cd -
 composer update "thedmsgroup/*"
 composer assets
 

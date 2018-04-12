@@ -8222,7 +8222,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-03-23T15:40:07+00:00"
+            "time": "2018-04-11T21:29:49+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8230,12 +8230,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "dc6bffa01cd14b82ad53fe09d055e641d9153bef"
+                "reference": "b85a63768ee3859832de7ea740811a38bfb1e246"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/dc6bffa01cd14b82ad53fe09d055e641d9153bef",
-                "reference": "dc6bffa01cd14b82ad53fe09d055e641d9153bef",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/b85a63768ee3859832de7ea740811a38bfb1e246",
+                "reference": "b85a63768ee3859832de7ea740811a38bfb1e246",
                 "shasum": ""
             },
             "require": {
@@ -8263,7 +8263,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-09T18:11:03+00:00"
+            "time": "2018-04-12T12:38:52+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
