@@ -32,6 +32,8 @@ then
 	    echo "And they look good."
 	fi
     exit 1
+else
+    echo "And they look good."
 fi
 
 # Only needed if building for production:
