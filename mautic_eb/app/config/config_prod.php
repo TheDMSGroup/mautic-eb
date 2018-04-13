@@ -60,6 +60,18 @@ if (!empty($dbHostRO)) {
             'dbname'   => '%mautic.db_name%',
             'user'     => '%mautic.db_user%',
             'password' => '%mautic.db_password%',
+            'charset'  => 'UTF8',
+            'types'    => [
+                'array'    => 'Mautic\CoreBundle\Doctrine\Type\ArrayType',
+                'datetime' => 'Mautic\CoreBundle\Doctrine\Type\UTCDateTimeType',
+            ],
+            // Prevent Doctrine from crapping out with "unsupported type" errors due to it examining all tables in the database and not just Mautic's
+            'mapping_types' => [
+                'enum'  => 'string',
+                'point' => 'string',
+                'bit'   => 'string',
+            ],
+            'server_version' => '%mautic.db_server_version%',
         ]
     ];
     $container->loadFromExtension('doctrine', array(
