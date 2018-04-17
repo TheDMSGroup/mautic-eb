@@ -36,8 +36,8 @@ curl -L "https://github.com/mautic/mautic/pull/5886.diff" | git apply -v
 echo "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911"
 curl -L "https://github.com/mautic/mautic/pull/5911.diff" | git apply -v
 
-# echo "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925"
-# curl -L "https://patch-diff.githubusercontent.com/raw/mautic/mautic/pull/5925.diff" | git apply -v
+echo "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925"
+curl -L "https://patch-diff.githubusercontent.com/raw/mautic/mautic/pull/5925.diff" | git apply -v
 
 echo "Rejected patches:"
 find . -name \*.rej
