@@ -14,11 +14,11 @@ cp composer.lock.dist composer.lock
 cp composer.custom.dist composer.custom
 
 rm -rf ~/.composer/cache/files/thedmsgroup/*
-composer install
+composer install --no-interaction
 git status
 cd ./mautic_custom ; git pull ; cd -
-composer update "thedmsgroup/*"
-composer assets
+composer update "thedmsgroup/*" --no-interaction
+composer assets --no-interaction
 
 if cat ./mautic/media/css/app.css | grep '#00b49c' > /dev/null 2>&1
 then
