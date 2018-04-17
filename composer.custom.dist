@@ -5,8 +5,7 @@
       "thedmsgroup/mautic-contact-client-bundle": "dev-master",
       "thedmsgroup/mautic-contact-ledger-bundle": "dev-master",
       "thedmsgroup/mautic-contact-source-bundle": "dev-master",
-      "thedmsgroup/mautic-enhancer-bundle": "dev-master",
-      "cweagans/composer-patches": "~1.0"
+      "thedmsgroup/mautic-enhancer-bundle": "dev-master"
     },
     "config": {
         "preferred-install": {
@@ -37,16 +36,6 @@
             "./mautic_custom": [
                 "thedmsgroup/mautic-eb-custom"
             ]
-        },
-        "patches": {
-            "mautic/core": {
-                "[Bug] Plugin content locking (referrer POST) causes 500. #5789": "https://github.com/mautic/mautic/pull/5789.diff",
-                "[Enhancement] Allow filtering contacts by UTM data within campaigns. #5869": "https://github.com/mautic/mautic/pull/5869.diff",
-                "[Bug] SQL error if no field is chosen for \"Form field value\" conditional. #5875": "https://github.com/mautic/mautic/pull/5875.diff",
-                "[Enhancement] Allow filtering contacts by UTM data for segments. #5886": "https://github.com/mautic/mautic/pull/5886.diff",
-                "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911": "https://github.com/mautic/mautic/pull/5911.diff",
-                "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925": "https://gist.githubusercontent.com/heathdutton/164d75d50cd43d9c77e45ab412f3fb53/raw/19400eb3915852d89bd252bba85feef01efdd8ab/5925.diff"
-            }
         }
     }
 }

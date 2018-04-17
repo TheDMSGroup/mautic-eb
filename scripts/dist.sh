@@ -19,29 +19,29 @@ git status
 cd ./mautic_custom ; git pull ; cd -
 composer update "thedmsgroup/*" --no-interaction
 
-#echo "Applying patches"
-#cd ./mautic
-#echo "[Bug] Plugin content locking (referrer POST) causes 500. #5789"
-#curl "https://github.com/mautic/mautic/pull/5789.diff" | git apply -v
-#
-#echo "[Enhancement] Allow filtering contacts by UTM data within campaigns. #5869"
-#curl "https://github.com/mautic/mautic/pull/5869.diff" | git apply -v
-#
-#echo "[Bug] SQL error if no field is chosen for \"Form field value\" conditional. #5875"
-#curl "https://github.com/mautic/mautic/pull/5875.diff" | git apply -v
-#
-#echo "[Enhancement] Allow filtering contacts by UTM data for segments. #5886"
-#curl "https://github.com/mautic/mautic/pull/5886.diff" | git apply -v
-#
-#echo "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911"
-#curl "https://github.com/mautic/mautic/pull/5911.diff" | git apply -v
-#
-#echo "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925"
-#curl "https://gist.githubusercontent.com/heathdutton/a552f321c5aabf4e3181ab90a9cdf235/raw/7a5aa77b1054fa7874adc688cf122a132670125b/5925.patch" | git apply -v
-#
-#echo "Rejected patches:"
-#find . -name \*.rej
-#cd -
+echo "Applying patches"
+cd ./mautic
+echo "[Bug] Plugin content locking (referrer POST) causes 500. #5789"
+curl -L "https://github.com/mautic/mautic/pull/5789.diff" | git apply -v
+
+echo "[Enhancement] Allow filtering contacts by UTM data within campaigns. #5869"
+curl -L "https://github.com/mautic/mautic/pull/5869.diff" | git apply -v
+
+echo "[Bug] SQL error if no field is chosen for \"Form field value\" conditional. #5875"
+curl -L "https://github.com/mautic/mautic/pull/5875.diff" | git apply -v
+
+echo "[Enhancement] Allow filtering contacts by UTM data for segments. #5886"
+curl -L "https://github.com/mautic/mautic/pull/5886.diff" | git apply -v
+
+echo "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911"
+curl -L "https://github.com/mautic/mautic/pull/5911.diff" | git apply -v
+
+# echo "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925"
+# curl -L "https://patch-diff.githubusercontent.com/raw/mautic/mautic/pull/5925.diff" | git apply -v
+
+echo "Rejected patches:"
+find . -name \*.rej
+cd -
 
 composer assets --no-interaction
 echo "Checking assets..."
