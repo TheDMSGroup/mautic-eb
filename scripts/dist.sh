@@ -37,4 +37,4 @@ else
 fi
 
 # Only needed if building for production:
-# composer install --no-dev
+# composer install --no-dev --no-interaction
