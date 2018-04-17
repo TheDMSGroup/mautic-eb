@@ -44,8 +44,8 @@
                 "[Enhancement] Allow filtering contacts by UTM data within campaigns. #5869": "https://github.com/mautic/mautic/pull/5869.patch",
                 "[Bug] SQL error if no field is chosen for \"Form field value\" conditional. #5875": "https://github.com/mautic/mautic/pull/5875.patch",
                 "[Enhancement] Allow filtering contacts by UTM data for segments. #5886": "https://github.com/mautic/mautic/pull/5886.patch",
-                "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925": "https://github.com/mautic/mautic/pull/5925.patch",
-                "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911": "https://github.com/mautic/mautic/pull/5911.patch"
+                "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911": "https://github.com/mautic/mautic/pull/5911.patch",
+                "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925": "https://gist.githubusercontent.com/heathdutton/a552f321c5aabf4e3181ab90a9cdf235/raw/7a5aa77b1054fa7874adc688cf122a132670125b/5925.patch"
             }
         }
     }

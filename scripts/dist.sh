@@ -18,8 +18,10 @@ composer install --no-interaction
 git status
 cd ./mautic_custom ; git pull ; cd -
 composer update "thedmsgroup/*" --no-interaction
+echo "Rejected patches:"
+find . -name \*.rej
 composer assets --no-interaction
-
+echo "Checking assets..."
 if cat ./mautic/media/css/app.css | grep '#00b49c' > /dev/null 2>&1
 then
     echo "Warning. Default bootstrap styles detected. Theme compilation must have failed."
