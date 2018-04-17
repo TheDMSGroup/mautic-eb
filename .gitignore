@@ -14,6 +14,8 @@
 /mautic/bower_components
 /mautic/node_modules
 /mautic/npm-debug.log
+/node_modules
+/package-lock.json
 /vendor
 /bin
 /selenium
