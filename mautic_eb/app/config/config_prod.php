@@ -52,7 +52,6 @@ if (!empty($dbHostRO)) {
     ];
 
     // Add a single slave (which is a load balanced Aurora read-only cluster).
-    $dbalSettings['keep_slave'] = true;
     $dbalSettings['slaves'] = [
         'slave1' => [
             'host'     => $dbHostRO,

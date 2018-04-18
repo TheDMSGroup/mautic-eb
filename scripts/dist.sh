@@ -39,6 +39,9 @@ curl -L "https://github.com/mautic/mautic/pull/5911.diff" | git apply -v
 echo "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925"
 curl -L "https://gist.githubusercontent.com/heathdutton/6542c12e1f55c0c3d3cbe6fe51706728/raw/164cec9fde0bd56845b40285ae4579b28cd476a7/5925.diff" | git apply -v
 
+echo "[Bug] Symfony Master/Slave support is broken #5969"
+curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
+
 echo "Rejected patches:"
 find . -name \*.rej
 cd -
