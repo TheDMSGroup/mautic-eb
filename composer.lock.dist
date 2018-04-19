@@ -3110,11 +3110,11 @@
         },
         {
             "name": "mautic/core",
-            "version": "dev-master",
+            "version": "2.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "master"
+                "reference": "2.12.2"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
