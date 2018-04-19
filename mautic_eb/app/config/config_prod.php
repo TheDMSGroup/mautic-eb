@@ -17,7 +17,7 @@ if ($container->getParameter('kernel.environment') == 'prod') {
         'image_path',
         'upload_dir',
         'site_url',
-    ]);
+    ]));
     $container->setParameter('mautic.security.disableUpdates', true);
 }
 
