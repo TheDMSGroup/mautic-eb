@@ -18,8 +18,8 @@ if ($container->getParameter('kernel.environment') == 'prod') {
         'upload_dir',
         'site_url',
     ]);
+    $container->setParameter('mautic.security.disableUpdates', true);
 }
-$container->setParameter('mautic.security.disableUpdates', true);
 
 // Check for APC/APCuBC.
 if (function_exists('apc_fetch')) {
