@@ -9,7 +9,7 @@ BASEDIR=$( pwd )
 echo ; echo "Pulling mautic-eb"
 git pull
 
-echo "Cleaning up the build space."
+echo ; echo "Cleaning up the build space."
 rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
 mkdir -p ./plugins
 touch ./plugins/.gitkeep
@@ -24,10 +24,10 @@ composer install --no-interaction
 bash ./scripts/core-patches.sh
 
 echo ; echo "Forcing updates to custom plugins"
-git status
-cd ./mautic_custom ; git pull ; cd -
 rm -rf ~/.composer/cache/files/thedmsgroup/*
 composer update "thedmsgroup/*" --no-interaction
+rm -rf ./mautic_custom
+git clone -b master https://github.com/TheDMSGroup/mautic-eb-custom.git ./mautic_custom
 
 echo ; echo "Compiling Mautic JS/CSS assets."
 composer assets --no-interaction
