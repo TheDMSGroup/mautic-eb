@@ -44,5 +44,8 @@ else
     echo "And they look good."
 fi
 
+echo ; echo "Here's a diff of what this build changes."
+git diff --minimal
+
 # Only needed if building for production:
 # composer install --no-dev --no-interaction
