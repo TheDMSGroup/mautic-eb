@@ -45,7 +45,7 @@ else
 fi
 
 echo ; echo "Here's a diff of what this build changes."
-git diff --minimal --no-pager
+git --no-pager diff --minimal
 
 # Only needed if building for production:
 # composer install --no-dev --no-interaction

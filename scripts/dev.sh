@@ -23,6 +23,6 @@ git clone -b master https://github.com/TheDMSGroup/mautic-extended-field.git ./p
 rm -rf ./plugins/MauticContactLedgerBundle
 git clone -b master https://github.com/TheDMSGroup/mautic-contact-ledger.git ./plugins/MauticContactLedgerBundle
 
-composer custom
-
 bash ./scripts/core-patches.sh
+
+composer custom
