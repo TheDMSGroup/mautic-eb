@@ -24,10 +24,10 @@ composer install --no-interaction
 bash ./scripts/core-patches.sh
 
 echo ; echo "Forcing updates to custom plugins"
-rm -rf ~/.composer/cache/files/thedmsgroup/*
-composer update "thedmsgroup/*" --no-interaction
 rm -rf ./mautic_custom
 git clone -b master https://github.com/TheDMSGroup/mautic-eb-custom.git ./mautic_custom
+rm -rf ~/.composer/cache/files/thedmsgroup/*
+composer update "thedmsgroup/*" --no-interaction
 
 echo ; echo "Compiling Mautic JS/CSS assets."
 composer assets --no-interaction
