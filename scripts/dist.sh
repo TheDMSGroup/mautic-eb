@@ -6,6 +6,9 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
+echo ; echo "Pulling mautic-eb"
+git pull
+
 echo "Cleaning up the build space."
 rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
 mkdir -p ./plugins
