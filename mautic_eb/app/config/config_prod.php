@@ -11,7 +11,7 @@ if (file_exists(__DIR__.'/security_local.php')) {
 // Non-default security settings for mautic-eb.
 if ($container->getParameter('kernel.environment') == 'prod') {
     $restrictedConfigFields = $container->getParameter('mautic.security.restrictedConfigFields');
-    $restrictedConfigFields = array_merge($restrictedConfigFields, [
+    $container->setParameter('mautic.security.restrictedConfigFields', array_merge($restrictedConfigFields, [
         'tmp_path',
         'log_path',
         'image_path',
@@ -19,9 +19,6 @@ if ($container->getParameter('kernel.environment') == 'prod') {
         'site_url',
     ]);
 }
-
-$container->setParameter('mautic.security.restrictedConfigFields', $restrictedConfigFields);
-
 $container->setParameter('mautic.security.disableUpdates', true);
 
 // Check for APC/APCuBC.
