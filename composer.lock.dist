@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5fe927df5228683d11bdce4c75d2df15",
+    "content-hash": "56cf50d1d99c3943a3cc39393c727339",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -8271,12 +8271,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "b0628b2a3607d1c1c2757f33bf56a240d059515a"
+                "reference": "4de8f704715e67412f695a4b301cecc6d70ee991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/b0628b2a3607d1c1c2757f33bf56a240d059515a",
-                "reference": "b0628b2a3607d1c1c2757f33bf56a240d059515a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/4de8f704715e67412f695a4b301cecc6d70ee991",
+                "reference": "4de8f704715e67412f695a4b301cecc6d70ee991",
                 "shasum": ""
             },
             "require": {
@@ -8308,7 +8308,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-12T19:32:22+00:00"
+            "time": "2018-04-19T18:04:13+00:00"
         },
         {
             "name": "twig/twig",
@@ -10888,7 +10888,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "mautic/core": 20,
         "willdurand/oauth-server-bundle": 20,
         "thedmsgroup/mautic-eb-custom": 20,
         "thedmsgroup/mautic-extended-field-bundle": 20,
