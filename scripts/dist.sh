@@ -15,14 +15,16 @@ echo ; echo "Setting composer.lock and composer.custom files from the dist coppi
 cp composer.lock.dist composer.lock
 cp composer.custom.dist composer.custom
 
-echo ; echo "Updating mautic-eb custom plugin dependencies."
-rm -rf ~/.composer/cache/files/thedmsgroup/*
+echo ; echo "Standard install."
 composer install --no-interaction
-git status
-cd ./mautic_custom ; git pull ; cd -
-composer update "thedmsgroup/*" --no-interaction
 
 bash ./scripts/core-patches.sh
+
+echo ; echo "Forcing updates to custom plugins"
+git status
+cd ./mautic_custom ; git pull ; cd -
+rm -rf ~/.composer/cache/files/thedmsgroup/*
+composer update "thedmsgroup/*" --no-interaction
 
 echo ; echo "Compiling Mautic JS/CSS assets."
 composer assets --no-interaction
