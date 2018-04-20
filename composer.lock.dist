@@ -8142,12 +8142,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "8572f18dde4c6550603f9315a48e49791e855333"
+                "reference": "13717f56264d9f047c536f7a4d69ec3e47ae5eec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/8572f18dde4c6550603f9315a48e49791e855333",
-                "reference": "8572f18dde4c6550603f9315a48e49791e855333",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/13717f56264d9f047c536f7a4d69ec3e47ae5eec",
+                "reference": "13717f56264d9f047c536f7a4d69ec3e47ae5eec",
                 "shasum": ""
             },
             "require": {
@@ -8171,7 +8171,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-19T19:50:52+00:00"
+            "time": "2018-04-20T16:56:19+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8179,12 +8179,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "aff5aaaf2d9175e1de1687b00c17cc212a1128f1"
+                "reference": "eef45d06a61f66d92e55d7ed3428fc0c021d5de4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/aff5aaaf2d9175e1de1687b00c17cc212a1128f1",
-                "reference": "aff5aaaf2d9175e1de1687b00c17cc212a1128f1",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/eef45d06a61f66d92e55d7ed3428fc0c021d5de4",
+                "reference": "eef45d06a61f66d92e55d7ed3428fc0c021d5de4",
                 "shasum": ""
             },
             "require": {
@@ -8208,7 +8208,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-18T19:02:36+00:00"
+            "time": "2018-04-20T16:06:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8222,7 +8222,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-04-18T21:34:55+00:00"
+            "time": "2018-04-19T20:26:27+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
