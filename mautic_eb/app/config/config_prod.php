@@ -21,6 +21,11 @@ if ($container->getParameter('kernel.environment') == 'prod') {
     $container->setParameter('mautic.security.disableUpdates', true);
 }
 
+// Speed up batch processing at the cost of CPU cycles.
+// By default Mautic sleeps 1 full second between batches.
+// We'll drop that down to 50ms.
+$container->setParameter('mautic.batch_sleep_time', .050);
+
 // Check for APC/APCuBC.
 if (function_exists('apc_fetch')) {
     $container->loadFromExtension('framework', array(
