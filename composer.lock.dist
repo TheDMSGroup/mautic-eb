@@ -3559,56 +3559,6 @@
             "time": "2017-02-24T16:06:33+00:00"
         },
         {
-            "name": "namshi/cuzzle",
-            "version": "2.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/namshi/cuzzle.git",
-                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/namshi/cuzzle/zipball/89849bb9c729a3d8aabf94c0b66e77c7df38abda",
-                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0",
-                "php": ">=5.5.0",
-                "psr/log": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.2.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Namshi\\Cuzzle\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nikita Nefedov",
-                    "email": "inefedor@gmail.com"
-                },
-                {
-                    "name": "cirpo",
-                    "email": "alessandro.cinelli@gmail.com"
-                }
-            ],
-            "description": "Get the cURL shell command from a Guzzle request",
-            "time": "2016-11-23T08:01:36+00:00"
-        },
-        {
             "name": "oneup/uploader-bundle",
             "version": "1.8.3",
             "target-dir": "Oneup/UploaderBundle",
@@ -8192,12 +8142,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "13717f56264d9f047c536f7a4d69ec3e47ae5eec"
+                "reference": "88976ad3b104b12f072fcdfcf02690e02d4a1c5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/13717f56264d9f047c536f7a4d69ec3e47ae5eec",
-                "reference": "13717f56264d9f047c536f7a4d69ec3e47ae5eec",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/88976ad3b104b12f072fcdfcf02690e02d4a1c5e",
+                "reference": "88976ad3b104b12f072fcdfcf02690e02d4a1c5e",
                 "shasum": ""
             },
             "require": {
@@ -8221,7 +8171,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-20T16:56:19+00:00"
+            "time": "2018-04-23T18:46:22+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8280,12 +8230,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "85e9cb2eee0d5517441a517c010cfd72b85dd466"
+                "reference": "9f55b3430fef862b71f1b714299b315810332db1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/85e9cb2eee0d5517441a517c010cfd72b85dd466",
-                "reference": "85e9cb2eee0d5517441a517c010cfd72b85dd466",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/9f55b3430fef862b71f1b714299b315810332db1",
+                "reference": "9f55b3430fef862b71f1b714299b315810332db1",
                 "shasum": ""
             },
             "require": {
@@ -8313,7 +8263,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-19T13:46:03+00:00"
+            "time": "2018-04-20T17:32:42+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -9229,6 +9179,56 @@
                 "object graph"
             ],
             "time": "2017-04-12T18:52:22+00:00"
+        },
+        {
+            "name": "namshi/cuzzle",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/namshi/cuzzle.git",
+                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/namshi/cuzzle/zipball/89849bb9c729a3d8aabf94c0b66e77c7df38abda",
+                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": ">=5.5.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.2.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Namshi\\Cuzzle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Nefedov",
+                    "email": "inefedor@gmail.com"
+                },
+                {
+                    "name": "cirpo",
+                    "email": "alessandro.cinelli@gmail.com"
+                }
+            ],
+            "description": "Get the cURL shell command from a Guzzle request",
+            "time": "2016-11-23T08:01:36+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
