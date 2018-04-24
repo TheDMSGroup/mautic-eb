@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "56cf50d1d99c3943a3cc39393c727339",
+    "content-hash": "9b88eed347b093152e00179661c44cff",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3557,6 +3557,56 @@
                 "yml"
             ],
             "time": "2017-02-24T16:06:33+00:00"
+        },
+        {
+            "name": "namshi/cuzzle",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/namshi/cuzzle.git",
+                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/namshi/cuzzle/zipball/89849bb9c729a3d8aabf94c0b66e77c7df38abda",
+                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": ">=5.5.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.2.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Namshi\\Cuzzle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Nefedov",
+                    "email": "inefedor@gmail.com"
+                },
+                {
+                    "name": "cirpo",
+                    "email": "alessandro.cinelli@gmail.com"
+                }
+            ],
+            "description": "Get the cURL shell command from a Guzzle request",
+            "time": "2016-11-23T08:01:36+00:00"
         },
         {
             "name": "oneup/uploader-bundle",
@@ -8142,12 +8192,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "8572f18dde4c6550603f9315a48e49791e855333"
+                "reference": "d87c88933d241e1021841256fd75cfcf95e367e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/8572f18dde4c6550603f9315a48e49791e855333",
-                "reference": "8572f18dde4c6550603f9315a48e49791e855333",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/d87c88933d241e1021841256fd75cfcf95e367e2",
+                "reference": "d87c88933d241e1021841256fd75cfcf95e367e2",
                 "shasum": ""
             },
             "require": {
@@ -8171,7 +8221,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-19T19:50:52+00:00"
+            "time": "2018-04-17T13:07:10+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8222,7 +8272,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-04-18T21:34:55+00:00"
+            "time": "2018-04-19T20:26:27+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
