@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b88eed347b093152e00179661c44cff",
+    "content-hash": "56cf50d1d99c3943a3cc39393c727339",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -8192,12 +8192,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "d87c88933d241e1021841256fd75cfcf95e367e2"
+                "reference": "13717f56264d9f047c536f7a4d69ec3e47ae5eec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/d87c88933d241e1021841256fd75cfcf95e367e2",
-                "reference": "d87c88933d241e1021841256fd75cfcf95e367e2",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/13717f56264d9f047c536f7a4d69ec3e47ae5eec",
+                "reference": "13717f56264d9f047c536f7a4d69ec3e47ae5eec",
                 "shasum": ""
             },
             "require": {
@@ -8221,7 +8221,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-17T13:07:10+00:00"
+            "time": "2018-04-20T16:56:19+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8229,12 +8229,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "aff5aaaf2d9175e1de1687b00c17cc212a1128f1"
+                "reference": "eef45d06a61f66d92e55d7ed3428fc0c021d5de4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/aff5aaaf2d9175e1de1687b00c17cc212a1128f1",
-                "reference": "aff5aaaf2d9175e1de1687b00c17cc212a1128f1",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/eef45d06a61f66d92e55d7ed3428fc0c021d5de4",
+                "reference": "eef45d06a61f66d92e55d7ed3428fc0c021d5de4",
                 "shasum": ""
             },
             "require": {
@@ -8258,7 +8258,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-18T19:02:36+00:00"
+            "time": "2018-04-20T16:06:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
