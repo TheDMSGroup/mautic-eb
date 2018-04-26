@@ -8311,6 +8311,43 @@
             "time": "2018-04-19T18:04:13+00:00"
         },
         {
+            "name": "thedmsgroup/mautic-usstate-normalizer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-usstate-normalizer.git",
+                "reference": "623b2f3f3f9840c6cbbbbd0f7fa66d4dd02ceed2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-usstate-normalizer/zipball/4de8f704715e67412f695a4b301cecc6d70ee991",
+                "reference": "623b2f3f3f9840c6cbbbbd0f7fa66d4dd02ceed2",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Nicholai Bush",
+                    "email": "nicholaibush@yahoo.com"
+                }
+            ],
+            "description": "Normalize US States to their abbreviations",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-04-19T18:04:13+00:00"
+        },
+        {
             "name": "twig/twig",
             "version": "v1.35.0",
             "source": {
@@ -10944,7 +10981,8 @@
         "thedmsgroup/mautic-contact-client-bundle": 20,
         "thedmsgroup/mautic-contact-ledger-bundle": 20,
         "thedmsgroup/mautic-contact-source-bundle": 20,
-        "thedmsgroup/mautic-enhancer-bundle": 20
+        "thedmsgroup/mautic-enhancer-bundle": 20,
+        "thedmsgroup/mautic-usstate-normalizer-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
