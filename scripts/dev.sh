@@ -21,6 +21,8 @@ rm -rf ./plugins/MauticExtendedFieldBundle
 git clone -b master https://github.com/TheDMSGroup/mautic-extended-field.git ./plugins/MauticExtendedFieldBundle
 rm -rf ./plugins/MauticContactLedgerBundle
 git clone -b master https://github.com/TheDMSGroup/mautic-contact-ledger.git ./plugins/MauticContactLedgerBundle
+rm -rf ./plugins/MauticUSStateNormalizerBundle
+git clone -b master https://github.com/TheDMSGroup/mautic-usstate-normalizer.git ./plugins/MauticUSStateNormalizerBundle
 
 echo ; echo "Updating other Mautic customizations for mautic-eb."
 rm -rf ./mautic_custom
