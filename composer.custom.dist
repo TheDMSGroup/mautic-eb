@@ -5,7 +5,8 @@
       "thedmsgroup/mautic-contact-client-bundle": "dev-master",
       "thedmsgroup/mautic-contact-ledger-bundle": "dev-master",
       "thedmsgroup/mautic-contact-source-bundle": "dev-master",
-      "thedmsgroup/mautic-enhancer-bundle": "dev-master"
+      "thedmsgroup/mautic-enhancer-bundle": "dev-master",
+      "thedmsgroup/mautic-usstate-normalizer-bundle": "dev-master"
     },
     "config": {
         "preferred-install": {
