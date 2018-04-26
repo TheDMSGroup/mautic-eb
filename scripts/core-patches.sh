@@ -25,7 +25,7 @@ echo ; echo "[Enhancement] Allow filtering contacts by Campaign Membership for s
 curl -L "https://github.com/mautic/mautic/pull/5911.diff" | git apply -v
 
 echo ; echo "[Enhancement] Support includes/excludes with text fields for bulk filtering. #5925"
-curl -L "https://gist.githubusercontent.com/heathdutton/6542c12e1f55c0c3d3cbe6fe51706728/raw/164cec9fde0bd56845b40285ae4579b28cd476a7/5925.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/heathdutton/6542c12e1f55c0c3d3cbe6fe51706728/raw/7cd4c3716210a9e6c2ad28909e6cc650976d2094/5925.diff" | git apply -v
 
 echo ; echo "[Bug] Symfony Master/Slave support is broken #5969"
 curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
