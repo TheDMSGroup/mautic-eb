@@ -8311,7 +8311,7 @@
             "time": "2018-04-19T18:04:13+00:00"
         },
         {
-            "name": "thedmsgroup/mautic-usstate-normalizer",
+            "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
