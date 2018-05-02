@@ -30,3 +30,5 @@ curl -L "https://gist.githubusercontent.com/heathdutton/6542c12e1f55c0c3d3cbe6fe
 echo ; echo "[Bug] Symfony Master/Slave support is broken #5969"
 curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
 
+echo ; echo "Dispatch event before Report's query execution for plugins to alter query #6036"
+curl -L "https://github.com/mautic/mautic/pull/6036.diff" | git apply -v
