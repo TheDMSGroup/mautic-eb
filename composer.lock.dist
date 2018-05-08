@@ -8375,7 +8375,7 @@
             ],
             "description": "Symfony TwigBundle",
             "homepage": "https://symfony.com",
-            "time": "2017-07-11T07:12:11+00:00"
+            "time": "2017-10-01T21:00:16+00:00"
         },
         {
             "name": "symfony/validator",
@@ -8505,12 +8505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "b2616e5009d7fc08137c99b1e4b0e84852e067b3"
+                "reference": "6212a55d2266449ee1c26299872e72b619c8a28a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/b2616e5009d7fc08137c99b1e4b0e84852e067b3",
-                "reference": "b2616e5009d7fc08137c99b1e4b0e84852e067b3",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/6212a55d2266449ee1c26299872e72b619c8a28a",
+                "reference": "6212a55d2266449ee1c26299872e72b619c8a28a",
                 "shasum": ""
             },
             "require": {
@@ -8540,7 +8540,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-07T21:32:08+00:00"
+            "time": "2018-05-08T12:36:33+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -10253,7 +10253,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-09-24T07:23:38+00:00"
+            "time": "2017-10-15T06:13:55+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -11168,7 +11168,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2017-08-27T14:52:21+00:00"
+            "time": "2017-10-02T06:42:24+00:00"
         },
         {
             "name": "symfony/web-profiler-bundle",
@@ -11227,7 +11227,7 @@
             ],
             "description": "Symfony WebProfilerBundle",
             "homepage": "https://symfony.com",
-            "time": "2017-07-19T17:48:51+00:00"
+            "time": "2017-10-01T21:00:16+00:00"
         },
         {
             "name": "webfactory/exceptions-bundle",
