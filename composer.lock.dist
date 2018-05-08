@@ -8585,12 +8585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "7cad0610b6febfd8b2e634bfb85962af843fe9fd"
+                "reference": "7610515de8fd28d97fc869a1b8112f6abe09c4bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/7cad0610b6febfd8b2e634bfb85962af843fe9fd",
-                "reference": "7cad0610b6febfd8b2e634bfb85962af843fe9fd",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/7610515de8fd28d97fc869a1b8112f6abe09c4bf",
+                "reference": "7610515de8fd28d97fc869a1b8112f6abe09c4bf",
                 "shasum": ""
             },
             "require": {
@@ -8614,7 +8614,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-08T13:58:47+00:00"
+            "time": "2018-05-08T14:45:54+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
