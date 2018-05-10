@@ -8505,12 +8505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "ee2409a6494d4f7be7a5811033cac8a4177259b7"
+                "reference": "bdf77b63bb50028baaef6f2f457299b6d5733e94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/ee2409a6494d4f7be7a5811033cac8a4177259b7",
-                "reference": "ee2409a6494d4f7be7a5811033cac8a4177259b7",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/bdf77b63bb50028baaef6f2f457299b6d5733e94",
+                "reference": "bdf77b63bb50028baaef6f2f457299b6d5733e94",
                 "shasum": ""
             },
             "require": {
@@ -8540,7 +8540,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-10T17:15:56+00:00"
+            "time": "2018-05-10T19:22:49+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8548,12 +8548,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "960917c4b9c20fe7755a5f223283ff3da05593e8"
+                "reference": "ceda0a976a7c2a95aa36f52f903fcc1b078a4b25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/960917c4b9c20fe7755a5f223283ff3da05593e8",
-                "reference": "960917c4b9c20fe7755a5f223283ff3da05593e8",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/ceda0a976a7c2a95aa36f52f903fcc1b078a4b25",
+                "reference": "ceda0a976a7c2a95aa36f52f903fcc1b078a4b25",
                 "shasum": ""
             },
             "require": {
@@ -8577,7 +8577,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-07T17:32:35+00:00"
+            "time": "2018-05-10T18:53:53+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
