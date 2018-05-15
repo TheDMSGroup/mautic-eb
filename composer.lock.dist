@@ -8548,12 +8548,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "b7adeb511d1d7507b1fa015897421dac3537d04e"
+                "reference": "9f83249132e2f6c6b3ea58b40cc0153985411326"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/b7adeb511d1d7507b1fa015897421dac3537d04e",
-                "reference": "b7adeb511d1d7507b1fa015897421dac3537d04e",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/9f83249132e2f6c6b3ea58b40cc0153985411326",
+                "reference": "9f83249132e2f6c6b3ea58b40cc0153985411326",
                 "shasum": ""
             },
             "require": {
@@ -8577,7 +8577,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-11T03:03:55+00:00"
+            "time": "2018-05-15T14:05:19+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8677,12 +8677,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "9469567e9ae53c499c99f8da304bbb548c2989fa"
+                "reference": "c20a2fcb64017897da53bb9494c86ecfe5ab6199"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/9469567e9ae53c499c99f8da304bbb548c2989fa",
-                "reference": "9469567e9ae53c499c99f8da304bbb548c2989fa",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/c20a2fcb64017897da53bb9494c86ecfe5ab6199",
+                "reference": "c20a2fcb64017897da53bb9494c86ecfe5ab6199",
                 "shasum": ""
             },
             "require": {
@@ -8714,7 +8714,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-11T03:14:53+00:00"
+            "time": "2018-05-15T14:06:55+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
