@@ -76,12 +76,12 @@ else
     cd -
 fi
 
-if [ ! -d "./plugins/MauticUSStateNormalizerBundle/.git" ]
+if [ ! -d "./plugins/MauticUsstateNormalizerBundle/.git" ]
 then
-    rm -rf ./plugins/MauticUSStateNormalizerBundle
-    git clone -b master https://github.com/TheDMSGroup/mautic-usstate-normalizer.git ./plugins/MauticUSStateNormalizerBundle
+    rm -rf ./plugins/MauticUsstateNormalizerBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-usstate-normalizer.git ./plugins/MauticUsstateNormalizerBundle
 else
-    cd ./plugins/MauticUSStateNormalizerBundle
+    cd ./plugins/MauticUsstateNormalizerBundle
     git checkout master
     git pull
     cd -
@@ -89,7 +89,7 @@ fi
 
 if [ ! -d "./mautic_custom/.git" ]
 then
-    rm -rf ./plugins/MauticUSStateNormalizerBundle
+    rm -rf ./mautic_custom
     git clone -b master https://github.com/TheDMSGroup/mautic-eb-custom.git ./mautic_custom
 else
     cd ./mautic_custom
