@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "56cf50d1d99c3943a3cc39393c727339",
+    "content-hash": "1f3fede6cd28009f6b0e42c2e919dd5c",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3331,6 +3331,42 @@
             "description": "Light SAML Symfony bridge bundle",
             "homepage": "http://www.lightsaml.com",
             "time": "2016-11-18T15:11:05+00:00"
+        },
+        {
+            "name": "mautic/api-library",
+            "version": "2.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mautic/api-library.git",
+                "reference": "460f8fad5b4db89f2753777b16fa1d6ac3b1101e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mautic/api-library/zipball/460f8fad5b4db89f2753777b16fa1d6ac3b1101e",
+                "reference": "460f8fad5b4db89f2753777b16fa1d6ac3b1101e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.7",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8|~5.0",
+                "raveren/kint": "~0.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mautic\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Mautic API Connector Library",
+            "time": "2018-02-27T12:51:34+00:00"
         },
         {
             "name": "mautic/composer-plugin",
