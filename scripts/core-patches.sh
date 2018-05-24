@@ -38,3 +38,6 @@ curl -L "https://patch-diff.githubusercontent.com/raw/scottshipman/mautic/pull/2
 
 echo ; echo "Drastically improve performance of long-running campaign rendering. #6092"
 curl -L "https://github.com/mautic/mautic/pull/6092.diff" | git apply -v
+
+echo ; echo "API call to clone an existing campaign. #6125"
+curl -L "https://github.com/mautic/mautic/pull/6125.diff" | git apply -v
