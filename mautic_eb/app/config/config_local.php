@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * Global default environment variable overrides for Mautic EB
  * To override for your instance use parameters_local.php
@@ -159,4 +161,6 @@ if (!function_exists('mauticEBMultisite')) {
         }
     }
 }
+
 mauticEBMultisite($parameters);
+
