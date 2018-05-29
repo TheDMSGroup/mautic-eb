@@ -87,6 +87,17 @@ else
     cd -
 fi
 
+if [ ! -d "./plugins/MauticHealthBundle/.git" ]
+then
+    rm -rf ./plugins/MauticHealthBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-health.git ./plugins/MauticHealthBundle
+else
+    cd ./plugins/MauticHealthBundle
+    git checkout master
+    git pull
+    cd -
+fi
+
 if [ ! -d "./mautic_custom/.git" ]
 then
     rm -rf ./mautic_custom
