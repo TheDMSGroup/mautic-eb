@@ -8717,6 +8717,49 @@
             "time": "2018-05-15T14:06:55+00:00"
         },
         {
+            "name": "thedmsgroup/mautic-health-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-health.git",
+                "reference": "c4ff4975bce9bd934be6f0ba5dd4908039a56711"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/c4ff4975bce9bd934be6f0ba5dd4908039a56711",
+                "reference": "c4ff4975bce9bd934be6f0ba5dd4908039a56711",
+                "shasum": ""
+            },
+            "require": {
+                "league/flysystem": "^1.0",
+                "league/flysystem-aws-s3-v2": "^1.0",
+                "league/flysystem-dropbox": "^1.0",
+                "league/flysystem-sftp": "^1.0",
+                "mautic/composer-plugin": "^1.0",
+                "mustache/mustache": "^2.12",
+                "namshi/cuzzle": "^2.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Checks the health of the Mautic instance.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-05-29T20:41:41+00:00"
+        },
+        {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
             "version": "dev-master",
             "source": {
@@ -11338,7 +11381,8 @@
         "thedmsgroup/mautic-contact-ledger-bundle": 20,
         "thedmsgroup/mautic-contact-source-bundle": 20,
         "thedmsgroup/mautic-enhancer-bundle": 20,
-        "thedmsgroup/mautic-usstate-normalizer-bundle": 20
+        "thedmsgroup/mautic-usstate-normalizer-bundle": 20,
+        "thedmsgroup/mautic-health-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
