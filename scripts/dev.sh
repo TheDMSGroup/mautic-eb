@@ -20,6 +20,12 @@ composer install --no-interaction
 
 bash ./scripts/core-patches.sh
 
+if [ ! -f "./mautic/app/config/local.php" ]
+then
+    echo ; echo "Creating initial local.php"
+    cp ./mautic_eb/app/config/parameters_local.php ./mautic/app/config/local.php
+fi
+
 echo ; echo "Re-cloning all custom plugins"
 if [ ! -d "./plugins/MauticContactClientBundle/.git" ]
 then
