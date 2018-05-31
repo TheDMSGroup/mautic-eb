@@ -8628,7 +8628,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-04-25T20:40:55+00:00"
+            "time": "2018-05-30T19:41:21+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8722,12 +8722,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-health.git",
-                "reference": "c4ff4975bce9bd934be6f0ba5dd4908039a56711"
+                "reference": "2075739509c357013613045e2b2a3dd6f8243962"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/c4ff4975bce9bd934be6f0ba5dd4908039a56711",
-                "reference": "c4ff4975bce9bd934be6f0ba5dd4908039a56711",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/2075739509c357013613045e2b2a3dd6f8243962",
+                "reference": "2075739509c357013613045e2b2a3dd6f8243962",
                 "shasum": ""
             },
             "require": {
@@ -8757,7 +8757,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-29T20:41:41+00:00"
+            "time": "2018-05-31T14:44:38+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
