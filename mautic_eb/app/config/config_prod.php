@@ -26,6 +26,10 @@ if ($container->getParameter('kernel.environment') == 'prod') {
 // We'll drop that down to 50ms.
 $container->setParameter('mautic.batch_sleep_time', .050);
 
+// Optionally allow CSRF to be disabled. Useful if all users are behind a firewall and you have multiple nodes.
+// Just set the environment variable CSRF to 0.
+$container->setParameter('mautic.famework.csrf_protection', (bool) getenv('CSRF') ?: true);
+
 // Check for APC/APCuBC.
 if (function_exists('apc_fetch')) {
     $container->loadFromExtension('framework', array(
