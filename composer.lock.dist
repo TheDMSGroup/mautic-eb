@@ -8585,12 +8585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "532c1bcea251901c66d8de1333daf53e1e73386a"
+                "reference": "54edc2310c8c16319295164c0f54bea899ee8172"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/532c1bcea251901c66d8de1333daf53e1e73386a",
-                "reference": "532c1bcea251901c66d8de1333daf53e1e73386a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/54edc2310c8c16319295164c0f54bea899ee8172",
+                "reference": "54edc2310c8c16319295164c0f54bea899ee8172",
                 "shasum": ""
             },
             "require": {
@@ -8614,7 +8614,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-01T05:05:27+00:00"
+            "time": "2018-06-04T17:29:40+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8722,12 +8722,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-health.git",
-                "reference": "2075739509c357013613045e2b2a3dd6f8243962"
+                "reference": "93ad84ba87048a4a3659f664c503320ba8b878b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/2075739509c357013613045e2b2a3dd6f8243962",
-                "reference": "2075739509c357013613045e2b2a3dd6f8243962",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/93ad84ba87048a4a3659f664c503320ba8b878b3",
+                "reference": "93ad84ba87048a4a3659f664c503320ba8b878b3",
                 "shasum": ""
             },
             "require": {
@@ -8757,7 +8757,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-05-31T14:44:38+00:00"
+            "time": "2018-06-01T19:19:32+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
