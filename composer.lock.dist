@@ -8636,12 +8636,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "f5b9fe4548e28538f76f712ad40fef2ff821c096"
+                "reference": "7b54f9d413047d9541cc70fcf1d97a95e621d202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/f5b9fe4548e28538f76f712ad40fef2ff821c096",
-                "reference": "f5b9fe4548e28538f76f712ad40fef2ff821c096",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/7b54f9d413047d9541cc70fcf1d97a95e621d202",
+                "reference": "7b54f9d413047d9541cc70fcf1d97a95e621d202",
                 "shasum": ""
             },
             "require": {
@@ -8669,7 +8669,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-01T13:44:17+00:00"
+            "time": "2018-06-04T19:16:36+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
