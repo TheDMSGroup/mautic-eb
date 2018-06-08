@@ -54,3 +54,7 @@ curl -L "https://github.com/mautic/mautic/pull/6092.diff" | git apply -v
 echo ; echo "API call to clone an existing campaign. #6125"
 echo "https://github.com/mautic/mautic/pull/6125"
 curl -L "https://github.com/mautic/mautic/pull/6125.diff" | git apply -v
+
+echo ; echo "[Feature] Chained actions #6187"
+echo "https://github.com/mautic/mautic/pull/6187"
+curl -L "https://github.com/mautic/mautic/pull/6187.diff" | git apply -v
