@@ -3380,7 +3380,7 @@
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-06-04T00:00:00+00:00"
+            "time": "2018-06-08T00:00:00+00:00"
         },
         {
             "name": "maxmind-db/reader",
