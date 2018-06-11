@@ -9,6 +9,21 @@ BASEDIR=$( pwd )
 echo ; echo "Applying selected patches to Mautic core."
 cd ./mautic
 
+# Testing...
+#echo ; echo "Segment refactoring #5755"
+#echo "https://github.com/mautic/mautic/pull/5755"
+#curl -L "https://github.com/mautic/mautic/pull/5755.diff" | git apply -v
+#
+## Testing...
+#echo ; echo "Contact ID column to plugin integration mapping #5655"
+#echo "https://github.com/mautic/mautic/pull/5655"
+#curl -L "https://github.com/mautic/mautic/pull/5655.diff" | git apply -v
+#
+## Testing...
+#echo ; echo "Correct the method used to clean URL #6174"
+#echo "https://github.com/mautic/mautic/pull/6174"
+#curl -L "https://github.com/mautic/mautic/pull/6174.diff" | git apply -v
+
 # Ready for tagging.
 echo ; echo "[Bug] Plugin content locking (referrer POST) causes 500. #5789"
 echo "https://github.com/mautic/mautic/pull/5789"
@@ -59,3 +74,8 @@ curl -L "https://github.com/mautic/mautic/pull/6125.diff" | git apply -v
 echo ; echo "[Feature] Chained actions #6187"
 echo "https://github.com/mautic/mautic/pull/6187"
 curl -L "https://github.com/mautic/mautic/pull/6187.diff" | git apply -v
+
+# Ready for tagging.
+echo ; echo "Campaign Tags #6152"
+echo "https://github.com/mautic/mautic/pull/6152"
+curl -L "https://github.com/mautic/mautic/pull/6152.diff" | git apply -v
