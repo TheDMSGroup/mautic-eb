@@ -29,7 +29,7 @@ $parameters = [
     'site_url'          => getenv('APP_URL') ?: 'http://mautic.loc',
     'tmp_path'          => '/tmp',
     // Support the cache path for "ondeck" during deployment, switching to "current" when there.
-    'cache_path'        => str_replace('/config', '/cache', dirname($_SERVER['SCRIPT_FILENAME'])),
+    'cache_path'        => str_replace('/mautic_eb/app/config', '/mautic/app/cache', __DIR__),
 ];
 
 /**
