@@ -8636,12 +8636,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "89af86ff928ec2980e6cc4f218940010b3fff67a"
+                "reference": "6961ffb3b8a78310b6f81d282cee40540bdaf7b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/89af86ff928ec2980e6cc4f218940010b3fff67a",
-                "reference": "89af86ff928ec2980e6cc4f218940010b3fff67a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6961ffb3b8a78310b6f81d282cee40540bdaf7b5",
+                "reference": "6961ffb3b8a78310b6f81d282cee40540bdaf7b5",
                 "shasum": ""
             },
             "require": {
@@ -8669,7 +8669,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-11T14:17:42+00:00"
+            "time": "2018-06-12T18:29:51+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8677,12 +8677,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "fa7f1ee3a6756eaaa3c4d77f2da84029bd640acf"
+                "reference": "3a06a9ce8fd37f7b529374196849c16d7003b2b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/fa7f1ee3a6756eaaa3c4d77f2da84029bd640acf",
-                "reference": "fa7f1ee3a6756eaaa3c4d77f2da84029bd640acf",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/3a06a9ce8fd37f7b529374196849c16d7003b2b8",
+                "reference": "3a06a9ce8fd37f7b529374196849c16d7003b2b8",
                 "shasum": ""
             },
             "require": {
@@ -8714,7 +8714,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-12T15:39:45+00:00"
+            "time": "2018-06-12T18:52:20+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
