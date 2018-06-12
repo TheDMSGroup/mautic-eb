@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8267d529881d11d4a0f4d1c965f267ff",
+    "content-hash": "5fe927df5228683d11bdce4c75d2df15",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3380,7 +3380,7 @@
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-06-08T00:00:00+00:00"
+            "time": "2018-06-08T08:58:25+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -8585,12 +8585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "b41f30a594b378affdd632774dbe804c5aa5b992"
+                "reference": "c957653059c9b8c49970c1c62a97028f4c690bfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/b41f30a594b378affdd632774dbe804c5aa5b992",
-                "reference": "b41f30a594b378affdd632774dbe804c5aa5b992",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/c957653059c9b8c49970c1c62a97028f4c690bfe",
+                "reference": "c957653059c9b8c49970c1c62a97028f4c690bfe",
                 "shasum": ""
             },
             "require": {
@@ -8614,7 +8614,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-12T16:32:06+00:00"
+            "time": "2018-06-12T20:29:24+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8636,12 +8636,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "6961ffb3b8a78310b6f81d282cee40540bdaf7b5"
+                "reference": "59c1cafdc6746f8b4d0e51ba54f1d781c218ef59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6961ffb3b8a78310b6f81d282cee40540bdaf7b5",
-                "reference": "6961ffb3b8a78310b6f81d282cee40540bdaf7b5",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/59c1cafdc6746f8b4d0e51ba54f1d781c218ef59",
+                "reference": "59c1cafdc6746f8b4d0e51ba54f1d781c218ef59",
                 "shasum": ""
             },
             "require": {
@@ -8669,7 +8669,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-12T18:29:51+00:00"
+            "time": "2018-06-12T21:04:23+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -11374,6 +11374,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "mautic/core": 20,
         "willdurand/oauth-server-bundle": 20,
         "thedmsgroup/mautic-eb-custom": 20,
         "thedmsgroup/mautic-extended-field-bundle": 20,
