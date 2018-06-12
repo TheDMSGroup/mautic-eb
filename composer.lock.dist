@@ -3369,7 +3369,7 @@
         },
         {
             "name": "mautic/core",
-            "version": "2.14.0-beta",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
