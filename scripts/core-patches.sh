@@ -94,3 +94,9 @@ curl -L "https://github.com/mautic/mautic/pull/6187.diff" | git apply -v
 #echo "Campaign Tags #6152"
 #echo "https://github.com/mautic/mautic/pull/6152"
 #curl -L "https://github.com/mautic/mautic/pull/6152.diff" | git apply -v
+
+# Ready for tagging.
+echo "----------------------------------------------------"
+echo "[Bug] Contact limiter threads (2.14)"
+echo "https://github.com/mautic/mautic/pull/6211"
+curl -L "https://github.com/mautic/mautic/pull/6211.diff" | git apply -v
