@@ -101,7 +101,3 @@ echo "[Bug] Contact limiter threads (2.14)"
 echo "https://github.com/mautic/mautic/pull/6211"
 curl -L "https://github.com/mautic/mautic/pull/6211.diff" | git apply -v
 
-# getCampaignLogCounts() Inner to Left Join for performance gain on campaign page
-echo ; echo "Inner to Left Join for performance gain on campaign page #6214"
-echo "https://github.com/mautic/mautic/pull/6214"
-curl -L "https://github.com/mautic/mautic/pull/6214.diff" | git apply -v
