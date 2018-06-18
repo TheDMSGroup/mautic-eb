@@ -52,12 +52,6 @@ echo "[Enhancement] Support includes/excludes with text fields for bulk filterin
 echo "https://github.com/mautic/mautic/pull/5925"
 curl -L "https://github.com/mautic/mautic/pull/5925.diff" | git apply -v
 
-# Ready for tagging.
-echo "----------------------------------------------------"
-echo "[Bug] Symfony Master/Slave support is broken #5969"
-echo "https://github.com/mautic/mautic/pull/5970"
-curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
-
 # Conflicts resolved, needs testing.
 echo "----------------------------------------------------"
 echo "Campaign Details View tabbed content, allow filtering data by date range OR \"to date\" (current default) #6021"
@@ -112,3 +106,10 @@ echo "----------------------------------------------------"
 echo "Support --quiet for faster mautic:campaigns:trigger processing #6224"
 echo "https://github.com/mautic/mautic/pull/6224"
 curl -L "https://github.com/mautic/mautic/pull/6224.diff" | git apply -v
+
+# Ready for tagging. Gist avoids conflicts with #6021.
+echo "----------------------------------------------------"
+echo "[Bug] Symfony Master/Slave support is broken #5969"
+echo "https://github.com/mautic/mautic/pull/5970"
+#curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a918868812/raw/3ce976ff326112ec677b5797aa8e14af9bfa59b5/5970.diff" | git apply -v
