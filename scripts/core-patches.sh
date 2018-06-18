@@ -106,3 +106,9 @@ echo "----------------------------------------------------"
 echo "Chart time unit fix for single day or 3 or less day granularity #6222"
 echo "https://github.com/mautic/mautic/pull/6222"
 curl -L "https://github.com/mautic/mautic/pull/6222.diff" | git apply -v
+
+# Ready for tagging.
+echo "----------------------------------------------------"
+echo "Support --quiet for faster mautic:campaigns:trigger processing #6224"
+echo "https://github.com/mautic/mautic/pull/6224"
+curl -L "https://github.com/mautic/mautic/pull/6224.diff" | git apply -v
