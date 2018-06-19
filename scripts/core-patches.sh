@@ -112,4 +112,4 @@ echo "----------------------------------------------------"
 echo "[Bug] Symfony Master/Slave support is broken #5969"
 echo "https://github.com/mautic/mautic/pull/5970"
 #curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
-curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a918868812/raw/665be4da1e0c75331d98753bca42c11662160f8e/5970.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a918868812/raw/0b6e5475e7e8197bb0f9bdbeb3b147ea73721162/5970.diff" | git apply -v
