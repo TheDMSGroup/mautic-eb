@@ -8505,12 +8505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "b32d8fb75042c4ff26af9d22b260130f91050291"
+                "reference": "2269510976b3709b9345303cc5dcd7458a0c7844"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/b32d8fb75042c4ff26af9d22b260130f91050291",
-                "reference": "b32d8fb75042c4ff26af9d22b260130f91050291",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/2269510976b3709b9345303cc5dcd7458a0c7844",
+                "reference": "2269510976b3709b9345303cc5dcd7458a0c7844",
                 "shasum": ""
             },
             "require": {
@@ -8540,7 +8540,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-18T19:30:30+00:00"
+            "time": "2018-06-19T15:32:37+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8585,12 +8585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "4707f9ff15df405f4bf29de8be66b432084a07b9"
+                "reference": "426ba59ecef8766574cc03d581d6e5a42f0f8f29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/4707f9ff15df405f4bf29de8be66b432084a07b9",
-                "reference": "4707f9ff15df405f4bf29de8be66b432084a07b9",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/426ba59ecef8766574cc03d581d6e5a42f0f8f29",
+                "reference": "426ba59ecef8766574cc03d581d6e5a42f0f8f29",
                 "shasum": ""
             },
             "require": {
@@ -8614,7 +8614,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-18T22:58:17+00:00"
+            "time": "2018-06-19T15:37:45+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
