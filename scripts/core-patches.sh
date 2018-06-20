@@ -112,9 +112,9 @@ echo "----------------------------------------------------"
 echo "[Bug] Symfony Master/Slave support is broken #5969"
 echo "https://github.com/mautic/mautic/pull/5970"
 #curl -L "https://github.com/mautic/mautic/pull/5970.diff" | git apply -v
-curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a918868812/raw/0b6e5475e7e8197bb0f9bdbeb3b147ea73721162/5970.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a918868812/raw/e52ba2deadaaaa4e19943b6059bc9d19b34b90d3/5970.diff" | git apply -v
 
 # Not to go into any PR.
 echo "----------------------------------------------------"
 echo "Disable the contacts view embedded in campaign view (temporary)."
-curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/d0d0280db5b51eb10bbddc4e6fced2f059b18a1c/contact_list_disable.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/d5adf30362260cff97e7e1064ff65c36b1e3794b/contact_list_disable.diff" | git apply -v
