@@ -28,6 +28,7 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     MAILER_FROM_EMAIL     - Default "from" email address.
     EFS_DNS_NAME          - The full DNS of the EFS mount.
     MAUTIC_INSTALL        - Optional: Set to "1" to initialize mautic, for the first deployment only.
+    MAUTIC_WORKERS        - Optional: Number of concurrent campaign trigger workers to run on the leading instance.
     NR_APPNAME            - Optional: Newrelic application name.
     NR_APM_INSTALL_KEY    - Optional: NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY    - Optional: NewRelic install key for Infrastructure.

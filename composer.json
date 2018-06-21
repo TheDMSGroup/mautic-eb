@@ -4,7 +4,7 @@
   "description": "Mautic Open Source Distribution - Modified for scalability",
   "license": "GPL-3.0-only",
   "require": {
-    "mautic/core": "2.12.2"
+    "mautic/core": "dev-master"
   },
   "repositories": [
     {
