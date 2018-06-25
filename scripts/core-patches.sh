@@ -117,4 +117,4 @@ curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a9
 # Not to go into any PR.
 echo "----------------------------------------------------"
 echo "Disable the contacts view embedded in campaign view (temporary)."
-curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/d5adf30362260cff97e7e1064ff65c36b1e3794b/contact_list_disable.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/f6a287de8db40722f674f388757f0c13236cd182/contact_list_disable.diff" | git apply -v
