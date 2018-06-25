@@ -9,7 +9,7 @@ if (file_exists(__DIR__.'/security_local.php')) {
 }
 
 // Non-default security settings for mautic-eb.
-if ($container->getParameter('kernel.environment') == 'prod') {
+if ('prod' == $container->getParameter('kernel.environment')) {
     $restrictedConfigFields = $container->getParameter('mautic.security.restrictedConfigFields');
     $container->setParameter('mautic.security.restrictedConfigFields', array_merge($restrictedConfigFields, [
         'tmp_path',
@@ -32,7 +32,7 @@ $container->setParameter('mautic.famework.csrf_protection', (bool) getenv('CSRF'
 
 // Check for APC/APCuBC.
 if (function_exists('apc_fetch')) {
-    /**
+    /*
      * disablling APC for validation because of core bug
      * https://github.com/mautic/mautic/issues/6259
      */
@@ -43,13 +43,13 @@ if (function_exists('apc_fetch')) {
     //     )
     // ));
 
-    $container->loadFromExtension('doctrine', array(
-        'orm' => array(
+    $container->loadFromExtension('doctrine', [
+        'orm' => [
             'metadata_cache_driver' => 'apc',
             'result_cache_driver'   => 'apc',
-            'query_cache_driver'    => 'apc'
-        )
-    ));
+            'query_cache_driver'    => 'apc',
+        ],
+    ]);
 }
 
 // Read Only db cluster support.
@@ -80,7 +80,7 @@ if (!empty($dbHostRO)) {
 
     // Add a single slave (which is a load balanced Aurora read-only cluster).
     $dbalSettings['keep_slave'] = true;
-    $dbalSettings['slaves'] = [
+    $dbalSettings['slaves']     = [
         'slave1' => [
             'host'     => $dbHostRO,
             'port'     => '%mautic.db_port%',
@@ -88,11 +88,11 @@ if (!empty($dbHostRO)) {
             'user'     => '%mautic.db_user%',
             'password' => '%mautic.db_password%',
             'charset'  => 'UTF8',
-        ]
+        ],
     ];
-    $container->loadFromExtension('doctrine', array(
-        'dbal' => $dbalSettings
-    ));
+    $container->loadFromExtension('doctrine', [
+        'dbal' => $dbalSettings,
+    ]);
 }
 
 $debugMode = $container->hasParameter('mautic.debug') ? $container->getParameter('mautic.debug') : $container->getParameter('kernel.debug');
