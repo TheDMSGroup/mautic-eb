@@ -32,11 +32,16 @@ $container->setParameter('mautic.famework.csrf_protection', (bool) getenv('CSRF'
 
 // Check for APC/APCuBC.
 if (function_exists('apc_fetch')) {
-    $container->loadFromExtension('framework', array(
-        'validation' => array(
-            'cache' => 'apc'
-        )
-    ));
+    /**
+     * disablling APC for validation because of core bug
+     * https://github.com/mautic/mautic/issues/6259
+     */
+
+    // $container->loadFromExtension('framework', array(
+    //     'validation' => array(
+    //         'cache' => 'apc'
+    //     )
+    // ));
 
     $container->loadFromExtension('doctrine', array(
         'orm' => array(
