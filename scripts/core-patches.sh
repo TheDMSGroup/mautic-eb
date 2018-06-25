@@ -118,9 +118,3 @@ curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a9
 echo "----------------------------------------------------"
 echo "Disable the contacts view embedded in campaign view (temporary)."
 curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/f6a287de8db40722f674f388757f0c13236cd182/contact_list_disable.diff" | git apply -v
-
-# Fixes CORE LeadField APC error within custom field validator closure
-echo "----------------------------------------------------"
-echo "Fixes CORE LeadField APC error within custom field validator closure #6254"
-echo "https://github.com/mautic/mautic/pull/6254"
-curl -L "https://github.com/mautic/mautic/pull/6254.diff" | git apply -v
