@@ -3373,14 +3373,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "56932af1e80718ebf1fbc2635b1d496508408ba4"
+                "reference": "916cb750f2e7896c735b231c98fd9a58c65cf0e5"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-06-08T08:58:25+00:00"
+            "time": "2018-06-20T19:57:26+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -8505,12 +8505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "07b27cd076cc312bb9fe2f0097bd22133a27e2ea"
+                "reference": "f14580b59aa8e7c34b309a819b0ff60e6bc2d0fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/07b27cd076cc312bb9fe2f0097bd22133a27e2ea",
-                "reference": "07b27cd076cc312bb9fe2f0097bd22133a27e2ea",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/f14580b59aa8e7c34b309a819b0ff60e6bc2d0fa",
+                "reference": "f14580b59aa8e7c34b309a819b0ff60e6bc2d0fa",
                 "shasum": ""
             },
             "require": {
@@ -8540,7 +8540,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-22T14:31:16+00:00"
+            "time": "2018-06-25T17:09:28+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8677,12 +8677,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "3a06a9ce8fd37f7b529374196849c16d7003b2b8"
+                "reference": "c4bd2bb4b8e2e48358290c7709aaf04086cdee71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/3a06a9ce8fd37f7b529374196849c16d7003b2b8",
-                "reference": "3a06a9ce8fd37f7b529374196849c16d7003b2b8",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/c4bd2bb4b8e2e48358290c7709aaf04086cdee71",
+                "reference": "c4bd2bb4b8e2e48358290c7709aaf04086cdee71",
                 "shasum": ""
             },
             "require": {
@@ -8714,7 +8714,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-06-12T18:52:20+00:00"
+            "time": "2018-06-26T13:15:24+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -8765,12 +8765,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-usstate-normalizer.git",
-                "reference": "3bdbadfc87e77755662a585f159823fc0e10b6c2"
+                "reference": "2f4e666627fce1297f67c81fba1183b75bc0d0a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-usstate-normalizer/zipball/3bdbadfc87e77755662a585f159823fc0e10b6c2",
-                "reference": "3bdbadfc87e77755662a585f159823fc0e10b6c2",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-usstate-normalizer/zipball/2f4e666627fce1297f67c81fba1183b75bc0d0a5",
+                "reference": "2f4e666627fce1297f67c81fba1183b75bc0d0a5",
                 "shasum": ""
             },
             "require": {
@@ -8794,7 +8794,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-04-26T20:25:01+00:00"
+            "time": "2018-06-26T21:30:13+00:00"
         },
         {
             "name": "twig/twig",
