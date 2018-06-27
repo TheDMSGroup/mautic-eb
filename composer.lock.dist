@@ -3373,7 +3373,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "56932af1e80718ebf1fbc2635b1d496508408ba4"
+                "reference": "916cb750f2e7896c735b231c98fd9a58c65cf0e5"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
