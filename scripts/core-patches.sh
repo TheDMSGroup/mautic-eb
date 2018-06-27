@@ -118,3 +118,9 @@ curl -L "https://gist.githubusercontent.com/heathdutton/5ed0edc0a3dd7dd77eb478a9
 echo "----------------------------------------------------"
 echo "Disable the contacts view embedded in campaign view (temporary)."
 curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/f6a287de8db40722f674f388757f0c13236cd182/contact_list_disable.diff" | git apply -v
+
+# Gist avoids conflicts with #6021 and #6187
+echo "----------------------------------------------------"
+echo "Create a Soft delete process for campaign events #6247"
+echo "https://github.com/mautic/mautic/pull/6247"
+curl -L "https://gist.githubusercontent.com/heathdutton/4a4e5626b851073a9f77db890fff7311/raw/da50dd589b73775a8c918326c3e013a72c05238b/6247.diff" | git apply -v
