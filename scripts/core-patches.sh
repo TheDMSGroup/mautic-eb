@@ -123,4 +123,4 @@ curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d
 echo "----------------------------------------------------"
 echo "Create a Soft delete process for campaign events #6247"
 echo "https://github.com/mautic/mautic/pull/6247"
-curl -L "https://gist.githubusercontent.com/heathdutton/4a4e5626b851073a9f77db890fff7311/raw/da50dd589b73775a8c918326c3e013a72c05238b/6247.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/scottshipman/3e7b62c3728b300cd7d06521d83a490d/raw/6e103e7b58d3940eb2e21588234965b91ecb8111/6247.diff" | git apply -v
