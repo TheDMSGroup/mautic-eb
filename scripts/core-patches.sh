@@ -123,7 +123,7 @@ curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d
 echo "----------------------------------------------------"
 echo "Create a Soft delete process for campaign events #6247"
 echo "https://github.com/mautic/mautic/pull/6247"
-curl -L "https://gist.githubusercontent.com/scottshipman/3e7b62c3728b300cd7d06521d83a490d/raw/6e103e7b58d3940eb2e21588234965b91ecb8111/6247.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/scottshipman/3e7b62c3728b300cd7d06521d83a490d/raw/592775e5714211151e2778466166f42d6e85af6f/6247.diff" | git apply -v
 
 # Gist Applies patches for Campaign Tagging
 echo "----------------------------------------------------"
