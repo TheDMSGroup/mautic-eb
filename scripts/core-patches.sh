@@ -130,3 +130,8 @@ echo "----------------------------------------------------"
 echo "Applies patches for Campaign Tagging"
 echo "https://github.com/mautic/mautic/pull/6152"
 curl -L "https://gist.githubusercontent.com/cykonetic/dd517bc45f633c00f2435e4c8ff6d0f0/raw/e8a05d667fccd378dec1f7bc7b5306cdc44a3469/6152.diff" | git apply -v
+
+# Temporary state abbreviation patch
+echo "----------------------------------------------------"
+echo "Converts United States proper names to abbreviations"
+curl -L "https://gist.githubusercontent.com/cykonetic/521b38133797e2a3f48060c519a1870e/raw/34a95ba772f04c70fc1cc9f25d6da010758353b5/stateacceptancepatch.diff" | git apply -v
