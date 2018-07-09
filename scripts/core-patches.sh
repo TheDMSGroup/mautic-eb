@@ -105,7 +105,9 @@ curl -L "https://github.com/mautic/mautic/pull/6222.diff" | git apply -v
 echo "----------------------------------------------------"
 echo "Support --quiet for faster mautic:campaigns:trigger processing #6224"
 echo "https://github.com/mautic/mautic/pull/6224"
-curl -L "https://github.com/mautic/mautic/pull/6224.diff" | git apply -v
+# curl -L "https://github.com/mautic/mautic/pull/6224.diff" | git apply -v
+# Temporary patch for the current staging ref.
+curl -L "https://gist.githubusercontent.com/heathdutton/75da2cdf2a562ac42a97f2976a517626/raw/8b52d8c182c3d8ae459172f373828da7805fd224/6224.diff" | git apply -v
 
 # Ready for tagging. Gist avoids conflicts with #6021.
 echo "----------------------------------------------------"
