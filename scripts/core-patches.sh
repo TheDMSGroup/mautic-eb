@@ -134,4 +134,4 @@ curl -L "https://gist.githubusercontent.com/cykonetic/dd517bc45f633c00f2435e4c8f
 # Temporary state abbreviation patch
 echo "----------------------------------------------------"
 echo "Converts United States proper names to abbreviations"
-curl -L "https://gist.githubusercontent.com/cykonetic/521b38133797e2a3f48060c519a1870e/raw/34a95ba772f04c70fc1cc9f25d6da010758353b5/stateacceptancepatch.diff" | git apply -v
+curl -L "https://gist.githubusercontent.com/cykonetic/521b38133797e2a3f48060c519a1870e/raw/6e4a04d3e7202b66c437fff3234c900c073d3441/stateacceptancepatch.diff" | git apply -v
