@@ -3373,14 +3373,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "916cb750f2e7896c735b231c98fd9a58c65cf0e5"
+                "reference": "017c0f1b49a3a7dca5e8c3f8ac646a54864464f2"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-06-20T19:57:26+00:00"
+            "time": "2018-07-09T16:57:19+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -8505,12 +8505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "01d954589e91e5403e8c80667e576b16f0c896a6"
+                "reference": "a7e2fc0442f3b8708db168f2bcd1f945f78f26b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/01d954589e91e5403e8c80667e576b16f0c896a6",
-                "reference": "01d954589e91e5403e8c80667e576b16f0c896a6",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/a7e2fc0442f3b8708db168f2bcd1f945f78f26b7",
+                "reference": "a7e2fc0442f3b8708db168f2bcd1f945f78f26b7",
                 "shasum": ""
             },
             "require": {
@@ -8540,7 +8540,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-07-09T21:35:06+00:00"
+            "time": "2018-07-10T20:46:52+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
