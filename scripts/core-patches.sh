@@ -66,12 +66,6 @@ echo "[Bug] Contact limiter threads (2.14)"
 echo "https://github.com/mautic/mautic/pull/6211"
 curl -L "https://github.com/mautic/mautic/pull/6211.diff" | git apply -v
 
-# chart time unit fix for single day or 3 or less day granularity
-echo "----------------------------------------------------"
-echo "Chart time unit fix for single day or 3 or less day granularity #6222"
-echo "https://github.com/mautic/mautic/pull/6222"
-curl -L "https://github.com/mautic/mautic/pull/6222.diff" | git apply -v
-
 # Ready for tagging.
 echo "----------------------------------------------------"
 echo "Support --quiet for faster mautic:campaigns:trigger processing #6224"
