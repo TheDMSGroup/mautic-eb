@@ -11078,7 +11078,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "mautic/core": 20,
-        "willdurand/oauth-server-bundle": 20,
+        "willdurand/oauth-server-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
