@@ -105,3 +105,9 @@ curl -L "https://gist.githubusercontent.com/cykonetic/dd517bc45f633c00f2435e4c8f
 echo "----------------------------------------------------"
 echo "Converts United States proper names to abbreviations"
 curl -L "https://gist.githubusercontent.com/cykonetic/521b38133797e2a3f48060c519a1870e/raw/6e4a04d3e7202b66c437fff3234c900c073d3441/stateacceptancepatch.diff" | git apply -v
+
+# Report Event Dispatch called earlier to prevent fatal error when pagination used
+echo "----------------------------------------------------"
+echo "Report Event Dispatch called earlier to prevent fatal error when pagination used"
+echo "https://github.com/mautic/mautic/pull/6330"
+curl -L "https://github.com/mautic/mautic/pull/6330.diff" | git apply -v
