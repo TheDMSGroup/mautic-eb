@@ -398,7 +398,7 @@ index 1775a8a49d..50364814ca 100644
 +        $eventList = $campaign->getPublishedEvents();
 +        $this->assertEquals(2, count($eventList->getValues()));
 +
-+        $eventModel->deleteEvents([], [17]);
++        $eventModel->deleteEvents([], [18]);
 +        $eventList = $campaign->getPublishedEvents();
 +        $this->assertEquals(1, count($eventList->getValues()));
 +

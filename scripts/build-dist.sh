@@ -51,13 +51,13 @@ else
     echo "And they look good."
 fi
 
-echo ; echo "Here's a diff of what this build changes."
-git --no-pager diff --minimal
-
 # Do not conflict with the standard distribution, we want the composer.lock to exclude customization examples.
 cp composer.lock composer.lock.dist
 git checkout composer.lock
 rm composer.custom
+
+echo ; echo "Here's a diff of what this build changes."
+git --no-pager diff --minimal
 
 # The following may be needed if building for production (can be ran upon deployment to drop dev dependencies).
 # composer install --no-dev --no-interaction
