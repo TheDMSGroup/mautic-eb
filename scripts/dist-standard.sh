@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Standard composer install.
+# Standard composer install for mautic-eb.
+
+set -e
 
 BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
@@ -19,5 +21,5 @@ composer install --no-interaction
 echo ; echo "Here's a diff of what this build changes."
 git --no-pager diff --minimal
 
-# Only needed if building for production:
+# The following may be needed if building for production (can be ran upon deployment to drop dev dependencies).
 # composer install --no-dev --no-interaction

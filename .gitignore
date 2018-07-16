@@ -22,7 +22,6 @@
 /mautic_custom/*
 !/mautic_custom/.gitkeep
 /composer.custom
-/composer.lock
 /plugins.json
 /plugins/*
 !/plugins/.gitkeep

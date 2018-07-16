@@ -27,7 +27,7 @@ install:
   # Standard Mautic (latest released version and dependencies)
   # - bash ./scripts/dist-standard.sh
 
-  # Custom Mautic (Custom theme, plugins, patches used by DMS)
+  # Custom Mautic (Custom sha, theme, plugins and patches used by DMS)
   - bash ./scripts/dist-custom.sh
 
 script:
@@ -36,7 +36,7 @@ script:
   - cd mautic
 
   # Run PHPUnit
-  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning
+  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --debug --stop-on-failure
 
 deploy:
 

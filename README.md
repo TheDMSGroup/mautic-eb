@@ -42,29 +42,10 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     AWS_ACCESS_KEY_ID             - From your IAM console (keep hidden).
     AWS_SECRET_ACCESS_KEY         - From your IAM console (keep hidden).
     AWS_REGION                    - The region to deploy to (us-east-1).
-    ELASTIC_BEANSTALK_APP         - App name to deploy (mautic-eb).
-    ELASTIC_BEANSTALK_ENV         - Elastic beanstalk environment name (mautic-eb-dev).
-    ELASTIC_BEANSTALK_LABEL       - Label name of the new version (optional). Defaults to `git describe --long`
+    AWS_EB_APP                    - App name to deploy (mautic-eb).
+    AWS_EB_ENV                    - Elastic beanstalk environment name (mautic-eb-dev).
+    ELASTIC_BEANSTALK_LABEL       - Label name of the new version (optional).
     ELASTIC_BEANSTALK_DESCRIPTION - Description of the new version (optional). Defaults to the last commit message.
-
-### Bitbucket Pipelines Environment Variables
-
-    AWS_ACCESS_KEY_ID     - The raw AWS key ID.
-    AWS_SECRET_ACCESS_KEY - The raw AWS Secret Access Key.
-    AWS_EB_KEY            - The private SSH key for the AWS Elastic Beanstalk environment. Base64 encoded.
-    APP_URL_PROD          - URL of production environment.
-    APP_URL_STAGE         - URL of staging environment (optional).
-    APP_URL_DEV           - URL of development environment (optional).
-    APP_ENV_PROD          - Name of production environment in Elastic Beanstalk.
-    APP_ENV_STAGE         - Name of staging environment in Elastic Beanstalk (optional).
-    APP_ENV_DEV           - Name of development environment in Elastic Beanstalk (optional).
-    NR_APPNAME            - APP name/url to report to.
-    NR_API_KEY_STAGE      - The NewRelic API key for staging (optional).
-    NR_API_KEY_PROD       - The NewRelic API key for production (optional).
-    SLACK_WEBHOOK_URL     - The URL to use for sending a slack deployment notification (optional).
-    CF_USER               - CloudFlare account user email (optional).
-    CF_TOKEN              - CloudFlare account user API key (optional).
-    CF_ZONE               - CloudFlare DNS zone to purge (optional).
 
 ### Mautic Customizations
 
@@ -96,7 +77,7 @@ Custom dependencies can be included in a root composer.custom
 * The file `composer.custom` can be created to pull in third-party dependencies and customizations without altering this repo.
 * Do not run `composer install` from within the `./mautic` folder, only in the root project folder.
 
-### Additional Plugins *(work in progress)*
+### Additional Plugins
 
 Need to process a million new contacts every day? 
 Need to add a custom integration every day, without writing code?

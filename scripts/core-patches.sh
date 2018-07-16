@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Applying core Mautic patches that have not yet been merged in to the core version we are currently using.
-# Using bash instead of composer so that we do not alter other dependencies outside of the core scope.
+# Example of how to apply PRs as patches.
+# Only needed if using dist-custom.sh!
 
 set -e
 

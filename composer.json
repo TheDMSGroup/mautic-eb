@@ -112,9 +112,6 @@
       "cd ./mautic ; bin/codecept run --env=test",
       "# ./mautic/bin/phpstan analyse ./mautic/app/bundles/*Bundle --no-interaction"
     ],
-    "update-dist": [
-      "cp composer.lock composer.lock.dist"
-    ],
     "less": [
       "rm -rf ./mautic/media/css/app.css ./mautic/media/css/libraries.css",
       "cd ./mautic ; npm install ; npm install grunt-cli ; grunt less"
@@ -131,12 +128,10 @@
       "@custom",
       "@git-hooks",
       "@iplookup",
-      "@update-dist",
       "@cc"
     ],
     "post-update-cmd": [
-      "@custom",
-      "@update-dist"
+      "@custom"
     ]
   },
   "config": {

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Rebuild all assets in place to test composer changes and prep for release.
-# Will not update the core composer.lock file (to do so delete it first).
+# Custom installation example for mautic-eb
+# Includes custom sha, theme and plugins.
+
+set -e
 
 BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
@@ -15,7 +17,7 @@ mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
 echo ; echo "Setting composer.lock and composer.custom files from the dist copies."
-cp composer.lock.dist composer.lock
+cp composer.lock.dist-custom composer.lock
 cp composer.custom.dist composer.custom
 
 echo ; echo "Custom install."
@@ -52,5 +54,7 @@ fi
 echo ; echo "Here's a diff of what this build changes."
 git --no-pager diff --minimal
 
-# Only needed if building for production:
+cp composer.lock composer.lock.dist-custom
+
+# The following may be needed if building for production (can be ran upon deployment to drop dev dependencies).
 # composer install --no-dev --no-interaction
