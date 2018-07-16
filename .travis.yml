@@ -21,17 +21,19 @@ before_install:
   # set to test environment for Symfony's commands in post install commands
   - export SYMFONY_ENV="test"
 
-# Uncomment the version you wish to install:
 install:
-
-  # Standard Mautic (latest released version and dependencies)
-  # - bash ./scripts/dist-standard.sh
-
-  # Custom Mautic (Custom sha, theme, plugins and patches used by DMS)
-  - bash ./scripts/dist-custom.sh
+  # There are 2 build variants to be built based on the branch name:
+  #
+  # build.sh      - Standard Mautic (default)
+  #                 Includes latest release and standard dependencies.
+  #                 Pretty much just a standard `composer install`.
+  #
+  # build-dist.sh - Custom distribution (for branches containing the word "dist")
+  #                 Includes a specific (recent) sha, core patches, custom theme, and additional plugins.
+  #                 This build is Used for advanced testing and deployment by DMS.
+  - if [[ "$TRAVIS_BRANCH" = *"dist"* ]]; then ./scripts/build-dist.sh; else; bash ./scripts/build.sh; fi
 
 script:
-
   # Go to mautic root.
   - cd mautic
 
@@ -39,7 +41,7 @@ script:
   - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --debug --stop-on-failure
 
 deploy:
-
+  # Optional deployment to Elastic Beanstalk (Environment Variables must be configured in your Travis settings)
   provider: elasticbeanstalk
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY

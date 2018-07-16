@@ -17,10 +17,10 @@ mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
 echo ; echo "Setting composer.lock and composer.custom files from the dist copies."
-cp composer.lock.dist-custom composer.lock
+cp composer.lock.dist composer.lock
 cp composer.custom.dist composer.custom
 
-echo ; echo "Custom install."
+echo ; echo "Custom build."
 composer install --no-interaction
 
 bash ./scripts/core-patches.sh
@@ -54,7 +54,9 @@ fi
 echo ; echo "Here's a diff of what this build changes."
 git --no-pager diff --minimal
 
-cp composer.lock composer.lock.dist-custom
+# Do not conflict with the standard distribution, we want the composer.lock to exclude customization examples.
+cp composer.lock composer.lock.dist
+git checkout composer.lock
 
 # The following may be needed if building for production (can be ran upon deployment to drop dev dependencies).
 # composer install --no-dev --no-interaction

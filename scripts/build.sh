@@ -15,7 +15,7 @@ rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
 mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
-echo ; echo "Standard install."
+echo ; echo "Standard build."
 composer install --no-interaction
 
 echo ; echo "Here's a diff of what this build changes."
