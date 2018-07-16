@@ -31,7 +31,7 @@ install:
   # build-dist.sh - Custom distribution (for branches containing the word "dist")
   #                 Includes a specific (recent) sha, core patches, custom theme, and additional plugins.
   #                 This build is Used for advanced testing and deployment by DMS.
-  - if [[ "$TRAVIS_BRANCH" = *"dist"* ]]; then ./scripts/build-dist.sh; else; bash ./scripts/build.sh; fi
+  - if [[ "$TRAVIS_BRANCH" = *"dist"* ]]; then ./scripts/build-dist.sh; else bash ./scripts/build.sh; fi
 
 script:
   # Go to mautic root.
