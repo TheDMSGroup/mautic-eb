@@ -11,7 +11,7 @@ echo ; echo "Pulling mautic-eb"
 git pull
 
 echo ; echo "Cleaning up the build space."
-rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
+rm -rf ./mautic ./bin ./vendor ./plugins
 mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
