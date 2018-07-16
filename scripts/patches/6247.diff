@@ -1,0 +1,537 @@
+diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
+index 0e854506e8..38c152e180 100644
+--- a/app/bundles/CampaignBundle/Controller/CampaignController.php
++++ b/app/bundles/CampaignBundle/Controller/CampaignController.php
+@@ -179,7 +179,7 @@ protected function afterEntityClone($campaign, $oldCampaign)
+         $objectId = $oldCampaign->getId();
+ 
+         // Get the events that need to be duplicated as well
+-        $events = $oldCampaign->getEvents()->toArray();
++        $events = $oldCampaign->getPublishedEvents()->toArray();
+ 
+         $campaign->setIsPublished(false);
+ 
+@@ -362,7 +362,7 @@ protected function beforeEntitySave($entity, Form $form, $action, $objectId = nu
+             if (!empty($this->deletedEvents)) {
+                 /** @var EventModel $eventModel */
+                 $eventModel = $this->getModel('campaign.event');
+-                $eventModel->deleteEvents($entity->getEvents()->toArray(), $this->deletedEvents);
++                $eventModel->deleteEvents($entity->getPublishedEvents()->toArray(), $this->deletedEvents);
+             }
+         }
+ 
+@@ -742,7 +742,7 @@ protected function prepareCampaignEventsForEdit($entity, $objectId, $isClone = f
+         //load existing events into session
+         $campaignEvents = [];
+ 
+-        $existingEvents = $entity->getEvents()->toArray();
++        $existingEvents = $entity->getPublishedEvents()->toArray();
+         $translator     = $this->get('translator');
+         $dateHelper     = $this->get('mautic.helper.template.date');
+         foreach ($existingEvents as $e) {
+diff --git a/app/bundles/CampaignBundle/Entity/Campaign.php b/app/bundles/CampaignBundle/Entity/Campaign.php
+index 86be85ac87..28c7cd75f6 100644
+--- a/app/bundles/CampaignBundle/Entity/Campaign.php
++++ b/app/bundles/CampaignBundle/Entity/Campaign.php
+@@ -335,7 +335,30 @@ public function removeEvent(\Mautic\CampaignBundle\Entity\Event $event)
+     }
+ 
+     /**
+-     * Get events.
++     * Get published events.
++     *
++     * @return \Doctrine\Common\Collections\ArrayCollection
++     */
++    public function getPublishedEvents()
++    {
++        $criteria = Criteria::create()->where(Criteria::expr()->eq('isPublished', true));
++        $events   =  $this->events->matching($criteria);
++
++        // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
++        // @see https://github.com/doctrine/doctrine2/issues/4693
++        $keyedArrayCollection = new ArrayCollection();
++        /** @var Event $event */
++        foreach ($events as $event) {
++            $keyedArrayCollection->set($event->getId(), $event);
++        }
++
++        unset($events);
++
++        return $keyedArrayCollection;
++    }
++
++    /**
++     * Get All events.
+      *
+      * @return \Doctrine\Common\Collections\ArrayCollection
+      */
+@@ -350,7 +373,7 @@ public function getEvents()
+     public function getRootEvents()
+     {
+         $criteria = Criteria::create()->where(Criteria::expr()->isNull('parent'));
+-        $events   = $this->getEvents()->matching($criteria);
++        $events   = $this->getPublishedEvents()->matching($criteria);
+ 
+         // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
+         // @see https://github.com/doctrine/doctrine2/issues/4693
+@@ -371,7 +394,7 @@ public function getRootEvents()
+     public function getInactionBasedEvents()
+     {
+         $criteria = Criteria::create()->where(Criteria::expr()->eq('decisionPath', Event::PATH_INACTION));
+-        $events   = $this->getEvents()->matching($criteria);
++        $events   = $this->getPublishedEvents()->matching($criteria);
+ 
+         // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
+         // @see https://github.com/doctrine/doctrine2/issues/4693
+@@ -392,7 +415,7 @@ public function getInactionBasedEvents()
+     public function getEventsByType($type)
+     {
+         $criteria = Criteria::create()->where(Criteria::expr()->eq('eventType', $type));
+-        $events   = $this->getEvents()->matching($criteria);
++        $events   = $this->getPublishedEvents()->matching($criteria);
+ 
+         // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
+         // @see https://github.com/doctrine/doctrine2/issues/4693
+diff --git a/app/bundles/CampaignBundle/Entity/Event.php b/app/bundles/CampaignBundle/Entity/Event.php
+index 389edc985c..4df9b09c11 100644
+--- a/app/bundles/CampaignBundle/Entity/Event.php
++++ b/app/bundles/CampaignBundle/Entity/Event.php
+@@ -39,6 +39,11 @@ class Event implements ChannelInterface
+      */
+     private $id;
+ 
++    /**
++     * @var bool
++     */
++    private $isPublished = true;
++
+     /**
+      * @var string
+      */
+@@ -173,6 +178,11 @@ public static function loadMetadata(ORM\ClassMetadata $metadata)
+ 
+         $builder->addIdColumns();
+ 
++        $builder->createField('isPublished', 'boolean')
++            ->columnName('is_published')
++            ->option('default', true)
++            ->build();
++
+         $builder->createField('type', 'string')
+             ->length(50)
+             ->build();
+@@ -416,6 +426,48 @@ public function getOrder()
+         return $this->order;
+     }
+ 
++    /**
++     * Set isPublished.
++     *
++     * @param bool $isPublished
++     *
++     * @return Event
++     */
++    public function setIsPublished($isPublished)
++    {
++        $this->isChanged('isPublished', $isPublished);
++
++        $this->isPublished = $isPublished;
++
++        return $this;
++    }
++
++    /**
++     * Get isPublished.
++     *
++     * @return bool
++     */
++    public function getIsPublished()
++    {
++        return $this->isPublished;
++    }
++
++    /**
++     * Check the publish status of an entity based on publish up and down datetimes.
++     *
++     * @return string early|expired|published|unpublished
++     *
++     * @throws \BadMethodCallException
++     */
++    public function getPublishStatus()
++    {
++        if ($this->getIsPublished()) {
++            return 'published';
++        }
++
++        return 'unpublished';
++    }
++
+     /**
+      * Set properties.
+      *
+@@ -654,7 +706,11 @@ public function getChildrenByType($type)
+      */
+     public function getChildrenByEventType($type)
+     {
+-        $criteria = Criteria::create()->where(Criteria::expr()->eq('eventType', $type));
++        $criteria = Criteria::create()->where(Criteria::expr()->andX(
++            Criteria::expr()->eq('eventType', $type),
++            Criteria::expr()->eq('is_published', true)
++            )
++        );
+ 
+         return $this->getChildren()->matching($criteria);
+     }
+@@ -882,7 +934,9 @@ public function setContactLog($contactLog)
+     /**
+      * Used by the API.
+      *
+-     * @return Event
++     * @param $contactLog
++     *
++     * @return $this
+      */
+     public function addContactLog($contactLog)
+     {
+diff --git a/app/bundles/CampaignBundle/Entity/EventRepository.php b/app/bundles/CampaignBundle/Entity/EventRepository.php
+index 3b3318c1f8..0687b74c67 100644
+--- a/app/bundles/CampaignBundle/Entity/EventRepository.php
++++ b/app/bundles/CampaignBundle/Entity/EventRepository.php
+@@ -29,6 +29,10 @@ public function getEntities(array $args = [])
+         $q      = $this
+             ->createQueryBuilder('e')
+             ->join('e.campaign', 'c');
++        // dont include the unpublished events
++        $q->andWhere(
++                $q->expr()->eq('e.isPublished', true)
++            );
+ 
+         if (!empty($args['campaign_id'])) {
+             $q->andWhere(
+@@ -133,6 +137,10 @@ public function getEventsByParent($parentId, $decisionPath = null, $eventType =
+             )
+               ->setParameter('eventType', $eventType);
+         }
++        // dont include the unpublished events
++        $q->andWhere(
++            $q->expr()->eq('e.isPublished', true)
++        );
+ 
+         return $q->getQuery()->getArrayResult();
+     }
+@@ -152,6 +160,11 @@ public function getCampaignEvents($campaignId)
+             )
+             ->orderBy('e.order', 'ASC');
+ 
++        // dont get unpublished events
++        $q->andWhere(
++            $q->expr()->eq('e.isPublished', true)
++        );
++
+         $results = $q->getQuery()->getArrayResult();
+ 
+         // Fix the parent ID
+@@ -234,6 +247,23 @@ public function nullEventRelationships($events)
+             ->execute();
+     }
+ 
++    /**
++     * remove  parent_id in preparation for soft-deleting events from a campaign.
++     *
++     * @param $events
++     */
++    public function removeParentFromSoftDeletedEvent($events)
++    {
++        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb->update(MAUTIC_TABLE_PREFIX.'campaign_events')
++            ->set('parent_id', ':null')
++            ->setParameter('null', null)
++            ->where(
++                $qb->expr()->in('id', $events)
++            )
++            ->execute();
++    }
++
+     /**
+      * @return string
+      */
+@@ -286,6 +316,10 @@ public function getEventsByChannel($channel, $campaignId = null, $eventType = 'a
+         }
+ 
+         $q->where($expr);
++        // dont include the unpublished events
++        $q->andWhere(
++            $q->expr()->eq('e.isPublished', true)
++        );
+ 
+         $results = $q->getQuery()->getResult();
+ 
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+index c9282494b1..59354424af 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+@@ -397,7 +397,8 @@ public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter)
+                     $q->expr()->eq('IDENTITY(o.event)', ':eventId'),
+                     $q->expr()->eq('o.isScheduled', ':true'),
+                     $q->expr()->lte('o.triggerDate', ':now'),
+-                    $q->expr()->eq('c.isPublished', 1)
++                    $q->expr()->eq('c.isPublished', 1),
++                    $q->expr()->eq('e.isPublished', 1)
+                 )
+             )
+             ->setParameter('eventId', (int) $eventId)
+diff --git a/app/bundles/CampaignBundle/Model/CampaignModel.php b/app/bundles/CampaignBundle/Model/CampaignModel.php
+index 39502437bd..694ef6ce23 100644
+--- a/app/bundles/CampaignBundle/Model/CampaignModel.php
++++ b/app/bundles/CampaignBundle/Model/CampaignModel.php
+@@ -263,7 +263,7 @@ protected function dispatchEvent($action, &$entity, $isNew = false, \Symfony\Com
+     public function setEvents(Campaign $entity, $sessionEvents, $sessionConnections, $deletedEvents)
+     {
+         $eventSettings  = $this->getEvents();
+-        $existingEvents = $entity->getEvents()->toArray();
++        $existingEvents = $entity->getPublishedEvents()->toArray();
+         $events         =
+         $hierarchy      =
+         $parentUpdated  = [];
+@@ -409,7 +409,7 @@ function ($a, $b) {
+     public function setCanvasSettings($entity, $settings, $persist = true, $events = null)
+     {
+         if ($events === null) {
+-            $events = $entity->getEvents();
++            $events = $entity->getPublishedEvents();
+         }
+ 
+         $tempIds = [];
+diff --git a/app/bundles/CampaignBundle/Model/EventModel.php b/app/bundles/CampaignBundle/Model/EventModel.php
+index 05e743009b..765aad431a 100644
+--- a/app/bundles/CampaignBundle/Model/EventModel.php
++++ b/app/bundles/CampaignBundle/Model/EventModel.php
+@@ -95,9 +95,9 @@ public function deleteEvents($currentEvents, $deletedEvents)
+                 unset($deletedEvents[$k]);
+             }
+ 
+-            if (isset($currentEvents[$deleteMe])) {
+-                unset($deletedEvents[$k]);
+-            }
++            // if (isset($currentEvents[$deleteMe])) {
++            //     unset($deletedEvents[$k]);
++            // }
+ 
+             if (isset($deletedEvents[$k])) {
+                 $deletedKeys[] = $deleteMe;
+@@ -107,9 +107,19 @@ public function deleteEvents($currentEvents, $deletedEvents)
+         if (count($deletedEvents)) {
+             // wipe out any references to these events to prevent restraint violations
+             $this->getRepository()->nullEventRelationships($deletedKeys);
++            $this->getRepository()->removeParentFromSoftDeletedEvent($deletedKeys);
+ 
+             // delete the events
+-            $this->deleteEntities($deletedEvents);
++            //  $this->deleteEntities($deletedEvents);
++
++            // soft delete the events in a loop using togglePublishStatus
++            foreach ($deletedKeys as $deletedKey) {
++                $entityToDelete = $this->getEntity($deletedKey);
++                $event          = $this->dispatchEvent('pre_delete', $entityToDelete);
++                $this->togglePublishStatus($entityToDelete);
++                $entityToDelete->deletedId = $deletedKey;
++                $this->dispatchEvent('post_delete', $entityToDelete, false, $event);
++            }
+         }
+     }
+ 
+diff --git a/app/bundles/CampaignBundle/Tests/Command/AbstractCampaignCommand.php b/app/bundles/CampaignBundle/Tests/Command/AbstractCampaignCommand.php
+index c712bda75b..c900f578d9 100644
+--- a/app/bundles/CampaignBundle/Tests/Command/AbstractCampaignCommand.php
++++ b/app/bundles/CampaignBundle/Tests/Command/AbstractCampaignCommand.php
+@@ -86,14 +86,14 @@ public function tearDown()
+      *
+      * @return array
+      */
+-    protected function getCampaignEventLogs(array $ids)
++    protected function getCampaignEventLogs(array $ids, $campaignId = 1)
+     {
+         $logs = $this->db->createQueryBuilder()
+             ->select('l.email, l.country, event.name, event.event_type, event.type, log.*')
+             ->from($this->prefix.'campaign_lead_event_log', 'log')
+             ->join('log', $this->prefix.'campaign_events', 'event', 'event.id = log.event_id')
+             ->join('log', $this->prefix.'leads', 'l', 'l.id = log.lead_id')
+-            ->where('log.campaign_id = 1')
++            ->where('log.campaign_id = '.$campaignId)
+             ->andWhere('log.event_id IN ('.implode(',', $ids).')')
+             ->execute()
+             ->fetchAll();
+diff --git a/app/bundles/CampaignBundle/Tests/Command/ExecuteEventCommandTest.php b/app/bundles/CampaignBundle/Tests/Command/ExecuteEventCommandTest.php
+index 1775a8a49d..50364814ca 100644
+--- a/app/bundles/CampaignBundle/Tests/Command/ExecuteEventCommandTest.php
++++ b/app/bundles/CampaignBundle/Tests/Command/ExecuteEventCommandTest.php
+@@ -34,7 +34,7 @@ public function testEventsAreExecutedForInactiveEventWithSingleContact()
+ 
+         $this->runCommand('mautic:campaigns:execute', ['--scheduled-log-ids' => implode(',', $logIds)]);
+ 
+-        // There should still be trhee events scheduled
++        // There should still be three events scheduled
+         $byEvent = $this->getCampaignEventLogs([2]);
+         $this->assertCount(3, $byEvent[2]);
+ 
+@@ -46,7 +46,6 @@ public function testEventsAreExecutedForInactiveEventWithSingleContact()
+ 
+         // Pop off the last so we can test that only the two given are executed
+         $lastId = array_pop($logIds);
+-
+         // Wait 20 seconds to go past scheduled time
+         sleep(20);
+ 
+@@ -73,4 +72,25 @@ public function testEventsAreExecutedForInactiveEventWithSingleContact()
+ 
+         putenv('CAMPAIGN_EXECUTIONER_SCHEDULER_ACKNOWLEDGE_SECONDS=0');
+     }
++
++    public function testSoftDelete()
++    {
++        $campaignModel = $this->container->get('mautic.campaign.model.campaign');
++        $eventModel    = $this->container->get('mautic.campaign.model.event');
++
++        //getEvent Count for Campaign 2
++        $campaign = $campaignModel->getEntity(2);
++
++        $eventList = $campaign->getPublishedEvents();
++        $this->assertEquals(2, count($eventList->getValues()));
++
++        $eventModel->deleteEvents([], [17]);
++        $eventList = $campaign->getPublishedEvents();
++        $this->assertEquals(1, count($eventList->getValues()));
++
++        $this->runCommand('mautic:campaigns:trigger', ['-i' => 2, '--contact-ids' => '1,2,3,4']);
++        $byEvent = $this->getCampaignEventLogs([17, 18], 2);
++        $this->assertCount(4, $byEvent[17]);
++        $this->assertCount(0, $byEvent[18]);
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Tests/Command/campaign_schema.sql b/app/bundles/CampaignBundle/Tests/Command/campaign_schema.sql
+index 30e48cfde8..278ccbfb83 100644
+--- a/app/bundles/CampaignBundle/Tests/Command/campaign_schema.sql
++++ b/app/bundles/CampaignBundle/Tests/Command/campaign_schema.sql
+@@ -17,7 +17,8 @@ VALUES
+ 
+ INSERT INTO `#__campaigns` (`allow_restart`,`id`,`category_id`,`is_published`,`date_added`,`created_by`,`created_by_user`,`date_modified`,`modified_by`,`modified_by_user`,`checked_out`,`checked_out_by`,`checked_out_by_user`,`name`,`description`,`publish_up`,`publish_down`,`canvas_settings`)
+ VALUES
+-	(0, 1, NULL, 1, '2018-01-04 21:41:05', 1, 'Admin', '2018-03-08 23:27:28', 1, 'Admin User', NULL, NULL, 'Admin User', 'Campaign Test', NULL, NULL, NULL, 'a:2:{s:5:\"nodes\";a:16:{i:0;a:3:{s:2:\"id\";s:1:\"1\";s:9:\"positionX\";s:3:\"577\";s:9:\"positionY\";s:3:\"155\";}i:1;a:3:{s:2:\"id\";s:1:\"2\";s:9:\"positionX\";s:3:\"842\";s:9:\"positionY\";s:3:\"164\";}i:2;a:3:{s:2:\"id\";s:1:\"3\";s:9:\"positionX\";s:3:\"842\";s:9:\"positionY\";s:3:\"269\";}i:3;a:3:{s:2:\"id\";s:2:\"11\";s:9:\"positionX\";s:3:\"389\";s:9:\"positionY\";s:3:\"252\";}i:4;a:3:{s:2:\"id\";s:1:\"4\";s:9:\"positionX\";s:4:\"1132\";s:9:\"positionY\";s:3:\"373\";}i:5;a:3:{s:2:\"id\";s:1:\"5\";s:9:\"positionX\";s:3:\"841\";s:9:\"positionY\";s:3:\"378\";}i:6;a:3:{s:2:\"id\";s:2:\"10\";s:9:\"positionX\";s:3:\"597\";s:9:\"positionY\";s:3:\"378\";}i:7;a:3:{s:2:\"id\";s:2:\"12\";s:9:\"positionX\";s:3:\"168\";s:9:\"positionY\";s:3:\"334\";}i:8;a:3:{s:2:\"id\";s:2:\"13\";s:9:\"positionX\";s:3:\"391\";s:9:\"positionY\";s:3:\"335\";}i:9;a:3:{s:2:\"id\";s:2:\"14\";s:9:\"positionX\";s:4:\"1372\";s:9:\"positionY\";s:3:\"364\";}i:10;a:3:{s:2:\"id\";s:1:\"6\";s:9:\"positionX\";s:3:\"649\";s:9:\"positionY\";s:3:\"496\";}i:11;a:3:{s:2:\"id\";s:1:\"7\";s:9:\"positionX\";s:3:\"874\";s:9:\"positionY\";s:3:\"488\";}i:12;a:3:{s:2:\"id\";s:1:\"8\";s:9:\"positionX\";s:4:\"1097\";s:9:\"positionY\";s:3:\"486\";}i:13;a:3:{s:2:\"id\";s:1:\"9\";s:9:\"positionX\";s:4:\"1313\";s:9:\"positionY\";s:3:\"491\";}i:14;a:3:{s:2:\"id\";s:2:\"15\";s:9:\"positionX\";s:4:\"1563\";s:9:\"positionY\";s:3:\"291\";}i:15;a:3:{s:2:\"id\";s:5:\"lists\";s:9:\"positionX\";s:3:\"677\";s:9:\"positionY\";s:2:\"50\";}}s:11:\"connections\";a:15:{i:0;a:3:{s:8:\"sourceId\";s:5:\"lists\";s:8:\"targetId\";s:1:\"1\";s:7:\"anchors\";a:2:{s:6:\"source\";s:10:\"leadsource\";s:6:\"target\";s:3:\"top\";}}i:1;a:3:{s:8:\"sourceId\";s:5:\"lists\";s:8:\"targetId\";s:1:\"2\";s:7:\"anchors\";a:2:{s:6:\"source\";s:10:\"leadsource\";s:6:\"target\";s:3:\"top\";}}i:2;a:3:{s:8:\"sourceId\";s:1:\"2\";s:8:\"targetId\";s:1:\"3\";s:7:\"anchors\";a:2:{s:6:\"source\";s:6:\"bottom\";s:6:\"target\";s:3:\"top\";}}i:3;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:1:\"4\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:4;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:1:\"5\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:5;a:3:{s:8:\"sourceId\";s:1:\"5\";s:8:\"targetId\";s:1:\"6\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:6;a:3:{s:8:\"sourceId\";s:1:\"5\";s:8:\"targetId\";s:1:\"7\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:7;a:3:{s:8:\"sourceId\";s:1:\"4\";s:8:\"targetId\";s:1:\"8\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:8;a:3:{s:8:\"sourceId\";s:1:\"4\";s:8:\"targetId\";s:1:\"9\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:9;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"10\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:10;a:3:{s:8:\"sourceId\";s:1:\"1\";s:8:\"targetId\";s:2:\"11\";s:7:\"anchors\";a:2:{s:6:\"source\";s:6:\"bottom\";s:6:\"target\";s:3:\"top\";}}i:11;a:3:{s:8:\"sourceId\";s:2:\"11\";s:8:\"targetId\";s:2:\"12\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:12;a:3:{s:8:\"sourceId\";s:2:\"11\";s:8:\"targetId\";s:2:\"13\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:13;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"14\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:14;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"15\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}}}');
++	(0, 1, NULL, 1, '2018-01-04 21:41:05', 1, 'Admin', '2018-03-08 23:27:28', 1, 'Admin User', NULL, NULL, 'Admin User', 'Campaign Test', NULL, NULL, NULL, 'a:2:{s:5:\"nodes\";a:16:{i:0;a:3:{s:2:\"id\";s:1:\"1\";s:9:\"positionX\";s:3:\"577\";s:9:\"positionY\";s:3:\"155\";}i:1;a:3:{s:2:\"id\";s:1:\"2\";s:9:\"positionX\";s:3:\"842\";s:9:\"positionY\";s:3:\"164\";}i:2;a:3:{s:2:\"id\";s:1:\"3\";s:9:\"positionX\";s:3:\"842\";s:9:\"positionY\";s:3:\"269\";}i:3;a:3:{s:2:\"id\";s:2:\"11\";s:9:\"positionX\";s:3:\"389\";s:9:\"positionY\";s:3:\"252\";}i:4;a:3:{s:2:\"id\";s:1:\"4\";s:9:\"positionX\";s:4:\"1132\";s:9:\"positionY\";s:3:\"373\";}i:5;a:3:{s:2:\"id\";s:1:\"5\";s:9:\"positionX\";s:3:\"841\";s:9:\"positionY\";s:3:\"378\";}i:6;a:3:{s:2:\"id\";s:2:\"10\";s:9:\"positionX\";s:3:\"597\";s:9:\"positionY\";s:3:\"378\";}i:7;a:3:{s:2:\"id\";s:2:\"12\";s:9:\"positionX\";s:3:\"168\";s:9:\"positionY\";s:3:\"334\";}i:8;a:3:{s:2:\"id\";s:2:\"13\";s:9:\"positionX\";s:3:\"391\";s:9:\"positionY\";s:3:\"335\";}i:9;a:3:{s:2:\"id\";s:2:\"14\";s:9:\"positionX\";s:4:\"1372\";s:9:\"positionY\";s:3:\"364\";}i:10;a:3:{s:2:\"id\";s:1:\"6\";s:9:\"positionX\";s:3:\"649\";s:9:\"positionY\";s:3:\"496\";}i:11;a:3:{s:2:\"id\";s:1:\"7\";s:9:\"positionX\";s:3:\"874\";s:9:\"positionY\";s:3:\"488\";}i:12;a:3:{s:2:\"id\";s:1:\"8\";s:9:\"positionX\";s:4:\"1097\";s:9:\"positionY\";s:3:\"486\";}i:13;a:3:{s:2:\"id\";s:1:\"9\";s:9:\"positionX\";s:4:\"1313\";s:9:\"positionY\";s:3:\"491\";}i:14;a:3:{s:2:\"id\";s:2:\"15\";s:9:\"positionX\";s:4:\"1563\";s:9:\"positionY\";s:3:\"291\";}i:15;a:3:{s:2:\"id\";s:5:\"lists\";s:9:\"positionX\";s:3:\"677\";s:9:\"positionY\";s:2:\"50\";}}s:11:\"connections\";a:15:{i:0;a:3:{s:8:\"sourceId\";s:5:\"lists\";s:8:\"targetId\";s:1:\"1\";s:7:\"anchors\";a:2:{s:6:\"source\";s:10:\"leadsource\";s:6:\"target\";s:3:\"top\";}}i:1;a:3:{s:8:\"sourceId\";s:5:\"lists\";s:8:\"targetId\";s:1:\"2\";s:7:\"anchors\";a:2:{s:6:\"source\";s:10:\"leadsource\";s:6:\"target\";s:3:\"top\";}}i:2;a:3:{s:8:\"sourceId\";s:1:\"2\";s:8:\"targetId\";s:1:\"3\";s:7:\"anchors\";a:2:{s:6:\"source\";s:6:\"bottom\";s:6:\"target\";s:3:\"top\";}}i:3;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:1:\"4\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:4;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:1:\"5\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:5;a:3:{s:8:\"sourceId\";s:1:\"5\";s:8:\"targetId\";s:1:\"6\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:6;a:3:{s:8:\"sourceId\";s:1:\"5\";s:8:\"targetId\";s:1:\"7\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:7;a:3:{s:8:\"sourceId\";s:1:\"4\";s:8:\"targetId\";s:1:\"8\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:8;a:3:{s:8:\"sourceId\";s:1:\"4\";s:8:\"targetId\";s:1:\"9\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:9;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"10\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:10;a:3:{s:8:\"sourceId\";s:1:\"1\";s:8:\"targetId\";s:2:\"11\";s:7:\"anchors\";a:2:{s:6:\"source\";s:6:\"bottom\";s:6:\"target\";s:3:\"top\";}}i:11;a:3:{s:8:\"sourceId\";s:2:\"11\";s:8:\"targetId\";s:2:\"12\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:12;a:3:{s:8:\"sourceId\";s:2:\"11\";s:8:\"targetId\";s:2:\"13\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:13;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"14\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:14;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"15\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}}}'),
++	(0, 2, NULL, 1, '2018-01-04 21:41:05', 1, 'Admin', '2018-03-08 23:27:28', 1, 'Admin User', NULL, NULL, 'Admin User', 'Campaign Delete Test', NULL, NULL, NULL, 'a:2:{s:5:\"nodes\";a:16:{i:0;a:3:{s:2:\"id\";s:1:\"1\";s:9:\"positionX\";s:3:\"577\";s:9:\"positionY\";s:3:\"155\";}i:1;a:3:{s:2:\"id\";s:1:\"2\";s:9:\"positionX\";s:3:\"842\";s:9:\"positionY\";s:3:\"164\";}i:2;a:3:{s:2:\"id\";s:1:\"3\";s:9:\"positionX\";s:3:\"842\";s:9:\"positionY\";s:3:\"269\";}i:3;a:3:{s:2:\"id\";s:2:\"11\";s:9:\"positionX\";s:3:\"389\";s:9:\"positionY\";s:3:\"252\";}i:4;a:3:{s:2:\"id\";s:1:\"4\";s:9:\"positionX\";s:4:\"1132\";s:9:\"positionY\";s:3:\"373\";}i:5;a:3:{s:2:\"id\";s:1:\"5\";s:9:\"positionX\";s:3:\"841\";s:9:\"positionY\";s:3:\"378\";}i:6;a:3:{s:2:\"id\";s:2:\"10\";s:9:\"positionX\";s:3:\"597\";s:9:\"positionY\";s:3:\"378\";}i:7;a:3:{s:2:\"id\";s:2:\"12\";s:9:\"positionX\";s:3:\"168\";s:9:\"positionY\";s:3:\"334\";}i:8;a:3:{s:2:\"id\";s:2:\"13\";s:9:\"positionX\";s:3:\"391\";s:9:\"positionY\";s:3:\"335\";}i:9;a:3:{s:2:\"id\";s:2:\"14\";s:9:\"positionX\";s:4:\"1372\";s:9:\"positionY\";s:3:\"364\";}i:10;a:3:{s:2:\"id\";s:1:\"6\";s:9:\"positionX\";s:3:\"649\";s:9:\"positionY\";s:3:\"496\";}i:11;a:3:{s:2:\"id\";s:1:\"7\";s:9:\"positionX\";s:3:\"874\";s:9:\"positionY\";s:3:\"488\";}i:12;a:3:{s:2:\"id\";s:1:\"8\";s:9:\"positionX\";s:4:\"1097\";s:9:\"positionY\";s:3:\"486\";}i:13;a:3:{s:2:\"id\";s:1:\"9\";s:9:\"positionX\";s:4:\"1313\";s:9:\"positionY\";s:3:\"491\";}i:14;a:3:{s:2:\"id\";s:2:\"15\";s:9:\"positionX\";s:4:\"1563\";s:9:\"positionY\";s:3:\"291\";}i:15;a:3:{s:2:\"id\";s:5:\"lists\";s:9:\"positionX\";s:3:\"677\";s:9:\"positionY\";s:2:\"50\";}}s:11:\"connections\";a:15:{i:0;a:3:{s:8:\"sourceId\";s:5:\"lists\";s:8:\"targetId\";s:1:\"1\";s:7:\"anchors\";a:2:{s:6:\"source\";s:10:\"leadsource\";s:6:\"target\";s:3:\"top\";}}i:1;a:3:{s:8:\"sourceId\";s:5:\"lists\";s:8:\"targetId\";s:1:\"2\";s:7:\"anchors\";a:2:{s:6:\"source\";s:10:\"leadsource\";s:6:\"target\";s:3:\"top\";}}i:2;a:3:{s:8:\"sourceId\";s:1:\"2\";s:8:\"targetId\";s:1:\"3\";s:7:\"anchors\";a:2:{s:6:\"source\";s:6:\"bottom\";s:6:\"target\";s:3:\"top\";}}i:3;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:1:\"4\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:4;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:1:\"5\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:5;a:3:{s:8:\"sourceId\";s:1:\"5\";s:8:\"targetId\";s:1:\"6\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:6;a:3:{s:8:\"sourceId\";s:1:\"5\";s:8:\"targetId\";s:1:\"7\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:7;a:3:{s:8:\"sourceId\";s:1:\"4\";s:8:\"targetId\";s:1:\"8\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:8;a:3:{s:8:\"sourceId\";s:1:\"4\";s:8:\"targetId\";s:1:\"9\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:9;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"10\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:10;a:3:{s:8:\"sourceId\";s:1:\"1\";s:8:\"targetId\";s:2:\"11\";s:7:\"anchors\";a:2:{s:6:\"source\";s:6:\"bottom\";s:6:\"target\";s:3:\"top\";}}i:11;a:3:{s:8:\"sourceId\";s:2:\"11\";s:8:\"targetId\";s:2:\"12\";s:7:\"anchors\";a:2:{s:6:\"source\";s:3:\"yes\";s:6:\"target\";s:3:\"top\";}}i:12;a:3:{s:8:\"sourceId\";s:2:\"11\";s:8:\"targetId\";s:2:\"13\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:13;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"14\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}i:14;a:3:{s:8:\"sourceId\";s:1:\"3\";s:8:\"targetId\";s:2:\"15\";s:7:\"anchors\";a:2:{s:6:\"source\";s:2:\"no\";s:6:\"target\";s:3:\"top\";}}}}');
+ 
+ INSERT INTO `#__campaign_events` (`id`,`campaign_id`,`parent_id`,`name`,`description`,`type`,`event_type`,`event_order`,`properties`,`trigger_date`,`trigger_interval`,`trigger_interval_unit`,`trigger_mode`,`decision_path`,`temp_id`,`channel`,`channel_id`)
+ VALUES
+@@ -35,7 +36,10 @@ VALUES
+ 	(13,1,11,'Tag NonUS:Action',NULL,'lead.changetags','action',3,'a:16:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:3:\"489\";s:8:\"droppedY\";s:3:\"357\";}s:4:\"name\";s:16:\"Tag NonUS:Action\";s:11:\"triggerMode\";s:9:\"immediate\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"1\";s:19:\"triggerIntervalUnit\";s:1:\"d\";s:6:\"anchor\";s:2:\"no\";s:10:\"properties\";a:1:{s:8:\"add_tags\";a:1:{i:0;s:1:\"7\";}}s:4:\"type\";s:15:\"lead.changetags\";s:9:\"eventType\";s:6:\"action\";s:15:\"anchorEventType\";s:9:\"condition\";s:10:\"campaignId\";s:47:\"mautic_801d9c4d0208e42f6f2bae3f87d0899c3ac45b32\";s:6:\"_token\";s:43:\"uNCD4MZ1GsWRZue4ErJSTW5Tj1CX5R-NYgc5Q_BrVjw\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:8:\"add_tags\";a:1:{i:0;s:12:\"NonUS:Action\";}s:11:\"remove_tags\";a:0:{}}',NULL,1,'d','immediate','no','new62e190055219ebe5beb9df4c4a505bb0860fffd4',NULL,NULL),
+ 	(14,1,3,'Tag EmailNotOpen',NULL,'lead.changetags','action',3,'a:19:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:4:\"1081\";s:8:\"droppedY\";s:3:\"374\";}s:4:\"name\";s:16:\"Tag EmailNotOpen\";s:11:\"triggerMode\";s:8:\"interval\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"1\";s:19:\"triggerIntervalUnit\";s:1:\"d\";s:6:\"anchor\";s:2:\"no\";s:10:\"properties\";a:1:{s:8:\"add_tags\";a:1:{i:0;s:1:\"9\";}}s:4:\"type\";s:15:\"lead.changetags\";s:9:\"eventType\";s:6:\"action\";s:15:\"anchorEventType\";s:8:\"decision\";s:10:\"campaignId\";s:1:\"1\";s:6:\"_token\";s:43:\"oRiunE5unGEBGhTql8VkzvtTkMHpwElCu5Ul4-_gd-I\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:8:\"settings\";a:4:{s:5:\"label\";s:21:\"Modify contact\'s tags\";s:11:\"description\";s:37:\"Add tag to or remove tag from contact\";s:8:\"formType\";s:16:\"modify_lead_tags\";s:9:\"eventName\";s:38:\"mautic.lead.on_campaign_trigger_action\";}s:6:\"tempId\";s:43:\"newb3e5bfd9cdc154619ca0716b46f4a61328688a26\";s:2:\"id\";s:43:\"newb3e5bfd9cdc154619ca0716b46f4a61328688a26\";s:8:\"add_tags\";a:1:{i:0;s:12:\"EmailNotOpen\";}s:11:\"remove_tags\";a:0:{}}',NULL,2,'i','interval','no','newb3e5bfd9cdc154619ca0716b46f4a61328688a26',NULL,NULL),
+ 	(15,1,3,'Tag EmailNotOpen Again',NULL,'lead.changetags','action',3,'a:16:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:4:\"1612\";s:8:\"droppedY\";s:3:\"374\";}s:4:\"name\";s:22:\"Tag EmailNotOpen Again\";s:11:\"triggerMode\";s:8:\"interval\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"6\";s:19:\"triggerIntervalUnit\";s:1:\"i\";s:6:\"anchor\";s:2:\"no\";s:10:\"properties\";a:1:{s:8:\"add_tags\";a:1:{i:0;s:1:\"9\";}}s:4:\"type\";s:15:\"lead.changetags\";s:9:\"eventType\";s:6:\"action\";s:15:\"anchorEventType\";s:8:\"decision\";s:10:\"campaignId\";s:1:\"1\";s:6:\"_token\";s:43:\"Wd8bGtv2HJ6Nyf3K90Efoo2Rn2VkDWwXhwzCIPMiD-M\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:8:\"add_tags\";a:1:{i:0;s:12:\"EmailNotOpen\";}s:11:\"remove_tags\";a:0:{}}',NULL,6,'i','interval','no','newf16dfec5f2a65aa9c527675e7be516020a90daa6',NULL,NULL),
+-	(16,1,12,'Tag ChainedAction',NULL,'lead.changetags','action',4,'a:16:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:3:\"168\";s:8:\"droppedY\";s:3:\"439\";}s:4:\"name\";s:14:\"Chained Action\";s:11:\"triggerMode\";s:9:\"immediate\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"1\";s:19:\"triggerIntervalUnit\";s:1:\"d\";s:6:\"anchor\";s:6:\"bottom\";s:10:\"properties\";a:1:{s:8:\"add_tags\";a:1:{i:0;s:2:\"10\";}}s:4:\"type\";s:15:\"lead.changetags\";s:9:\"eventType\";s:6:\"action\";s:15:\"anchorEventType\";s:6:\"action\";s:10:\"campaignId\";s:1:\"1\";s:6:\"_token\";s:43:\"6xgHe74aRnc1V7AGzdang3-iJ0Ub5BKfbdU5NsxQmv0\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:8:\"add_tags\";a:1:{i:0;s:13:\"ChainedAction\";}s:11:\"remove_tags\";a:0:{}}',NULL,1,'d','immediate',NULL,'new60f74507aeccf217f78647e41ae29af51debe666',NULL,NULL);
++	(16,1,12,'Tag ChainedAction',NULL,'lead.changetags','action',4,'a:16:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:3:\"168\";s:8:\"droppedY\";s:3:\"439\";}s:4:\"name\";s:14:\"Chained Action\";s:11:\"triggerMode\";s:9:\"immediate\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"1\";s:19:\"triggerIntervalUnit\";s:1:\"d\";s:6:\"anchor\";s:6:\"bottom\";s:10:\"properties\";a:1:{s:8:\"add_tags\";a:1:{i:0;s:2:\"10\";}}s:4:\"type\";s:15:\"lead.changetags\";s:9:\"eventType\";s:6:\"action\";s:15:\"anchorEventType\";s:6:\"action\";s:10:\"campaignId\";s:1:\"1\";s:6:\"_token\";s:43:\"6xgHe74aRnc1V7AGzdang3-iJ0Ub5BKfbdU5NsxQmv0\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:8:\"add_tags\";a:1:{i:0;s:13:\"ChainedAction\";}s:11:\"remove_tags\";a:0:{}}',NULL,1,'d','immediate',NULL,'new60f74507aeccf217f78647e41ae29af51debe666',NULL,NULL),
++	(17, 2, NULL, 'Modify Tag', NULL, 'lead.changetags', 'action', 1, 'a:16:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:3:\"337\";s:8:\"droppedY\";s:3:\"155\";}s:4:\"name\";s:10:\"Modify Tag\";s:11:\"triggerMode\";s:9:\"immediate\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"1\";s:19:\"triggerIntervalUnit\";s:1:\"d\";s:6:\"anchor\";s:10:\"leadsource\";s:10:\"properties\";a:1:{s:8:\"add_tags\";a:1:{i:0;s:1:\"8\";}}s:4:\"type\";s:15:\"lead.changetags\";s:9:\"eventType\";s:6:\"action\";s:15:\"anchorEventType\";s:6:\"source\";s:10:\"campaignId\";s:1:\"2\";s:6:\"_token\";s:43:\"aIHSDEwEvOpTdLPlVWBHQWe_1wBF36hjTAy_ACgiMCM\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:8:\"add_tags\";a:1:{i:0;s:13:\"Campaign Test\";}s:11:\"remove_tags\";a:0:{}}', NULL, 1, 'd', 'immediate', NULL, 'newd322e6c045a44d2673cea02f5dc0d926fa97b731', NULL, 0),
++	(18, 2, 17, 'Has Phone (to be deleted)', NULL, 'lead.field_value', 'condition', 2, 'a:17:{s:14:\"canvasSettings\";a:2:{s:8:\"droppedX\";s:3:\"337\";s:8:\"droppedY\";s:3:\"439\";}s:4:\"name\";s:25:\"Has Phone (to be deleted)\";s:11:\"triggerMode\";s:9:\"immediate\";s:11:\"triggerDate\";N;s:15:\"triggerInterval\";s:1:\"1\";s:19:\"triggerIntervalUnit\";s:1:\"d\";s:6:\"anchor\";s:6:\"bottom\";s:10:\"properties\";a:2:{s:5:\"field\";s:5:\"phone\";s:8:\"operator\";s:6:\"!empty\";}s:4:\"type\";s:16:\"lead.field_value\";s:9:\"eventType\";s:9:\"condition\";s:15:\"anchorEventType\";s:6:\"action\";s:10:\"campaignId\";s:1:\"2\";s:6:\"_token\";s:43:\"aIHSDEwEvOpTdLPlVWBHQWe_1wBF36hjTAy_ACgiMCM\";s:7:\"buttons\";a:1:{s:4:\"save\";s:0:\"\";}s:5:\"field\";s:5:\"phone\";s:8:\"operator\";s:6:\"!empty\";s:5:\"value\";N;}', NULL, 1, 'd', 'immediate', NULL, 'newf0ea94f06b65f6a8b5b26c87b091236272929339', NULL, 0);
++
+ 
+ INSERT INTO `#__lead_lists` (`id`,`is_published`,`date_added`,`created_by`,`created_by_user`,`date_modified`,`modified_by`,`modified_by_user`,`checked_out`,`checked_out_by`,`checked_out_by_user`,`name`,`description`,`alias`,`filters`,`is_global`)
+ VALUES
+@@ -96,4 +100,8 @@ VALUES
+ 	(1,47,'2018-01-04 22:47:30',0,1,NULL,1),
+ 	(1,48,'2018-01-04 22:47:30',0,1,NULL,1),
+ 	(1,49,'2018-01-04 22:47:30',0,1,NULL,1),
+-	(1,50,'2018-01-04 22:47:30',0,1,NULL,1);
++	(1,50,'2018-01-04 22:47:30',0,1,NULL,1),
++	(2,1,'2018-01-04 22:47:30',0,1,NULL,1),
++	(2,2,'2018-01-04 22:47:30',0,1,NULL,1),
++	(2,3,'2018-01-04 22:47:30',0,1,NULL,1),
++	(2,4,'2018-01-04 22:47:30',0,1,NULL,1);
+diff --git a/app/bundles/CampaignBundle/Views/SubscribedEvents/Timeline/index.html.php b/app/bundles/CampaignBundle/Views/SubscribedEvents/Timeline/index.html.php
+index 63297031a4..fb7026fadd 100644
+--- a/app/bundles/CampaignBundle/Views/SubscribedEvents/Timeline/index.html.php
++++ b/app/bundles/CampaignBundle/Views/SubscribedEvents/Timeline/index.html.php
+@@ -46,7 +46,7 @@
+                 <?php echo $view['translator']->trans('mautic.campaign.event.cancelled.time', ['%date%' => $dateSpan, '%event%' => $event['eventLabel']]); ?>
+             </span>
+         </span>
+-        <?php if ($lead && $view['security']->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())): ?>
++        <?php if ($lead && !$item['unpublished'] && $view['security']->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())): ?>
+         <span class="form-buttons btn-group btn-group-xs mb-3" role="group" aria-label="Field options">
+             <button type="button" class="btn btn-default btn-edit btn-nospin" onclick="Mautic.updateScheduledCampaignEvent(<?php echo $item['event_id']; ?>, <?php echo $lead->getId(); ?>)" data-toggle="tooltip" title="<?php echo $view['translator']->trans('mautic.campaign.event.reschedule'); ?>">
+                 <i class="fa fa-clock-o text-primary"></i>
+diff --git a/app/bundles/LeadBundle/Views/Timeline/list.html.php b/app/bundles/LeadBundle/Views/Timeline/list.html.php
+index c8cfb9e6f4..fee1810bab 100644
+--- a/app/bundles/LeadBundle/Views/Timeline/list.html.php
++++ b/app/bundles/LeadBundle/Views/Timeline/list.html.php
+@@ -65,10 +65,15 @@
+         <?php foreach ($events['events'] as $counter => $event): ?>
+             <?php
+             $counter += 1; // prevent 0
+-            $icon       = (isset($event['icon'])) ? $event['icon'] : 'fa-history';
+-            $eventLabel = (isset($event['eventLabel'])) ? $event['eventLabel'] : $event['eventType'];
++            $icon        = (isset($event['icon'])) ? $event['icon'] : 'fa-history';
++            $eventLabel  = (isset($event['eventLabel'])) ? $event['eventLabel'] : $event['eventType'];
++            $isPublished = isset($event['extra']['log']['event_id']) ? $view->container->get('mautic.campaign.model.event')->getEntity($event['extra']['log']['event_id'])->getIsPublished() : 1;
+             if (is_array($eventLabel)):
+                 $linkType   = empty($eventLabel['isExternal']) ? 'data-toggle="ajax"' : 'target="_new"';
++                if (!$isPublished) {
++                    $eventLabel['label'] .= ' (Event has been UnPublished)';
++                    $event['extra']['log']['unpublished'] = true;
++                }
+                 $eventLabel = "<a href=\"{$eventLabel['href']}\" $linkType>{$eventLabel['label']}</a>";
+             endif;
+ 
+diff --git a/app/migrations/Version20180628082960.php b/app/migrations/Version20180628082960.php
+new file mode 100644
+index 0000000000..87c751dda6
+--- /dev/null
++++ b/app/migrations/Version20180628082960.php
+@@ -0,0 +1,50 @@
++<?php
++
++/*
++ * @copyright   2015 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\Migrations;
++
++use Doctrine\DBAL\Migrations\SkipMigrationException;
++use Doctrine\DBAL\Schema\Schema;
++use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
++
++/**
++ * 1.1.3 - 1.1.4.
++ *
++ * Class Version20180628082960
++ */
++class Version20180628082960 extends AbstractMauticMigration
++{
++    /**
++     * @param Schema $schema
++     *
++     * @throws SkipMigrationException
++     * @throws \Doctrine\DBAL\Schema\SchemaException
++     */
++    public function preUp(Schema $schema)
++    {
++        // Test to see if this migration has already been applied
++        $eventTable = $schema->getTable($this->prefix.'campaign_events');
++        if ($eventTable->hasColumn('is_published')) {
++            throw new SkipMigrationException('Schema includes this migration');
++        }
++    }
++
++    /**
++     * @param Schema $schema
++     */
++    public function up(Schema $schema)
++    {
++        $table = $schema->getTable($this->prefix.'campaign_events');
++        if (!$table->hasColumn('is_published')) {
++            $this->addSql('ALTER TABLE '.$this->prefix.'campaign_events ADD COLUMN is_published bool DEFAULT 1');
++        }
++    }
++}

@@ -78,33 +78,33 @@ echo "Support --quiet for faster mautic:campaigns:trigger processing #6224"
 echo "https://github.com/mautic/mautic/pull/6224"
 curl -L "https://github.com/mautic/mautic/pull/6224.diff" | git apply -v
 
-# Ready for tagging. Gist avoids conflicts with #6021.
+# Ready for tagging. Avoids conflicts with #6021.
 echo "----------------------------------------------------"
 echo "[Bug] Symfony Master/Slave support is broken #5969"
 echo "https://github.com/mautic/mautic/pull/5970"
-curl -L "https://gist.githubusercontent.com/heathdutton/c61d11c58fce60ff37449e97cd18a285/raw/46b3dc714091f0f0af02fcce422e8b48c2b4d51d/5970.diff" | git apply -v
+cat "../scripts/patches/5970.diff" | git apply -v
 
 # Not to go into any PR.
 echo "----------------------------------------------------"
 echo "Disable the contacts view embedded in campaign view (temporary)."
-curl -L "https://gist.githubusercontent.com/heathdutton/27065426ff16f2b0834a550d8a27aa76/raw/d8a6bc4667ed6d8b3474fd49736a385741656151/contact_list_disable.diff" | git apply -v
+cat "../scripts/patches/contact_list_disable.diff" | git apply -v
 
 # Ready for tagging. Gist avoids conflicts with #6021 and #6187
 echo "----------------------------------------------------"
 echo "Create a Soft delete process for campaign events #6247"
 echo "https://github.com/mautic/mautic/pull/6247"
-curl -L "https://gist.githubusercontent.com/scottshipman/6c7ec747ee253d88c0f6165913fc05bd/raw/7621bea7d5e74f0f2b08c4007db740059076dc20/mautic-soft-delete.diff" | git apply -v
+cat "../scripts/patches/6247.diff" | git apply -v
 
 # Gist Applies patches for Campaign Tagging
 echo "----------------------------------------------------"
 echo "Applies patches for Campaign Tagging"
 echo "https://github.com/mautic/mautic/pull/6152"
-curl -L "https://gist.githubusercontent.com/cykonetic/dd517bc45f633c00f2435e4c8ff6d0f0/raw/e8a05d667fccd378dec1f7bc7b5306cdc44a3469/6152.diff" | git apply -v
+cat "../scripts/patches/6152.diff" | git apply -v
 
 # Temporary state abbreviation patch
 echo "----------------------------------------------------"
 echo "Converts United States proper names to abbreviations"
-curl -L "https://gist.githubusercontent.com/cykonetic/521b38133797e2a3f48060c519a1870e/raw/6e4a04d3e7202b66c437fff3234c900c073d3441/stateacceptancepatch.diff" | git apply -v
+cat "../scripts/patches/us_state_abbrev_acceptance.diff" | git apply -v
 
 # Report Event Dispatch called earlier to prevent fatal error when pagination used
 echo "----------------------------------------------------"

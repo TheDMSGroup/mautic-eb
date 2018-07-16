@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Rebuild all assets in place to test composer changes and prep for release.
+# Script for setting up a local environment for development:
+# Custom installation example for mautic-eb
+# Includes custom sha, theme and plugins.
 
 BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../

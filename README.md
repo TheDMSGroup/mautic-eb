@@ -9,12 +9,15 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
 
 ## Requirements
 
-1) AWS EB environment running PHP 7.1 with environment variables described below.
-2) AWS RDS MySQL instance (Aurora recommended, encrypted in a private VPC)
-3) AWS EFS Volume (used for shared media and spool storage)
+1) AWS EB environment running PHP 7.1 with environment variables described below
+2) AWS RDS MySQL instance (Aurora recommended, preferably encrypted)
+3) AWS EFS Volume (used for shared media/spool/etc)
 4) Add the AmazonEC2ReadOnlyAccess policy to the aws-elasticbeanstalk-ec2-role (for the cron script to self regulate)
+5) We recommend having the Elastic Beanstalk CLI [installed](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html) locally.
 
-## Environment variables in Elastic Beanstalk.
+## Elastic Beanstalk Environment Variables
+
+#### Required:
 
     APP_URL               - The default full URL for your site.
     DB_HOST               - RDS Host.
@@ -27,17 +30,18 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     MAILER_FROM_NAME      - Default "from" email name.
     MAILER_FROM_EMAIL     - Default "from" email address.
     EFS_DNS_NAME          - The full DNS of the EFS mount.
-    MAUTIC_INSTALL        - Optional: Set to "1" to initialize mautic, for the first deployment only.
-    MAUTIC_WORKERS        - Optional: Number of concurrent campaign trigger workers to run on the leading instance.
-    NR_APPNAME            - Optional: Newrelic application name.
-    NR_APM_INSTALL_KEY    - Optional: NewRelic install key for Application Monitoring.
-    NR_INF_INSTALL_KEY    - Optional: NewRelic install key for Infrastructure.
 
-### EB Container Options:
+#### Optional:
 
-- Document Root: `/mautic`
+    MAUTIC_INSTALL        - Set to "1" to initialize mautic for the first/cold deployment only!
+    MAUTIC_WORKERS        - Number of concurrent campaign trigger workers to run on the leading instance.
+    NR_APPNAME            - Newrelic application name.
+    NR_APM_INSTALL_KEY    - NewRelic install key for Application Monitoring.
+    NR_INF_INSTALL_KEY    - NewRelic install key for Infrastructure.
 
 ### Travis CI Environment Variables
+
+You will need to set these up if you wish to deploy your fork to an Elastic Beanstalk environment automatically from Travis.
 
     AWS_ACCESS_KEY_ID             - From your IAM console (keep hidden).
     AWS_SECRET_ACCESS_KEY         - From your IAM console (keep hidden).
@@ -60,45 +64,36 @@ Third party plugins that use the "mautic-plugin" installer will have their folde
 
 Custom dependencies can be included in a root composer.custom
 
-### Quick local setup
+### Local setup
+Pretty much the same as working with Mautic core:
 
-1. Set up local host at http://mautic.loc that points to `./mautic`
-2. Create a `./mautic/.env` file containing your local database credentials. 
-3. Run: `composer install` to get all the dependencies together.
-5. Run: `composer db-setup-dev` to create your local database.
+1. Set up local host at http://mautic.loc that points to `./mautic` (not to the root of this repository).
+2. Run: `composer install` to get all the dependencies together.
+3. Browse to http://mautic.loc and go through the standard setup. 
+
+### Traditional deployment (from local)
+Should you not wish to use Travis to deploy for you, you can do it manually from your local machine:
+
+* Make sure you've set up the *Requirements* above.
+* run `bash ./scripts/build.sh`
+* run `eb init` if you haven't already.
+* run `eb deploy`
 
 #### Local tips and commands
 
+* Important: Do not run `composer install` from within the `./mautic` folder, only in the root project folder.
 * `composer cc` to clear all Mautic/Symfony caches.
-* `composer custom` to update symlinks for all customizations to mautic core.
-* `composer less` to compile LESS styles (should you need to extend the core styles).
-* `composer assets` to regenerate core CSS and JS files for deployment.
+* `composer custom` to update symlinks for all customizations to mautic core (from mautic_eb and mautic_custom).
+* `composer less` to compile LESS styles (should you need to extend or modify the core styles using SCSS).
+* `composer assets` to regenerate core CSS and JS files for deployment (should you need to modify core JS or SCSS).
 * `composer test` to run the full codeception suite.
-* The file `composer.custom` can be created to pull in third-party dependencies and customizations without altering this repo.
-* Do not run `composer install` from within the `./mautic` folder, only in the root project folder.
+* The file `composer.custom` can be created for third-party dependencies/plugins/customizations
 
-### Additional Plugins
+### Additional Plugins / Customizations
 
 Need to process a million new contacts every day? 
 Need to add a custom integration every day, without writing code?
 
 These are the kinds of requirements we have on the bleeding edge of Performance Marketing.
 With that in mind, we are actively working on some [additional plugins](https://github.com/thedmsgroup?q=mautic&type=public)
-to augment this build. Eventually we hope these can be robust enough to make their way into core. For now, 
-we can access and test them by renaming `composer.custom.dist` to `composer.custom` and running `composer install`. 
-
-### Multisite *(work in progress)*
-
-You may need to run several "sites" off of the same Elastic Beanstalk cluster.
-This isn't likely a common need, we just wanted to make sure there was *some* room made for this.
-More documentation incoming.
-
-If you go multisite you'll need. Your database structure in RDS will look like this:
-
-    mautic_eb_multi     - Database mapping hostnames to sites, based on [this](https://gist.github.com/heathdutton/46fc4514d8372cdda26b61cc0fe6a0cd).
-    mautic_eb_site_0    - Default first site in the cluster.
-    mautic_eb_site_1    - Second site... and so on.
-
-Multisite environment variables:
-
-    EB_MULTI            - Set to true to enable multisite (off by default).
+to augment this build. You can access them all at once by renaming `composer.custom.dist` to `composer.custom` and running `composer install`. 
