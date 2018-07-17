@@ -77,4 +77,3 @@ deploy:
 # http://docs.travis-ci.com/user/notifications/
 notifications:
   slack: dmsgroup:3nPbmvUU584YtdeDVOweIMWg
-    template: "Build <%{build_url}|#%{build_number}> Version $ELASTIC_BEANSTALK_LABEL (<%{compare_url}|%{commit}>) of %{repository_slug}@%{branch} by %{author} %{result} in %{duration}"
