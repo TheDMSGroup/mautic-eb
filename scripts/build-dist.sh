@@ -59,5 +59,8 @@ rm composer.custom
 echo ; echo "Here's a diff of what this build changes."
 git --no-pager diff --minimal
 
+# Prevent travis builds from missing customizations.
+rm -rf ./mautic/.gitignore
+
 # The following may be needed if building for production (can be ran upon deployment to drop dev dependencies).
 # composer install --no-dev --no-interaction

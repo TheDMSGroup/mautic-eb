@@ -8,6 +8,9 @@ services:
 php:
   - 7.1
 
+git:
+  depth: 200
+
 before_install:
   # Create mautictest database
   - mysql -e 'CREATE DATABASE mautictest;'
@@ -43,13 +46,10 @@ before_deploy:
   # Travis uses gitignore instead of ebignore https://github.com/travis-ci/dpl/issues/411
   - cp .ebignore .gitignore
   # Generate a version label based on git describe.
-  - VERSION=`git describe --always`
+  - VERSION=`git describe --always --long`
   - export ELASTIC_BEANSTALK_LABEL="$VERSION"
-  - echo "Version to be deployed is '$ELASTIC_BEANSTALK_LABEL'"
-  # Prepend the description by the date.
-  - DATE=`date '+%Y-%m-%d %H:%M:%S'`
-  - export ELASTIC_BEANSTALK_DESCRIPTION="$DATE - $ELASTIC_BEANSTALK_DESCRIPTION"
-  - echo "Build description is '$ELASTIC_BEANSTALK_DESCRIPTION'"
+  - echo "Version label is '$ELASTIC_BEANSTALK_LABEL'"
+  - echo "Version description is '$ELASTIC_BEANSTALK_DESCRIPTION'"
 
 deploy:
   # Optional deployment to Elastic Beanstalk (Environment Variables must be configured in your Travis settings)
