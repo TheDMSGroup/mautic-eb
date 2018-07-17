@@ -49,8 +49,8 @@ before_deploy:
   # This will allow Travis to deploy in effectively the same way as `eb deploy`
   - DESCRIPTION=`git log -n 1 --pretty=%B`
   - find . -name ".gitignore" -type f -exec rm -f '{}' \;
-  - find ./mautic -name ".git" -type d -exec rm -rf '{}' \;
-  - find ./vendor -name ".git" -type d -exec rm -rf '{}' \;
+  - cd mautic ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
+  - cd vendor ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
