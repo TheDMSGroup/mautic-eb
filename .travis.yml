@@ -48,14 +48,14 @@ before_deploy:
   # Overcome this issue by pretending everything has been committed, and removing all .gitignore files
   # This will allow Travis to deploy in effectively the same way as `eb deploy`
   - DESCRIPTION=`git log -n 1 --pretty=%B`
-  - rm -rf mautic/.git
-  - find . -name ".gitignore" -exec rm -f '{}' \;
-  - find vendor/ -name ".git" -exec rm -rf '{}' \;
+  - find . -name ".gitignore" -type f -exec rm -f '{}' \;
+  - find ./mautic -name ".git" -type d -exec rm -rf '{}' \;
+  - find ./vendor -name ".git" -type d -exec rm -rf '{}' \;
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
   - git add -A
-  - git commit -m "Surpassing Travis EB incompatibility" --quiet
+  - git commit -m "Surpassing Travis EB incompatibility"
   # Generate a version label based on git describe and preserve description before above.
   - VERSION=`git describe --always --long`
   - export ELASTIC_BEANSTALK_LABEL="$VERSION"
