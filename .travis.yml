@@ -50,5 +50,6 @@ deploy:
   env: $AWS_EB_ENV
   bucket_name: $AWS_S3_BUCKET_NAME
   bucket_path: $AWS_S3_BUCKET_PATH
+  skip_cleanup: true
   on:
     branch: dev-dist
