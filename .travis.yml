@@ -50,7 +50,7 @@ before_deploy:
   - DESCRIPTION=`git log -n 1 --pretty=%B`
   - rm -rf mautic/.git
   - find . -name ".gitignore" -exec rm -f '{}' \;
-  - find vendor -name ".git" -exec rm -rf '{}' \;
+  - find vendor/ -name ".git" -exec rm -rf '{}' \;
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
