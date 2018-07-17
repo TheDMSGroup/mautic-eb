@@ -41,7 +41,7 @@ script:
   - rm -rf bin/phpunit
 #  - cd mautic
 #  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
-#  - cd ../
+#  - cd -
 
 before_deploy:
   # Travis uses .gitignore instead of .ebignore https://github.com/travis-ci/dpl/issues/411
@@ -51,6 +51,7 @@ before_deploy:
   - find . -name ".gitignore" -type f -exec rm -f '{}' \;
   - cd mautic ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
   - cd vendor ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
+  - cd mautic_custom ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
