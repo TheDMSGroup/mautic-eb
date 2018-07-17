@@ -40,6 +40,8 @@ script:
   - cd ../
 
 before_deploy:
+  # Travis uses gitignore instead of ebignore https://github.com/travis-ci/dpl/issues/411
+  - cp .ebignore .gitignore
   # Generate a version label based on git describe.
   - export ELASTIC_BEANSTALK_LABEL="${git describe --always}"
   - echo "Version to be deployed is '$ELASTIC_BEANSTALK_LABEL'"
