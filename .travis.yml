@@ -51,6 +51,7 @@ before_deploy:
   - cd vendor
   - find . -name ".gitignore" -print0 | xargs -0 rm -rf
   - find . -name ".git" -print0 | xargs -0 rm -rf
+  - cd ../
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
