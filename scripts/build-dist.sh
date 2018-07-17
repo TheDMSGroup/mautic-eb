@@ -8,11 +8,11 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
-# echo ; echo "Pulling mautic-eb"
-# git pull
+echo ; echo "Pulling mautic-eb"
+git pull
 
-# echo ; echo "Cleaning up the build space."
-# rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
+echo ; echo "Cleaning up the build space."
+rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
 mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
@@ -25,7 +25,7 @@ composer install --no-interaction
 
 bash ./scripts/core-patches.sh
 
-echo ; echo "Forcing updates to custom plugins"
+echo ; echo "Forcing updates to distribution plugins"
 rm -rf ./mautic_custom
 git clone -b master https://github.com/TheDMSGroup/mautic-eb-custom.git ./mautic_custom
 rm -rf ~/.composer/cache/files/thedmsgroup/*
@@ -43,10 +43,10 @@ then
 	if cat ./mautic/media/css/app.css | grep '#00b49c' > /dev/null 2>&1
 	then
 	    echo "No luck. Abort build!"
+        exit 1
 	else
 	    echo "And they look good (on second try)."
 	fi
-    exit 1
 else
     echo "And they look good."
 fi
@@ -58,9 +58,6 @@ rm composer.custom
 
 echo ; echo "Here's a diff of what this build changes."
 git --no-pager diff --minimal
-
-# Prevent travis builds from missing customizations.
-rm -rf ./mautic/.gitignore
 
 # The following may be needed if building for production (can be ran upon deployment to drop dev dependencies).
 # composer install --no-dev --no-interaction

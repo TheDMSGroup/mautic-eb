@@ -17,7 +17,7 @@ echo ; echo "Setting composer.lock and composer.custom files from the dist coppi
 cp composer.lock.dist composer.lock
 cp composer.custom.dist composer.custom
 
-echo ; echo "Standard install."
+echo ; echo "Custom install."
 composer install --no-interaction
 
 bash ./scripts/core-patches.sh

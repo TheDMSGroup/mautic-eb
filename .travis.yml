@@ -47,12 +47,12 @@ before_deploy:
   # Travis uses gitignore instead of ebignore https://github.com/travis-ci/dpl/issues/411
   # Circumvent this by pretending everything has been committed.
   - DESCRIPTION=`git log -n 1 --pretty=%B`
+  - rm -rf mautic/.gitignore mautic/.git
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
-  - git add mautic bin vendor plugins mautic_custom
   - git add -A
-  - git commit -m "Surpassing Travis EB incompatibility"
+  - git commit -m "Surpassing Travis EB incompatibility" --quiet
   # Generate a version label based on git describe and preserve description before above.
   - VERSION=`git describe --always --long`
   - export ELASTIC_BEANSTALK_LABEL="$VERSION"
