@@ -44,10 +44,11 @@ script:
 #  - cd ../
 
 before_deploy:
-  # Travis uses gitignore instead of ebignore https://github.com/travis-ci/dpl/issues/411
-  # Overcome this issue by pretending everything has been committed.
+  # Travis uses .gitignore instead of .ebignore https://github.com/travis-ci/dpl/issues/411
+  # Overcome this issue by pretending everything has been committed, and removing all .gitignore files
+  # This will allow Travis to deploy in effectively the same way as `eb deploy`
   - DESCRIPTION=`git log -n 1 --pretty=%B`
-  - find . -name ".gitignore" -print0 | xargs -0 rm -rf
+  - find . -name ".gitignore" -exec rm '{}' \;
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
