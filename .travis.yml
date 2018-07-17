@@ -40,6 +40,9 @@ script:
   # Run PHPUnit
   - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --debug --stop-on-failure
 
+  # Go up a directory for deployment.
+  - cd ../
+
 deploy:
   # Optional deployment to Elastic Beanstalk (Environment Variables must be configured in your Travis settings)
   provider: elasticbeanstalk
