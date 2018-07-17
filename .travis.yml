@@ -36,8 +36,9 @@ install:
   #                 This build is Used for advanced testing and deployment by DMS.
   - if [[ "$TRAVIS_BRANCH" = *"dist"* ]]; then ./scripts/build-dist.sh; else bash ./scripts/build.sh; fi
 
-#script:
-#  # Run PHPUnit on the complete build.
+script:
+  # Run PHPUnit on the complete build.
+  - rm -rf bin/phpunit
 #  - cd mautic
 #  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
 #  - cd ../
