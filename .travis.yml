@@ -53,7 +53,6 @@ before_deploy:
   - cd vendor ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
   - cd mautic_custom ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
   - cd plugins ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
-  - bash ./scripts/mautic-custom-plugins.sh
   - cp .ebignore .gitignore
   - git config --global user.email "NA"
   - git config --global user.name "NA"
