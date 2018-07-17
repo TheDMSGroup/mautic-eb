@@ -51,7 +51,7 @@ before_deploy:
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
   - git add mautic bin vendor plugins mautic_custom
-  - git add .
+  - git add -A
   - git commit -m "Surpassing Travis EB incompatibility"
   # Generate a version label based on git describe and preserve description before above.
   - VERSION=`git describe --always --long`
