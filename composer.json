@@ -50,8 +50,7 @@
   },
   "scripts": {
     "cc": [
-      "rm -rf ./mautic/app/cache/",
-      "@php ./mautic/app/console cache:clear --no-interaction --no-warmup -vvv",
+      "rm -rf ./mautic/app/cache/*",
       "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
       "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache"
     ],
@@ -108,7 +107,7 @@
       "@php ./mautic/app/console doctrine:database:create --no-interaction --env=test",
       "@php ./mautic/app/console mautic:install:data --force --env=test",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test",
-      "@php ./mautic/app/console cache:clear --no-interaction --no-warmup --env=test",
+      "@cc",
       "cd ./mautic ; bin/codecept run --env=test",
       "# ./mautic/bin/phpstan analyse ./mautic/app/bundles/*Bundle --no-interaction"
     ],
