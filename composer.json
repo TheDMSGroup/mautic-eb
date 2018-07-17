@@ -129,9 +129,6 @@
       "@git-hooks",
       "@iplookup",
       "@cc"
-    ],
-    "post-update-cmd": [
-      "@custom"
     ]
   },
   "config": {
