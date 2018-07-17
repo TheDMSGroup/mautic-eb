@@ -120,3 +120,8 @@ fi
 echo ; echo "Compiling Mautic JS/CSS assets."
 composer custom
 composer assets --no-interaction
+
+# Do not conflict with the standard distribution, we want the composer.lock to exclude customization examples.
+cp composer.lock composer.lock.dist
+git checkout composer.lock
+rm -f composer.custom
