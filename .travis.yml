@@ -48,7 +48,9 @@ before_deploy:
   # Overcome this issue by pretending everything has been committed.
   - DESCRIPTION=`git log -n 1 --pretty=%B`
   - rm -rf mautic/.gitignore mautic/.git
-  - find . -name '.gitignore' -exec rm -r {} \;
+  - cd vendor
+  - find . -name ".gitignore" -print0 | xargs -0 rm -rf
+  - find . -name ".git" -print0 | xargs -0 rm -rf
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
@@ -78,3 +80,6 @@ deploy:
 # http://docs.travis-ci.com/user/notifications/
 notifications:
   slack: dmsgroup:3nPbmvUU584YtdeDVOweIMWg
+    template:
+      - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository_slug}@%{branch} by %{author} %{result} in %{duration}"
+      - "Version $ELASTIC_BEANSTALK_LABEL"
