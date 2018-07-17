@@ -48,7 +48,9 @@ before_deploy:
   # Overcome this issue by pretending everything has been committed, and removing all .gitignore files
   # This will allow Travis to deploy in effectively the same way as `eb deploy`
   - DESCRIPTION=`git log -n 1 --pretty=%B`
-  - find . -name ".gitignore" -exec rm '{}' \;
+  - rm -rf mautic/.git
+  - find . -name ".gitignore" -exec rm -f '{}' \;
+  - find vendor -name ".git" -exec rm -rf '{}' \;
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
