@@ -47,11 +47,7 @@ before_deploy:
   # Travis uses gitignore instead of ebignore https://github.com/travis-ci/dpl/issues/411
   # Overcome this issue by pretending everything has been committed.
   - DESCRIPTION=`git log -n 1 --pretty=%B`
-  - rm -rf mautic/.gitignore mautic/.git
-  - cd vendor
   - find . -name ".gitignore" -print0 | xargs -0 rm -rf
-  - find . -name ".git" -print0 | xargs -0 rm -rf
-  - cd ../
   - cp .ebignore .gitignore
   - git config --global user.email "heathdutton@gmail.com"
   - git config --global user.name "heathdutton"
