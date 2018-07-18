@@ -46,7 +46,7 @@ if (function_exists('apc_fetch')) {
     $container->loadFromExtension('doctrine', [
         'orm' => [
             'metadata_cache_driver' => 'apc',
-            'result_cache_driver'   => 'apc',
+            // 'result_cache_driver'   => 'apc',
             'query_cache_driver'    => 'apc',
         ],
     ]);
