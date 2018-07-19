@@ -58,7 +58,7 @@ curl -L "https://github.com/mautic/mautic/pull/6125.diff" | git apply -v
 echo "----------------------------------------------------"
 echo "[Feature] Chained actions #6187"
 echo "https://github.com/mautic/mautic/pull/6187"
-curl -L "https://github.com/mautic/mautic/pull/6187.diff" | git apply -v
+cat "../scripts/patches/6187.diff" | git apply -v
 
 # Ready for tagging.
 echo "----------------------------------------------------"
