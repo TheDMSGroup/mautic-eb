@@ -3373,14 +3373,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "173112780ec92d3a0701c76524afce8332fa02f9"
+                "reference": "62c4023e4cb982dbcfc7b3a4c0b267a16df67450"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-07-16T19:25:59+00:00"
+            "time": "2018-07-18T00:00:00+00:00"
         },
         {
             "name": "maxmind-db/reader",

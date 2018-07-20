@@ -58,7 +58,7 @@ curl -L "https://github.com/mautic/mautic/pull/6125.diff" | git apply -v
 echo "----------------------------------------------------"
 echo "[Feature] Chained actions #6187"
 echo "https://github.com/mautic/mautic/pull/6187"
-curl -L "https://github.com/mautic/mautic/pull/6187.diff" | git apply -v
+cat "../scripts/patches/6187.diff" | git apply -v
 
 # Ready for tagging.
 echo "----------------------------------------------------"
@@ -93,6 +93,7 @@ cat "../scripts/patches/6247.diff" | git apply -v
 echo "----------------------------------------------------"
 echo "Applies patches for Campaign Tagging"
 echo "https://github.com/mautic/mautic/pull/6152"
+# Modified to prevent collisions with diffs above.
 cat "../scripts/patches/6152.diff" | git apply -v
 
 # Temporary state abbreviation patch
