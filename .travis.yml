@@ -39,9 +39,9 @@ install:
 script:
   # Run PHPUnit on the complete build.
   - rm -rf bin/phpunit
-#  - cd mautic
-#  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
-#  - cd -
+  - cd mautic
+  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
+  - cd -
 
 before_deploy:
   # Travis uses .gitignore instead of .ebignore https://github.com/travis-ci/dpl/issues/411
@@ -57,7 +57,7 @@ before_deploy:
   - git config --global user.email "NA"
   - git config --global user.name "NA"
   - git add -A
-  - git commit -m "Surpassing Travis EB incompatibility"
+  - git commit -m "Surpassing Travis EB incompatibility" --quiet
   # Generate a version label based on git describe and preserve description before above.
   - VERSION=`git describe --always --long`
   - export ELASTIC_BEANSTALK_LABEL="$VERSION"
