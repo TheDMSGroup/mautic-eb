@@ -13,9 +13,9 @@ git pull
 echo ; echo "Cleaning up the build space."
 rm -rf ./mautic
 
-echo ; echo "Setting composer.lock and composer.custom files from the dist coppies."
-cp composer.lock.dist composer.lock
-cp composer.custom.dist composer.custom
+echo ; echo "Setting composer.lock and composer.custom files from the dev coppies."
+cp composer.lock.dev composer.lock
+cp composer.custom.dev composer.custom
 
 echo ; echo "Custom install."
 composer install --no-interaction
@@ -106,6 +106,17 @@ else
     cd -
 fi
 
+if [ ! -d "./plugins/MauticApiServicesBundle/.git" ]
+then
+    rm -rf ./plugins/MauticApiServicesBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-api-services.git ./plugins/MauticApiServicesBundle
+else
+    cd ./mautic_custom
+    git checkout master
+    git pull
+    cd -
+fi
+
 if [ ! -d "./mautic_custom/.git" ]
 then
     rm -rf ./mautic_custom
@@ -122,6 +133,6 @@ composer custom
 composer assets --no-interaction
 
 # Do not conflict with the standard distribution, we want the composer.lock to exclude customization examples.
-cp composer.lock composer.lock.dist
+cp composer.lock composer.lock.dev
 git checkout composer.lock
 rm -f composer.custom

@@ -31,10 +31,10 @@ install:
   #                 Includes latest release and standard dependencies.
   #                 Pretty much just a standard `composer install`.
   #
-  # build-dist.sh - Custom distribution (for branches containing the word "dist")
+  # build-dist.sh - Custom distribution (for branches containing the word "dev")
   #                 Includes a specific (recent) sha, core patches, custom theme, and additional plugins.
   #                 This build is Used for advanced testing and deployment by DMS.
-  - if [[ "$TRAVIS_BRANCH" = *"dist"* ]]; then ./scripts/build-dist.sh; else bash ./scripts/build.sh; fi
+  - if [[ "$TRAVIS_BRANCH" = *"dev"* ]]; then ./scripts/build-dev.sh; else bash ./scripts/build.sh; fi
 
 script:
   # Run PHPUnit on the complete build.
@@ -77,7 +77,7 @@ deploy:
   bucket_path: $AWS_S3_BUCKET_PATH
   skip_cleanup: true
   on:
-    branch: dev-dist
+    branch: dev
 
 # http://docs.travis-ci.com/user/notifications/
 notifications:

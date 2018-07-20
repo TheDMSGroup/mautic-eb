@@ -17,8 +17,8 @@ mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
 echo ; echo "Setting composer.lock and composer.custom files from the dist copies."
-cp composer.lock.dist composer.lock
-cp composer.custom.dist composer.custom
+cp composer.lock.dev composer.lock
+cp composer.custom.dev composer.custom
 
 echo ; echo "Custom build."
 composer install --no-interaction
@@ -52,7 +52,7 @@ else
 fi
 
 # Do not conflict with the standard distribution, we want the composer.lock to exclude customization examples.
-cp composer.lock composer.lock.dist
+cp composer.lock composer.lock.dev
 git checkout composer.lock
 rm -f composer.custom
 

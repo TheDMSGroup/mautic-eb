@@ -7,7 +7,8 @@
       "thedmsgroup/mautic-contact-source-bundle": "dev-master",
       "thedmsgroup/mautic-enhancer-bundle": "dev-master",
       "thedmsgroup/mautic-usstate-normalizer-bundle": "dev-master",
-      "thedmsgroup/mautic-health-bundle": "dev-master"
+      "thedmsgroup/mautic-health-bundle": "dev-master",
+      "thedmsgroup/mautic-api-services": "dev-master"
     },
     "config": {
         "preferred-install": {
