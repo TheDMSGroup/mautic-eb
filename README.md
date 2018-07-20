@@ -1,7 +1,7 @@
 Mautic EB [![Latest Stable Version](https://poser.pugx.org/thedmsgroup/mautic-eb/v/stable)](https://packagist.org/packages/thedmsgroup/mautic-eb) [![Build Status](https://travis-ci.org/TheDMSGroup/mautic-eb.svg?branch=master)](https://travis-ci.org/TheDMSGroup/mautic-eb)
 =========
 
-#### Deploy Mautic in an auto-scaling Amazon Elastic Beanstalk cluster.
+#### Deploy Mautic in a scalable Amazon Elastic Beanstalk cluster.
 ![Mautic and AWS](https://i.imgur.com/LkFNgHr.jpg "Mautic and AWS")
 
 The goal here is to make it simple and safe to scale Mautic up to millions of leads per week, 
@@ -12,7 +12,7 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
 1) AWS EB environment running PHP 7.1 with environment variables described below
 2) AWS RDS MySQL instance (Aurora recommended, preferably encrypted)
 3) AWS EFS Volume (used for shared media/spool/etc)
-4) Add the AmazonEC2ReadOnlyAccess policy to the aws-elasticbeanstalk-ec2-role (for the cron script to self regulate)
+4) Add the AmazonEC2ReadOnlyAccess policy to the aws-elasticbeanstalk-ec2-role (for the cron script to run on leading instance only)
 5) We recommend having the Elastic Beanstalk CLI [installed](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html) locally.
 
 ## Elastic Beanstalk Environment Variables
@@ -67,8 +67,13 @@ Custom dependencies can be included in a root composer.custom
 ### Local setup
 Pretty much the same as working with Mautic core:
 
-1. Set up local host at http://mautic.loc that points to `./mautic` (not to the root of this repository).
-2. Run: `composer install` to get all the dependencies together.
+1. Clone & composer:
+```
+git clone https://github.com/TheDMSGroup/mautic-eb.git
+cd mautic-eb
+composer install
+```
+2. Set up local host at http://mautic.loc that points to the `.../mautic-eb/mautic` sub-folder.
 3. Browse to http://mautic.loc and go through the standard setup. 
 
 ### Traditional deployment (from local)
@@ -94,6 +99,6 @@ Should you not wish to use Travis to deploy for you, you can do it manually from
 Need to process a million new contacts every day? 
 Need to add a custom integration every day, without writing code?
 
-These are the kinds of requirements we have on the bleeding edge of Performance Marketing.
-With that in mind, we are actively working on some [additional plugins](https://github.com/thedmsgroup?q=mautic&type=public)
-to augment this build. You can access them all at once by renaming `composer.custom.dist` to `composer.custom` and running `composer install`. 
+These are the kinds of requirements we have in Performance Marketing.
+With that in mind, we include [optional plugins](https://github.com/thedmsgroup?q=mautic&type=public)
+to augment this build. You can access them all at once by renaming `composer.custom.dev` to `composer.custom` and running `composer install`. 

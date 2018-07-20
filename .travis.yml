@@ -27,18 +27,17 @@ before_install:
 install:
   # There are 2 build variants to be built based on the branch name:
   #
-  # build.sh      - Standard Mautic (default)
-  #                 Includes latest release and standard dependencies.
-  #                 Pretty much just a standard `composer install`.
+  # build.sh     - Standard Mautic (default)
+  #                Includes latest release and standard dependencies.
+  #                Pretty much just a standard `composer install`.
   #
-  # build-dist.sh - Custom distribution (for branches containing the word "dev")
-  #                 Includes a specific (recent) sha, core patches, custom theme, and additional plugins.
-  #                 This build is Used for advanced testing and deployment by DMS.
+  # build-dev.sh - Custom distribution (for branches containing the word "dev")
+  #                Includes a specific (recent) sha, core patches, custom theme, and additional plugins.
+  #                This build is Used for advanced testing and deployment by DMS.
   - if [[ "$TRAVIS_BRANCH" = *"dev"* ]]; then ./scripts/build-dev.sh; else bash ./scripts/build.sh; fi
 
 script:
   # Run PHPUnit on the complete build.
-  - rm -rf bin/phpunit
   - cd mautic
   - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
   - cd -
