@@ -1,0 +1,416 @@
+diff --git a/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php b/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php
+index 101581e284..4a1e33d48f 100644
+--- a/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php
++++ b/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php
+@@ -24,6 +24,7 @@
+ use Psr\Log\LoggerInterface;
+ use Symfony\Component\Console\Input\InputInterface;
+ use Symfony\Component\Console\Input\InputOption;
++use Symfony\Component\Console\Output\NullOutput;
+ use Symfony\Component\Console\Output\OutputInterface;
+ use Symfony\Component\EventDispatcher\EventDispatcher;
+ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+@@ -240,7 +241,8 @@ protected function configure()
+      */
+     protected function execute(InputInterface $input, OutputInterface $output)
+     {
+-        $this->output       = $output;
++        $quiet              = $input->getOption('quiet');
++        $this->output       = $quiet ? new NullOutput() : $output;
+         $this->kickoffOnly  = $input->getOption('kickoff-only');
+         $this->scheduleOnly = $input->getOption('scheduled-only');
+         $this->inactiveOnly = $input->getOption('inactive-only') || $input->getOption('negative-only');
+@@ -264,7 +266,7 @@ protected function execute(InputInterface $input, OutputInterface $output)
+         defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED') or define('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED', 1);
+ 
+         $id = $input->getOption('campaign-id');
+-        if (!$this->checkRunStatus($input, $output, $id)) {
++        if (!$this->checkRunStatus($input, $this->output, $id)) {
+             return 0;
+         }
+ 
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLog.php b/app/bundles/CampaignBundle/Entity/LeadEventLog.php
+index 9a10cf6a2c..e04959cfd8 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLog.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLog.php
+@@ -112,6 +112,7 @@ public static function loadMetadata(ORM\ClassMetadata $metadata)
+         $builder->setTable('campaign_lead_event_log')
+             ->setCustomRepositoryClass('Mautic\CampaignBundle\Entity\LeadEventLogRepository')
+             ->addIndex(['is_scheduled', 'lead_id'], 'campaign_event_upcoming_search')
++            ->addIndex(['campaign_id', 'is_scheduled', 'trigger_date'], 'campaign_event_schedule_counts')
+             ->addIndex(['date_triggered'], 'campaign_date_triggered')
+             ->addIndex(['lead_id', 'campaign_id', 'rotation'], 'campaign_leads')
+             ->addIndex(['channel', 'channel_id', 'lead_id'], 'campaign_log_channel')
+diff --git a/app/bundles/CampaignBundle/Executioner/InactiveExecutioner.php b/app/bundles/CampaignBundle/Executioner/InactiveExecutioner.php
+index b865412cbf..cb0ed59b8d 100644
+--- a/app/bundles/CampaignBundle/Executioner/InactiveExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/InactiveExecutioner.php
+@@ -221,22 +221,24 @@ private function prepareForExecution()
+         if (!$totalDecisions) {
+             throw new NoEventsFoundException();
+         }
++        $totalContacts = 0;
++        if (!($this->output instanceof NullOutput)) {
++            $totalContacts = $this->inactiveContactFinder->getContactCount($this->campaign->getId(), $this->decisions->getKeys(), $this->limiter);
++
++            $this->output->writeln(
++                $this->translator->trans(
++                    'mautic.campaign.trigger.decision_count_analyzed',
++                    [
++                        '%decisions%' => $totalDecisions,
++                        '%leads%'     => $totalContacts,
++                        '%batch%'     => $this->limiter->getBatchLimit(),
++                    ]
++                )
++            );
+ 
+-        $totalContacts = $this->inactiveContactFinder->getContactCount($this->campaign->getId(), $this->decisions->getKeys(), $this->limiter);
+-
+-        $this->output->writeln(
+-            $this->translator->trans(
+-                'mautic.campaign.trigger.decision_count_analyzed',
+-                [
+-                    '%decisions%' => $totalDecisions,
+-                    '%leads%'     => $totalContacts,
+-                    '%batch%'     => $this->limiter->getBatchLimit(),
+-                ]
+-            )
+-        );
+-
+-        if (!$totalContacts) {
+-            throw new NoContactsFoundException();
++            if (!$totalContacts) {
++                throw new NoContactsFoundException();
++            }
+         }
+ 
+         // Approximate total count because the query to fetch contacts will filter out those that have not arrived to this point in the campaign yet
+@@ -267,7 +269,7 @@ private function executeEvents()
+                 $contacts = $this->inactiveContactFinder->getContacts($this->campaign->getId(), $decisionEvent, $this->limiter);
+ 
+                 // Loop over all contacts till we've processed all those applicable for this decision
+-                while ($contacts->count()) {
++                while ($contacts && $contacts->count()) {
+                     // Get the max contact ID before any are removed
+                     $batchMinContactId = max($contacts->getKeys()) + 1;
+ 
+diff --git a/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php b/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php
+index d2fe2b941c..e8d4412e42 100644
+--- a/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php
+@@ -161,24 +161,29 @@ private function prepareForExecution()
+ 
+         $this->rootEvents = $this->campaign->getRootEvents();
+         $totalRootEvents  = $this->rootEvents->count();
+-        $this->logger->debug('CAMPAIGN: Processing the following events: '.implode(', ', $this->rootEvents->getKeys()));
+-
+-        $totalContacts      = $this->kickoffContactFinder->getContactCount($this->campaign->getId(), $this->rootEvents->getKeys(), $this->limiter);
+-        $totalKickoffEvents = $totalRootEvents * $totalContacts;
+-
+-        $this->output->writeln(
+-            $this->translator->trans(
+-                'mautic.campaign.trigger.event_count',
+-                [
+-                    '%events%' => $totalKickoffEvents,
+-                    '%batch%'  => $this->limiter->getBatchLimit(),
+-                ]
+-            )
+-        );
+-
+-        if (!$totalKickoffEvents) {
++        if (!$totalRootEvents) {
+             throw new NoEventsFoundException();
+         }
++        $this->logger->debug('CAMPAIGN: Processing the following events: '.implode(', ', $this->rootEvents->getKeys()));
++        $totalKickoffEvents = 0;
++        if (!($this->output instanceof NullOutput)) {
++            $totalContacts      = $this->kickoffContactFinder->getContactCount($this->campaign->getId(), $this->rootEvents->getKeys(), $this->limiter);
++            $totalKickoffEvents = $totalRootEvents * $totalContacts;
++
++            $this->output->writeln(
++                $this->translator->trans(
++                    'mautic.campaign.trigger.event_count',
++                    [
++                        '%events%' => $totalKickoffEvents,
++                        '%batch%'  => $this->limiter->getBatchLimit(),
++                    ]
++                )
++            );
++
++            if (!$totalKickoffEvents) {
++                throw new NoEventsFoundException();
++            }
++        }
+ 
+         $this->progressBar = ProgressBarHelper::init($this->output, $totalKickoffEvents);
+         $this->progressBar->start();
+@@ -199,7 +204,7 @@ private function executeOrScheduleEvent()
+ 
+         // Loop over contacts until the entire campaign is executed
+         $contacts = $this->kickoffContactFinder->getContacts($this->campaign->getId(), $this->limiter);
+-        while ($contacts->count()) {
++        while ($contacts && $contacts->count()) {
+             $batchMinContactId = max($contacts->getKeys()) + 1;
+ 
+             /** @var Event $event */
+diff --git a/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php b/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
+index 5c5c26c961..330747c789 100644
+--- a/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
+@@ -209,6 +209,8 @@ public function executeByIds(array $logIds, OutputInterface $output = null)
+         $organized = $this->organizeByEvent($logs);
+         $now       = new \DateTime();
+         foreach ($organized as $organizedLogs) {
++            $this->progressBar->advance($organizedLogs->count());
++
+             $event = $organizedLogs->first()->getEvent();
+ 
+             // Validate that the schedule is still appropriate
+@@ -241,7 +243,7 @@ private function prepareForExecution()
+ 
+         // Get counts by event
+         $scheduledEvents       = $this->repo->getScheduledCounts($this->campaign->getId(), $this->now, $this->limiter);
+-        $totalScheduledCount   = array_sum($scheduledEvents);
++        $totalScheduledCount   = $scheduledEvents ? array_sum($scheduledEvents) : 0;
+         $this->scheduledEvents = array_keys($scheduledEvents);
+         $this->logger->debug('CAMPAIGN: '.$totalScheduledCount.' events scheduled to execute.');
+ 
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/InactiveExecutionerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/InactiveExecutionerTest.php
+index dc0f2022a0..b4434955a2 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/InactiveExecutionerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/InactiveExecutionerTest.php
+@@ -23,6 +23,7 @@
+ use Mautic\CoreBundle\Translation\Translator;
+ use Mautic\LeadBundle\Entity\Lead;
+ use Psr\Log\NullLogger;
++use Symfony\Component\Console\Output\BufferedOutput;
+ 
+ class InactiveExecutionerTest extends \PHPUnit_Framework_TestCase
+ {
+@@ -86,7 +87,7 @@ public function testNoContactsFoundResultsInNothingExecuted()
+             ->method('getContactCount');
+ 
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+-        $counter = $this->getExecutioner()->execute($campaign, $limiter);
++        $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+ 
+         $this->assertEquals(0, $counter->getEvaluated());
+     }
+@@ -104,7 +105,7 @@ public function testNoEventsFoundResultsInNothingExecuted()
+             ->willReturn(0);
+ 
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+-        $counter = $this->getExecutioner()->execute($campaign, $limiter);
++        $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+ 
+         $this->assertEquals(0, $counter->getTotalEvaluated());
+     }
+@@ -141,7 +142,7 @@ public function testNextBatchOfContactsAreExecuted()
+             ->method('getSortedExecutionDates')
+             ->willReturn([]);
+ 
+-        $this->getExecutioner()->execute($campaign, $limiter);
++        $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+     }
+ 
+     public function testValidationExecutesNothingIfCampaignUnpublished()
+@@ -165,7 +166,7 @@ public function testValidationExecutesNothingIfCampaignUnpublished()
+ 
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+ 
+-        $counter = $this->getExecutioner()->validate(1, $limiter);
++        $counter = $this->getExecutioner()->validate(1, $limiter, new BufferedOutput());
+         $this->assertEquals(0, $counter->getTotalEvaluated());
+     }
+ 
+@@ -208,7 +209,7 @@ public function testValidationEvaluatesFoundEvents()
+             ->method('getSortedExecutionDates')
+             ->willReturn([]);
+ 
+-        $this->getExecutioner()->validate(1, $limiter);
++        $this->getExecutioner()->validate(1, $limiter, new BufferedOutput());
+     }
+ 
+     private function getExecutioner()
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/KickoffExecutionerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/KickoffExecutionerTest.php
+index a57937ed23..b618dab0ed 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/KickoffExecutionerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/KickoffExecutionerTest.php
+@@ -22,6 +22,7 @@
+ use Mautic\CoreBundle\Translation\Translator;
+ use Mautic\LeadBundle\Entity\Lead;
+ use Psr\Log\NullLogger;
++use Symfony\Component\Console\Output\BufferedOutput;
+ 
+ class KickoffExecutionerTest extends \PHPUnit_Framework_TestCase
+ {
+@@ -66,10 +67,6 @@ protected function setUp()
+ 
+     public function testNoContactsResultInEmptyResults()
+     {
+-        $this->kickoffContactFinder->expects($this->once())
+-            ->method('getContactCount')
+-            ->willReturn(0);
+-
+         $campaign = $this->getMockBuilder(Campaign::class)
+             ->getMock();
+         $campaign->expects($this->once())
+@@ -78,7 +75,7 @@ public function testNoContactsResultInEmptyResults()
+ 
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+ 
+-        $counter = $this->getExecutioner()->execute($campaign, $limiter);
++        $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+ 
+         $this->assertEquals(0, $counter->getTotalEvaluated());
+     }
+@@ -124,7 +121,7 @@ public function testEventsAreScheduledAndExecuted()
+         $this->executioner->expects($this->exactly(2))
+             ->method('executeForContacts');
+ 
+-        $counter = $this->getExecutioner()->execute($campaign, $limiter);
++        $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+ 
+         $this->assertEquals(4, $counter->getTotalEvaluated());
+         $this->assertEquals(2, $counter->getTotalScheduled());
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php
+index b311bf3863..c372a4eb9f 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php
+@@ -23,6 +23,7 @@
+ use Mautic\CampaignBundle\Executioner\Scheduler\EventScheduler;
+ use Mautic\CoreBundle\Translation\Translator;
+ use Psr\Log\NullLogger;
++use Symfony\Component\Console\Output\BufferedOutput;
+ 
+ class ScheduledExecutionerTest extends \PHPUnit_Framework_TestCase
+ {
+@@ -88,7 +89,7 @@ public function testNoEventsResultInEmptyResults()
+ 
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+ 
+-        $counter = $this->getExecutioner()->execute($campaign, $limiter);
++        $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+ 
+         $this->assertEquals(0, $counter->getTotalEvaluated());
+     }
+@@ -152,6 +153,70 @@ public function testEventsAreExecuted()
+ 
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+ 
++        $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
++
++        $this->assertEquals(4, $counter->getTotalEvaluated());
++    }
++
++    public function testEventsAreExecutedInQuietMode()
++    {
++        $this->repository->expects($this->once())
++            ->method('getScheduledCounts')
++            ->willReturn([1 => 2, 2 => 2]);
++
++        $campaign = $this->getMockBuilder(Campaign::class)
++            ->getMock();
++
++        $event = new Event();
++        $event->setCampaign($campaign);
++
++        $log1 = new LeadEventLog();
++        $log1->setEvent($event);
++        $log1->setCampaign($campaign);
++
++        $log2 = new LeadEventLog();
++        $log2->setEvent($event);
++        $log2->setCampaign($campaign);
++
++        $event2 = new Event();
++        $event2->setCampaign($campaign);
++
++        $log3 = new LeadEventLog();
++        $log3->setEvent($event2);
++        $log3->setCampaign($campaign);
++
++        $log4 = new LeadEventLog();
++        $log4->setEvent($event2);
++        $log4->setCampaign($campaign);
++
++        $this->repository->expects($this->exactly(4))
++            ->method('getScheduled')
++            ->willReturnOnConsecutiveCalls(
++                new ArrayCollection(
++                    [
++                        $log1,
++                        $log2,
++                    ]
++                ),
++                new ArrayCollection(),
++                new ArrayCollection(
++                    [
++                        $log3,
++                        $log4,
++                    ]
++                ),
++                new ArrayCollection()
++            );
++
++        $this->executioner->expects($this->exactly(2))
++            ->method('executeLogs');
++
++        $this->scheduler->expects($this->exactly(4))
++            ->method('getExecutionDateTime')
++            ->willReturn(new \DateTime());
++
++        $limiter = new ContactLimiter(0, 0, 0, 0);
++
+         $counter = $this->getExecutioner()->execute($campaign, $limiter);
+ 
+         $this->assertEquals(4, $counter->getTotalEvaluated());
+diff --git a/app/migrations/Version20180622152140.php b/app/migrations/Version20180622152140.php
+new file mode 100644
+index 0000000000..21601149fe
+--- /dev/null
++++ b/app/migrations/Version20180622152140.php
+@@ -0,0 +1,43 @@
++<?php
++
++/*
++ * @package     Mautic
++ * @copyright   2018 Mautic Contributors. All rights reserved.
++ * @author      Mautic
++ * @link        http://mautic.org
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\Migrations;
++
++use Doctrine\DBAL\Migrations\SkipMigrationException;
++use Doctrine\DBAL\Schema\Schema;
++use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
++
++/**
++ * Add index to increase the speed of scheduled event counts when triggering events by cron.
++ */
++class Version20180622152140 extends AbstractMauticMigration
++{
++    /**
++     * @param Schema $schema
++     *
++     * @throws SkipMigrationException
++     * @throws \Doctrine\DBAL\Schema\SchemaException
++     */
++    public function preUp(Schema $schema)
++    {
++        $table = $schema->getTable("{$this->prefix}campaign_lead_event_log");
++        if ($table->hasIndex("{$this->prefix}campaign_event_schedule_counts")) {
++            throw new SkipMigrationException('Schema includes this migration');
++        }
++    }
++
++    /**
++     * @param Schema $schema
++     */
++    public function up(Schema $schema)
++    {
++        $this->addSql("CREATE INDEX {$this->prefix}campaign_event_schedule_counts ON {$this->prefix}campaign_lead_event_log (campaign_id, is_scheduled, trigger_date)");
++    }
++}
