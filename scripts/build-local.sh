@@ -111,7 +111,18 @@ then
     rm -rf ./plugins/MauticApiServicesBundle
     git clone -b master https://github.com/TheDMSGroup/mautic-api-services.git ./plugins/MauticApiServicesBundle
 else
-    cd ./mautic_custom
+    cd ./plugins/MauticApiServicesBundle
+    git checkout master
+    git pull
+    cd -
+fi
+
+if [ ! -d "./plugins/MauticCampaignWatchBundle/.git" ]
+then
+    rm -rf ./plugins/MauticCampaignWatchBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-campaign-watch.git ./plugins/MauticCampaignWatchBundle
+else
+    cd ./plugins/MauticCampaignWatchBundle
     git checkout master
     git pull
     cd -
