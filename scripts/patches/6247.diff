@@ -25,7 +25,7 @@ index 0e854506e8..38c152e180 100644
          $campaignEvents = [];
  
 -        $existingEvents = $entity->getEvents()->toArray();
-+        $existingEvents = $entity->getPublishedEvents()->toArray();
++        $existingEvents = $isClone ? $entity->getEvents()->toArray() : $entity->getPublishedEvents()->toArray();
          $translator     = $this->get('translator');
          $dateHelper     = $this->get('mautic.helper.template.date');
          foreach ($existingEvents as $e) {
