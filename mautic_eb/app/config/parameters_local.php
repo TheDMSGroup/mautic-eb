@@ -30,6 +30,7 @@ $parameters = [
     'tmp_path'          => '/tmp',
     // Support the cache path for "ondeck" during deployment, switching to "current" when there.
     'cache_path'        => str_replace('/mautic_eb/app/config', '/mautic/app/cache', __DIR__),
+    'cached_data_timeout' => '30',
 ];
 
 /**
