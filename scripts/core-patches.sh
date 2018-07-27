@@ -78,11 +78,6 @@ echo "[Bug] Symfony Master/Slave support is broken #5969"
 echo "https://github.com/mautic/mautic/pull/5970"
 cat "../scripts/patches/5970.diff" | git apply -v
 
-# Not to go into any PR.
-echo "----------------------------------------------------"
-echo "Disable the contacts view embedded in campaign view (temporary)."
-cat "../scripts/patches/contact_list_disable.diff" | git apply -v
-
 # Ready for tagging. Gist avoids conflicts with #6021 and #6187
 echo "----------------------------------------------------"
 echo "Create a Soft delete process for campaign events #6247"
