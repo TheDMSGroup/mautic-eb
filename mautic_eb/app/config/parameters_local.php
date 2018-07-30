@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * Global default environment variable overrides for Mautic EB
  * To override for your instance use parameters_local.php
@@ -25,8 +27,10 @@ $parameters = [
     'mailer_spool_path' => '%kernel.root_dir%/spool',
     'secret_key'        => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
     'site_url'          => getenv('APP_URL') ?: 'http://mautic.loc',
-    // Always use the core system tmp path.
     'tmp_path'          => '/tmp',
+    // Support the cache path for "ondeck" during deployment, switching to "current" when there.
+    'cache_path'        => str_replace('/mautic_eb/app/config', '/mautic/app/cache', __DIR__),
+    'cached_data_timeout' => '30',
 ];
 
 /**
@@ -153,10 +157,14 @@ if (!function_exists('mauticEBMultisite')) {
                 ) {
                     $_SERVER['HTTPS'] = 'on';
                 }
-                $protocol = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off') ? 'https' : 'http';
-                $parameters['site_url'] = $protocol . '://' . $host;
+                $protocol               = (!empty($_SERVER['HTTPS']) && strtolower(
+                        $_SERVER['HTTPS']
+                    ) != 'off') ? 'https' : 'http';
+                $parameters['site_url'] = $protocol.'://'.$host;
             }
         }
     }
 }
+
 mauticEBMultisite($parameters);
+

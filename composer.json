@@ -50,7 +50,7 @@
   },
   "scripts": {
     "cc": [
-      "rm -rf ./mautic/app/cache/",
+      "rm -rf ./mautic/app/cache/*",
       "@php ./mautic/app/console cache:clear --no-interaction --no-warmup -vvv",
       "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
       "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache"
@@ -108,12 +108,9 @@
       "@php ./mautic/app/console doctrine:database:create --no-interaction --env=test",
       "@php ./mautic/app/console mautic:install:data --force --env=test",
       "@php ./mautic/app/console doctrine:migrations:version --add --all --no-interaction --env=test",
-      "@php ./mautic/app/console cache:clear --no-interaction --no-warmup --env=test",
+      "@php ./mautic/app/console cache:clear --no-interaction --no-warmup -vvv",
       "cd ./mautic ; bin/codecept run --env=test",
       "# ./mautic/bin/phpstan analyse ./mautic/app/bundles/*Bundle --no-interaction"
-    ],
-    "update-dist": [
-      "cp composer.lock composer.lock.dist"
     ],
     "less": [
       "rm -rf ./mautic/media/css/app.css ./mautic/media/css/libraries.css",
@@ -131,19 +128,15 @@
       "@custom",
       "@git-hooks",
       "@iplookup",
-      "@update-dist",
       "@cc"
-    ],
-    "post-update-cmd": [
-      "@custom",
-      "@update-dist"
     ]
   },
   "config": {
     "preferred-install": "dist",
     "vendor-dir": "./vendor",
     "bin-dir": "./bin",
-    "optimize-autoloader": true
+    "optimize-autoloader": true,
+    "discard-changes": true
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

@@ -8,21 +8,48 @@ if (file_exists(__DIR__.'/security_local.php')) {
     $loader->import('security.php');
 }
 
+// Non-default security settings for mautic-eb.
+if ('prod' == $container->getParameter('kernel.environment')) {
+    $restrictedConfigFields = $container->getParameter('mautic.security.restrictedConfigFields');
+    $container->setParameter('mautic.security.restrictedConfigFields', array_merge($restrictedConfigFields, [
+        'tmp_path',
+        'log_path',
+        'image_path',
+        'upload_dir',
+        'site_url',
+    ]));
+    $container->setParameter('mautic.security.disableUpdates', true);
+}
+
+// Speed up batch processing at the cost of CPU cycles.
+// By default Mautic sleeps 1 full second between batches.
+// We'll drop that down to 50ms.
+$container->setParameter('mautic.batch_sleep_time', .050);
+
+// Optionally allow CSRF to be disabled. Useful if all users are behind a firewall and you have multiple nodes.
+// Just set the environment variable CSRF to 0.
+$container->setParameter('mautic.famework.csrf_protection', (bool) getenv('CSRF') ?: true);
+
 // Check for APC/APCuBC.
 if (function_exists('apc_fetch')) {
-    $container->loadFromExtension('framework', array(
-        'validation' => array(
-            'cache' => 'apc'
-        )
-    ));
+    /*
+     * disablling APC for validation because of core bug
+     * https://github.com/mautic/mautic/issues/6259
+     */
 
-    $container->loadFromExtension('doctrine', array(
-        'orm' => array(
+    // $container->loadFromExtension('framework', array(
+    //     'validation' => array(
+    //         'cache' => 'apc'
+    //     )
+    // ));
+
+    $container->loadFromExtension('doctrine', [
+        'orm' => [
             'metadata_cache_driver' => 'apc',
-            'result_cache_driver'   => 'apc',
-            'query_cache_driver'    => 'apc'
-        )
-    ));
+            // 'result_cache_driver'   => 'apc',
+            'query_cache_driver'    => 'apc',
+        ],
+    ]);
 }
 
 // Read Only db cluster support.
@@ -52,18 +79,20 @@ if (!empty($dbHostRO)) {
     ];
 
     // Add a single slave (which is a load balanced Aurora read-only cluster).
-    $dbalSettings['slaves'] = [
+    $dbalSettings['keep_slave'] = true;
+    $dbalSettings['slaves']     = [
         'slave1' => [
             'host'     => $dbHostRO,
             'port'     => '%mautic.db_port%',
             'dbname'   => '%mautic.db_name%',
             'user'     => '%mautic.db_user%',
             'password' => '%mautic.db_password%',
-        ]
+            'charset'  => 'UTF8',
+        ],
     ];
-    $container->loadFromExtension('doctrine', array(
-        'dbal' => $dbalSettings
-    ));
+    $container->loadFromExtension('doctrine', [
+        'dbal' => $dbalSettings,
+    ]);
 }
 
 $debugMode = $container->hasParameter('mautic.debug') ? $container->getParameter('mautic.debug') : $container->getParameter('kernel.debug');

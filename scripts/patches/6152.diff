@@ -1,0 +1,596 @@
+diff --git a/app/bundles/CampaignBundle/Assets/js/campaign.js b/app/bundles/CampaignBundle/Assets/js/campaign.js
+index 8e75084569..8daf65c1f3 100644
+--- a/app/bundles/CampaignBundle/Assets/js/campaign.js
++++ b/app/bundles/CampaignBundle/Assets/js/campaign.js
+@@ -3,6 +3,7 @@
+  * Setup the campaign view
+  *
+  * @param container
++ * @param response
+  */
+ Mautic.campaignOnLoad = function (container, response) {
+     if (mQuery(container + ' #list-search').length) {
+@@ -888,9 +889,11 @@ Mautic.campaignBeforeDetachCallback = function(connection) {
+ };
+ 
+ /**
+- * Process beforeDetach event callbacks
++ * Process beforeDrag event callbacks
+  *
+- * @param connection
++ * @param endpoint
++ * @param source
++ * @param sourceId
+  */
+ Mautic.campaignBeforeDragCallback = function(endpoint, source, sourceId) {
+     var sourceEndpoint = Mautic.campaignBuilderGetEndpointDetails(sourceId);
+@@ -944,9 +947,11 @@ Mautic.campaignBeforeStartDetachCallback = function(endpoint, source, sourceId,
+ };
+ 
+ /**
+- * Process beforeDetach event callbacks
++ * Process hover event callbacks
+  *
+- * @param connection
++ * @param sourceEndpoint
++ * @param endpoint
++ * @param event
+  */
+ Mautic.campaignHoverCallback = function(sourceEndpoint, endpoint, event) {
+     var callbackAllowed = null;
+@@ -1675,7 +1680,6 @@ Mautic.campaignBuilderUpdateEventList = function (groups, hidden, view, active,
+ /**
+  *
+  * @param endpoint
+- * @param nameOnly
+  * @returns {{endpointName: *, elementId: *}}
+  */
+ Mautic.campaignBuilderGetEndpointDetails = function(endpoint) {
+@@ -1724,7 +1728,9 @@ Mautic.campaignBuilderPrepareNewSource = function () {
+ /**
+  *
+  * @param epDetails
+- * @param optionVal
++ * @param targetType
++ * @param targetEvent
++ *
+  * @returns {boolean}
+  */
+ Mautic.campaignBuilderValidateConnection = function (epDetails, targetType, targetEvent) {
+@@ -1888,6 +1894,48 @@ Mautic.toggleCampaignTabData = function (elem) {
+     });
+ };
+ 
++/**
++ * Update tags on campaign, adding Tag if necessary
++ */
++Mautic.updateCampaignTags = function () {
++    Mautic.activateLabelLoadingIndicator('campaign_tags_tags');
++    var formData = mQuery('form[name="campaign_tags"]').serialize();
++    Mautic.ajaxActionRequest('campaign:updateCampaignTags', formData, function(response) {
++        if (response.tags) {
++            mQuery('#lead_tags_tags').html(response.tags);
++            mQuery('#lead_tags_tags').trigger('chosen:updated');
++        }
++        Mautic.removeLabelLoadingIndicator();
++    });
++};
++
++Mautic.createCampaignTag = function (el) {
++    var newFound = false;
++    mQuery('#' + mQuery(el).attr('id') + ' :selected').each(function (i, selected) {
++        if (!mQuery.isNumeric(mQuery(selected).val())) {
++            newFound = true;
++        }
++    });
++
++    if (!newFound) {
++        return;
++    }
++
++    Mautic.activateLabelLoadingIndicator(mQuery(el).attr('id'));
++
++    var tags = JSON.stringify(mQuery(el).val());
++
++    Mautic.ajaxActionRequest('campaign:addCampaignTags', {tags: tags}, function (response) {
++        if (response.tags) {
++            mQuery('#' + mQuery(el).attr('id')).html(response.tags);
++            mQuery('#' + mQuery(el).attr('id')).trigger('chosen:updated');
++        }
++
++        Mautic.removeLabelLoadingIndicator();
++    });
++};
++
++
+ /**
+  * Update the "Jump to Event" select list to be available events.
+  */
+diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
+index 2b8b0bf4f8..6edd5ed618 100644
+--- a/app/bundles/CampaignBundle/Config/config.php
++++ b/app/bundles/CampaignBundle/Config/config.php
+@@ -228,6 +228,25 @@
+                 'arguments' => 'translator',
+                 'alias'     => 'campaignconfig',
+             ],
++            'mautic.form.type.campaign_tags' => [
++                'class'     => 'Mautic\LeadBundle\Form\Type\TagListType',
++                'alias'     => 'lead_tags',
++                'arguments' => ['translator'],
++            ],
++            'mautic.form.type.campaign_tag' => [
++                'class'     => 'Mautic\LeadBundle\Form\Type\TagType',
++                'alias'     => 'lead_tag',
++                'arguments' => ['doctrine.orm.entity_manager'],
++            ],
++            'mautic.form.type.modify_campaign_tags' => [
++                'class'     => 'Mautic\LeadBundle\Form\Type\ModifyLeadTagsType',
++                'alias'     => 'modify_lead_tags',
++                'arguments' => ['translator'],
++            ],
++            'mautic.form.type.campaign_entity_tag' => [
++                'class' => 'Mautic\LeadBundle\Form\Type\TagEntityType',
++                'alias' => 'Mautic\LeadBundle\Form\Type\TagEntityType',
++            ],
+         ],
+         'models'       => [
+             'mautic.campaign.model.campaign'  => [
+@@ -270,6 +289,9 @@
+                     'mautic.helper.ip_lookup',
+                 ],
+             ],
++            'mautic.campaign.model.tag' => [
++                'class' => 'Mautic\LeadBundle\Model\TagModel',
++            ],
+         ],
+         'repositories' => [
+             'mautic.campaign.repository.campaign' => [
+diff --git a/app/bundles/CampaignBundle/Controller/AjaxController.php b/app/bundles/CampaignBundle/Controller/AjaxController.php
+index 3cf49a0472..aaae9da0ac 100644
+--- a/app/bundles/CampaignBundle/Controller/AjaxController.php
++++ b/app/bundles/CampaignBundle/Controller/AjaxController.php
+@@ -138,4 +138,85 @@ protected function getContactEventLog($eventId, $contactId)
+ 
+         return null;
+     }
++
++    /**
++     * @param Request $request
++     *
++     * @return \Symfony\Component\HttpFoundation\JsonResponse
++     */
++    protected function updateCampaignTagsAction(Request $request)
++    {
++        /** @var \Mautic\CampaignBundle\Model\CampaignModel $campaignModel */
++        $campaignModel   = $this->getModel('campaign');
++        $post            = $request->request->get('campaign_tags', [], true);
++        $campaign        = $campaignModel->getEntity((int) $post['id']);
++        $updatedTags     = (!empty($post['tags']) && is_array($post['tags'])) ? $post['tags'] : [];
++        $data            = ['success' => 0];
++
++        if ($campaign !== null && $this->get('mautic.security')->hasEntityAccess('campaign:campaigns:editown', 'campaign:campaigns:editother', $campaign->getPermissionUser())) {
++            $campaignModel->setTags($campaign, $updatedTags, true);
++
++            /** @var \Doctrine\ORM\PersistentCollection $campaignTags */
++            $campaignTags    = $campaign->getTags();
++            $campaignTagKeys = $campaignTags->getKeys();
++
++            // Get an updated list of tags
++            $tags       = $campaignModel->getTagRepository()->getSimpleList(null, [], 'tag');
++            $tagOptions = '';
++
++            foreach ($tags as $tag) {
++                $selected = (in_array($tag['label'], $campaignTagKeys)) ? ' selected="selected"' : '';
++                $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
++            }
++
++            $data['success'] = 1;
++            $data['tags']    = $tagOptions;
++        }
++
++        return $this->sendJsonResponse($data);
++    }
++
++    /**
++     * @param Request $request
++     *
++     * @return \Symfony\Component\HttpFoundation\JsonResponse
++     */
++    protected function addCampaignTagsAction(Request $request)
++    {
++        $tags = $request->request->get('tags');
++        $tags = json_decode($tags, true);
++
++        if (is_array($tags)) {
++            $campaignModel = $this->getModel('campaign');
++            $newTags       = [];
++
++            foreach ($tags as $tag) {
++                if (!is_numeric($tag)) {
++                    $newTags[] = $campaignModel->getTagRepository()->getTagByNameOrCreateNewOne($tag);
++                }
++            }
++
++            if (!empty($newTags)) {
++                $campaignModel->getTagRepository()->saveEntities($newTags);
++            }
++
++            // Get an updated list of tags
++            $allTags    = $campaignModel->getTagRepository()->getSimpleList(null, [], 'tag');
++            $tagOptions = '';
++
++            foreach ($allTags as $tag) {
++                $selected = (in_array($tag['value'], $tags) || in_array($tag['label'], $tags)) ? ' selected="selected"' : '';
++                $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
++            }
++
++            $data = [
++                'success' => 1,
++                'tags'    => $tagOptions,
++            ];
++        } else {
++            $data = ['success' => 0];
++        }
++
++        return $this->sendJsonResponse($data);
++    }
+ 
+diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
+index 0c9fc82a63..6a4980e7c0 100644
+--- a/app/bundles/CampaignBundle/Controller/CampaignController.php
++++ b/app/bundles/CampaignBundle/Controller/CampaignController.php
+@@ -566,6 +566,25 @@ protected function getPostActionRedirectArguments(array $args, $action)
+         return $args;
+     }
+ 
++    /**
++     * Get tags from session.
++     *
++     * @param $id
++     *
++     * @return array
++     */
++    protected function getSessionTags($id)
++    {
++        $session = $this->get('session');
++
++        $modifiedEvents = $session->get('mautic.campaign.'.$id.'.tags.modified', []);
++        $deletedEvents  = $session->get('mautic.campaign.'.$id.'.tags.deleted', []);
++
++        $events = array_diff_key($modifiedEvents, array_flip($deletedEvents));
++
++        return [$modifiedEvents, $deletedEvents, $events];
++    }
++
+     /**
+      * Get events from session.
+      *
+@@ -706,6 +725,7 @@ protected function getViewArguments(array $args, $action)
+                         'stats'           => $stats,
+                         'events'          => $sortedEvents,
+                         'eventSettings'   => $this->getCampaignModel()->getEvents(),
++                        'tags'            => $this->getCampaignModel()->getTagList(),
+                         'sources'         => $this->getCampaignModel()->getLeadSources($entity),
+                         'dateRangeForm'   => $dateRangeForm->createView(),
+                         'campaignSources' => $this->campaignSources,
+diff --git a/app/bundles/CampaignBundle/Entity/Campaign.php b/app/bundles/CampaignBundle/Entity/Campaign.php
+index a8b291b166..e8966ec353 100644
+--- a/app/bundles/CampaignBundle/Entity/Campaign.php
++++ b/app/bundles/CampaignBundle/Entity/Campaign.php
+@@ -20,6 +20,7 @@
+ use Mautic\FormBundle\Entity\Form;
+ use Mautic\LeadBundle\Entity\Lead as Contact;
+ use Mautic\LeadBundle\Entity\LeadList;
++use Mautic\LeadBundle\Entity\Tag;
+ use Symfony\Component\Validator\Constraints as Assert;
+ use Symfony\Component\Validator\Mapping\ClassMetadata;
+ 
+@@ -78,6 +79,11 @@ class Campaign extends FormEntity
+      */
+     private $forms;
+ 
++    /**
++     * @var ArrayCollection
++     */
++    private $tags;
++
+     /**
+      * @var array
+      */
+@@ -97,6 +103,7 @@ public function __construct()
+         $this->leads  = new ArrayCollection();
+         $this->lists  = new ArrayCollection();
+         $this->forms  = new ArrayCollection();
++        $this->tags   = new ArrayCollection();
+     }
+ 
+     public function __clone()
+@@ -105,6 +112,7 @@ public function __clone()
+         $this->events = new ArrayCollection();
+         $this->lists  = new ArrayCollection();
+         $this->forms  = new ArrayCollection();
++        $this->tags   = new ArrayCollection();
+         $this->id     = null;
+ 
+         parent::__clone();
+@@ -154,6 +162,18 @@ public static function loadMetadata(ORM\ClassMetadata $metadata)
+             ->addJoinColumn('campaign_id', 'id', true, false, 'CASCADE')
+             ->build();
+ 
++        $builder->createManyToMany('tags', 'Mautic\LeadBundle\Entity\Tag')
++            ->setJoinTable('campaign_tags_xref')
++            ->addInverseJoinColumn('tag_id', 'id', false)
++            ->addJoinColumn('campaign_id', 'id', false, false, 'CASCADE')
++            ->setOrderBy(['tag' => 'ASC'])
++            ->setIndexBy('tag')
++            ->fetchLazy()
++            ->cascadeMerge()
++            ->cascadePersist()
++            ->cascadeDetach()
++            ->build();
++
+         $builder->createField('canvasSettings', 'array')
+             ->columnName('canvas_settings')
+             ->nullable()
+@@ -200,6 +220,7 @@ public static function loadApiMetadata(ApiMetadataDriver $metadata)
+                     'publishDown',
+                     'events',
+                     'forms',
++                    'tags',
+                     'lists', // @deprecated, will be renamed to 'segments' in 3.0.0
+                     'canvasSettings',
+                 ]
+@@ -658,10 +679,56 @@ public function getContactMembership(Contact $contact)
+     {
+         return $this->leads->matching(
+             Criteria::create()
+-                    ->where(
+-                        Criteria::expr()->eq('lead', $contact)
+-                    )
+-                    ->orderBy(['dateAdded' => Criteria::DESC])
++                ->where(
++                    Criteria::expr()->eq('lead', $contact)
++                )
++                ->orderBy(['dateAdded' => Criteria::DESC])
+         );
+     }
++
++    /**
++     * Add tag.
++     *
++     * @param Tag $tag
++     *
++     * @return Campaign
++     */
++    public function addTag(Tag $tag)
++    {
++        $this->isChanged('tags', $tag);
++        $this->tags[$tag->getTag()] = $tag;
++
++        return $this;
++    }
++
++    /**
++     * Remove tag.
++     *
++     * @param Tag $tag
++     */
++    public function removeTag(Tag $tag)
++    {
++        $this->isChanged('tags', $tag->getTag());
++        $this->tags->removeElement($tag);
++    }
++
++    /**
++     * @return ArrayCollection
++     */
++    public function getTags()
++    {
++        return $this->tags;
++    }
++
++    /**
++     * @param ArrayCollection $tags
++     *
++     * @return Campaign
++     */
++    public function setTags(ArrayCollection $tags)
++    {
++        $this->tags = $tags;
++
++        return $this;
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Form/Type/CampaignType.php b/app/bundles/CampaignBundle/Form/Type/CampaignType.php
+index e139e870a8..5f91d15d95 100644
+--- a/app/bundles/CampaignBundle/Form/Type/CampaignType.php
++++ b/app/bundles/CampaignBundle/Form/Type/CampaignType.php
+@@ -85,6 +85,20 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+             $data     = false;
+         }
+ 
++        $builder->add(
++            'tags',
++            'lead_tag',
++            [
++                'by_reference' => false,
++                'attr'         => [
++                    'data-placeholder'     => $this->translator->trans('mautic.lead.tags.select_or_create'),
++                    'data-no-results-text' => $this->translator->trans('mautic.lead.tags.enter_to_create'),
++                    'data-allow-add'       => 'true',
++                    'onchange'             => 'Mautic.createLeadTag(this)',
++                ],
++            ]
++        );
++
+         $builder->add('isPublished', 'yesno_button_group', [
+             'read_only' => $readonly,
+             'data'      => $data,
+diff --git a/app/bundles/CampaignBundle/Model/CampaignModel.php b/app/bundles/CampaignBundle/Model/CampaignModel.php
+index 504a7f9666..026af0ee2a 100644
+--- a/app/bundles/CampaignBundle/Model/CampaignModel.php
++++ b/app/bundles/CampaignBundle/Model/CampaignModel.php
+@@ -131,6 +131,16 @@ public function getCampaignLeadRepository()
+         return $this->em->getRepository('MauticCampaignBundle:Lead');
+     }
+ 
++    /**
++     * Get the tags repository.
++     *
++     * @return \Mautic\LeadBundle\Entity\TagRepository
++     */
++    public function getTagRepository()
++    {
++        return $this->em->getRepository('MauticLeadBundle:Tag');
++    }
++
+     /**
+      * @return \Mautic\CampaignBundle\Entity\LeadEventLogRepository
+      */
+@@ -580,6 +590,14 @@ public function getSourceLists($sourceType = null, $globalOnly = false)
+         return ($sourceType == null) ? $choices : $choices[$sourceType];
+     }
+ 
++    /**
++     * Get array of available lead tags.
++     */
++    public function getTagList()
++    {
++        return $this->getTagRepository()->getSimpleList(null, [], 'tag', 'id');
++    }
++
+     /**
+      * @param mixed $form
+      *
+diff --git a/app/bundles/CampaignBundle/Translations/en_US/messages.ini b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
+index adcf2a7ac0..6e85547ab9 100644
+--- a/app/bundles/CampaignBundle/Translations/en_US/messages.ini
++++ b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
+@@ -7,6 +7,7 @@ mautic.campaign.campaign.addremovelead="Add / remove contact"
+ mautic.campaign.campaign.description="<strong>Campaign description:</strong> %description%"
+ mautic.campaign.campaign.launch.builder="Launch Campaign Builder"
+ mautic.campaign.campaign.leads="Contacts added"
++mautic.campaign.campaign.tags="Tags"
+ mautic.campaign.campaigns="Campaigns"
+ mautic.campaign.connection.trigger.date.label="wait until %full%"
+ mautic.campaign.connection.trigger.date.label_inaction="by %full%"
+diff --git a/app/bundles/CampaignBundle/Views/Campaign/details.html.php b/app/bundles/CampaignBundle/Views/Campaign/details.html.php
+index 85110508e5..170ef40351 100644
+--- a/app/bundles/CampaignBundle/Views/Campaign/details.html.php
++++ b/app/bundles/CampaignBundle/Views/Campaign/details.html.php
+@@ -90,6 +90,16 @@
+                                 'MauticCoreBundle:Helper:details.html.php',
+                                 ['entity' => $campaign]
+                             ); ?>
++                            <?php if (!empty($tags)): ?>
++                                <tr>
++                                    <td width="20%"><span class="fw-b">
++                                    <?php echo $view['translator']->trans('mautic.campaign.campaign.tags'); ?>
++                                    </td>
++                                    <td>
++                                        <?php echo implode(', ', array_map(function ($ele) { return $ele['label']; }, $tags)); ?>
++                                    </td>
++                                </tr>
++                            <?php endif; ?>
+                             <?php foreach ($sources as $sourceType => $typeNames): ?>
+                             <?php if (!empty($typeNames)): ?>
+                             <tr>
+diff --git a/app/bundles/CampaignBundle/Views/Campaign/form.html.php b/app/bundles/CampaignBundle/Views/Campaign/form.html.php
+index 5f99020e1c..5c38382eec 100644
+--- a/app/bundles/CampaignBundle/Views/Campaign/form.html.php
++++ b/app/bundles/CampaignBundle/Views/Campaign/form.html.php
+@@ -31,6 +31,9 @@
+                 <div class="col-md-6">
+                     <?php echo $view['form']->row($form['name']); ?>
+                 </div>
++                <div class="col-md-6">
++                    <?php echo $view['form']->row($form['tags']); ?>
++                </div>
+             </div>
+             <div class="row">
+                 <div class="col-md-12">
+diff --git a/app/bundles/LeadBundle/Entity/TagRepository.php b/app/bundles/LeadBundle/Entity/TagRepository.php
+index 3a84ae7b53..cd80f4b8c2 100644
+--- a/app/bundles/LeadBundle/Entity/TagRepository.php
++++ b/app/bundles/LeadBundle/Entity/TagRepository.php
+@@ -11,6 +11,7 @@
+ 
+ namespace Mautic\LeadBundle\Entity;
+ 
++use Mautic\CampaignBundle\Entity\Campaign;
+ use Mautic\CoreBundle\Entity\CommonRepository;
+ 
+ /**
+@@ -23,16 +24,27 @@ class TagRepository extends CommonRepository
+      */
+     public function deleteOrphans()
+     {
+-        $qb       = $this->_em->getConnection()->createQueryBuilder();
+-        $havingQb = $this->_em->getConnection()->createQueryBuilder();
++        $qb                 = $this->_em->getConnection()->createQueryBuilder();
++        $havingLeadsQb      = $this->_em->getConnection()->createQueryBuilder();
++        $havingCampaignsQb  = $this->_em->getConnection()->createQueryBuilder();
+ 
+-        $havingQb->select('count(x.lead_id) as the_count')
+-            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'x')
+-            ->where('x.tag_id = t.id');
++        $havingLeadsQb->select('count(xl.lead_id) as lead_count')
++            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'xl')
++            ->where('xl.tag_id = t.id');
++
++        $havingCampaignsQb->select('count(xc.campaign_id) as campaign_count')
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_tags_xref', 'xc')
++            ->where('xc.campaign_id = t.id');
+ 
+         $qb->select('t.id')
+             ->from(MAUTIC_TABLE_PREFIX.'lead_tags', 't')
+-            ->having(sprintf('(%s)', $havingQb->getSQL()).' = 0');
++            ->having(
++                $qb->expr()->andX(
++                    sprintf('(%s)', $havingLeadsQb->getSQL()).' = 0',
++                    sprintf('(%s)', $havingCampaignsQb->getSQL()).' = 0'
++                )
++            );
++
+         $delete = $qb->execute()->fetch();
+ 
+         if (count($delete)) {
+@@ -117,6 +129,37 @@ public function checkLeadByTags(Lead $lead, $tags)
+         return (bool) $q->execute()->fetchColumn();
+     }
+ 
++    /**
++     * Check Campaign tags by Ids.
++     *
++     * @param Lead $lead
++     * @param $tags
++     *
++     * @return bool
++     */
++    public function checkCampaignByTags(Campaign $campaign, $tags)
++    {
++        if (empty($tags)) {
++            return false;
++        }
++
++        $q = $this->_em->getConnection()->createQueryBuilder();
++        $q->select('c.id')
++            ->from(MAUTIC_TABLE_PREFIX.'campaigns', 'c')
++            ->join('l', MAUTIC_TABLE_PREFIX.'campaign_tags_xref', 'x', 'c.id = x.campaign_id')
++            ->join('l', MAUTIC_TABLE_PREFIX.'lead_tags', 't', 'x.tag_id = t.id')
++            ->where(
++                $q->expr()->andX(
++                    $q->expr()->in('t.tag', ':tags'),
++                    $q->expr()->eq('c.id', ':campaignId')
++                )
++            )
++            ->setParameter('tags', $tags, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
++            ->setParameter('campaignId', $campaign->getId());
++
++        return (bool) $q->execute()->fetchColumn();
++    }
++
+     /**
+      * @param string $name
+      *

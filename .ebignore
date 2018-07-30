@@ -66,19 +66,19 @@
 !/mautic/media/images/mautic_logo*
 !/mautic/media/images/.htaccess
 
-/mautic/plugins/*
-!/mautic/plugins/MauticCitrixBundle
-!/mautic/plugins/MauticClearbitBundle
-!/mautic/plugins/MauticCloudStorageBundle
-!/mautic/plugins/MauticCrmBundle
-!/mautic/plugins/MauticDynamicsBundle
-!/mautic/plugins/MauticEmailMarketingBundle
-!/mautic/plugins/MauticFocusBundle
-!/mautic/plugins/MauticFullContactBundle
-!/mautic/plugins/MauticGmailBundle
-!/mautic/plugins/MauticOutlookBundle
-!/mautic/plugins/MauticSocialBundle
-!/mautic/plugins/index.html
+#/mautic/plugins/*
+#!/mautic/plugins/MauticCitrixBundle
+#!/mautic/plugins/MauticClearbitBundle
+#!/mautic/plugins/MauticCloudStorageBundle
+#!/mautic/plugins/MauticCrmBundle
+#!/mautic/plugins/MauticDynamicsBundle
+#!/mautic/plugins/MauticEmailMarketingBundle
+#!/mautic/plugins/MauticFocusBundle
+#!/mautic/plugins/MauticFullContactBundle
+#!/mautic/plugins/MauticGmailBundle
+#!/mautic/plugins/MauticOutlookBundle
+#!/mautic/plugins/MauticSocialBundle
+#!/mautic/plugins/index.html
 
 /mautic/themes/*
 !/mautic/themes/aurora
