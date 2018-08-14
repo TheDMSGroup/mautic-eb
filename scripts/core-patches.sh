@@ -101,3 +101,9 @@ echo "----------------------------------------------------"
 echo "Report Event Dispatch called earlier to prevent fatal error when pagination used"
 echo "https://github.com/mautic/mautic/pull/6330"
 curl -L "https://github.com/mautic/mautic/pull/6330.diff" | git apply -v
+
+# Ready for commit (temporary patch for tests to succeed)
+echo "----------------------------------------------------"
+echo "Update Maxmind test with a new IP"
+echo "https://github.com/mautic/mautic/pull/6438"
+curl -L "https://github.com/mautic/mautic/pull/6438.diff" | git apply -v
