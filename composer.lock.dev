@@ -8505,12 +8505,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-api-services.git",
-                "reference": "04c015d857a5515686373e889ded5bef33177830"
+                "reference": "7cebb2338946c353386841d5e96d0f499998b297"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-api-services/zipball/04c015d857a5515686373e889ded5bef33177830",
-                "reference": "04c015d857a5515686373e889ded5bef33177830",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-api-services/zipball/7cebb2338946c353386841d5e96d0f499998b297",
+                "reference": "7cebb2338946c353386841d5e96d0f499998b297",
                 "shasum": ""
             },
             "require": {
@@ -8534,7 +8534,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-07-27T19:08:29+00:00"
+            "time": "2018-08-14T12:58:15+00:00"
         },
         {
             "name": "thedmsgroup/mautic-campaign-watch-bundle",
@@ -11463,7 +11463,10 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.19 <7.2"
+        "php": ">=5.6.19 <7.2",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-simplexml": "*"
     },
     "platform-dev": []
 }
