@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Global default environment variable overrides for Mautic EB
  * To override for your instance use parameters_local.php
@@ -32,7 +30,6 @@ $parameters = [
     'cache_path'        => str_replace('/mautic_eb/app/config', '/mautic/app/cache', __DIR__),
     'cached_data_timeout' => '30',
 ];
-
 /**
  * Multisite environment variable overrides based on the inbound domain.
  *
@@ -89,27 +86,20 @@ if (!function_exists('mauticEBMultisite')) {
                         switch ($array['status']) {
                             case 0:
                                 throw \Exception('This site is awaiting setup.');
-
                             case 1:
                                 throw \Exception('Storage is being allocated for this site.');
-
                             case 2:
                                 throw \Exception('A database is being created for this site.');
-
                             case 3:
                                 // Site is running and enabled.
                                 $site = $array;
                                 break;
-
                             case 4:
                                 throw \Exception('This site has been temporarily disabled.');
-
                             case 5:
                                 throw \Exception('This site is being restored to active duty.');
-
                             case 6:
                                 throw \Exception('This site is being decommissioned permanently.');
-
                             case 7:
                                 throw \Exception('This site has been decommissioned permanently.');
                         }
@@ -127,7 +117,6 @@ if (!function_exists('mauticEBMultisite')) {
                     // Global cookie for route filtering at the apache level for later security.
                     setcookie('EB_MULTI_SITE_ID', $site['id'], time() + 604800, '/', $site['host'], false, false);
                 }
-
                 // Override parameters array with the JSON array in the parameters column if possible.
                 if (!empty($site['parameters'])) {
                     $jsonParams = json_decode($site['parameters']);
@@ -137,19 +126,14 @@ if (!function_exists('mauticEBMultisite')) {
                         $parameters = array_merge($parameters, $jsonParams);
                     }
                 }
-
                 // Set the path for log entry output.
                 $parameters['log_path'] = 'multi/'.$site['id'].'/logs';
-
                 // Set the path for images.
                 $parameters['image_path'] = 'multi/'.$site['id'].'/media/images';
-
                 // Set the path for generic uploads.
                 $parameters['upload_dir'] = 'multi/'.$site['id'].'/media/files';
-
                 // Set the database name.
                 $parameters['db_name'] = 'mautic_eb_site_'.$site['id'];
-
                 // Explicitly set the site URL based on the inbound host, allow flexible SSL.
                 if (
                     isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
@@ -165,6 +149,4 @@ if (!function_exists('mauticEBMultisite')) {
         }
     }
 }
-
 mauticEBMultisite($parameters);
-
