@@ -8622,12 +8622,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "146c1214626a836a18db36096ce514e6da64ea7a"
+                "reference": "a87466d3d5d74d27f83f143b4cc53ace7342ac6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/146c1214626a836a18db36096ce514e6da64ea7a",
-                "reference": "146c1214626a836a18db36096ce514e6da64ea7a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/a87466d3d5d74d27f83f143b4cc53ace7342ac6e",
+                "reference": "a87466d3d5d74d27f83f143b4cc53ace7342ac6e",
                 "shasum": ""
             },
             "require": {
@@ -8651,7 +8651,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-08-31T12:52:06+00:00"
+            "time": "2018-09-07T15:03:45+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8689,6 +8689,43 @@
                 "plugin"
             ],
             "time": "2018-08-27T21:24:16+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-dashboard-warm-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
+                "reference": "1a991ae58bc824551a91e2cdd72d2a5958b3269c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/1a991ae58bc824551a91e2cdd72d2a5958b3269c",
+                "reference": "1a991ae58bc824551a91e2cdd72d2a5958b3269c",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Improves the performance of the dashboard by sharing/extending/warming caches.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-09-10T21:05:30+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -11458,7 +11495,8 @@
         "thedmsgroup/mautic-usstate-normalizer-bundle": 20,
         "thedmsgroup/mautic-health-bundle": 20,
         "thedmsgroup/mautic-api-services-bundle": 20,
-        "thedmsgroup/mautic-campaign-watch-bundle": 20
+        "thedmsgroup/mautic-campaign-watch-bundle": 20,
+        "thedmsgroup/mautic-dashboard-warm-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
