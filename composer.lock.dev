@@ -8696,12 +8696,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
-                "reference": "1a991ae58bc824551a91e2cdd72d2a5958b3269c"
+                "reference": "59d5d5fe3c8da33807cae0ed1b7f1518d643e21d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/1a991ae58bc824551a91e2cdd72d2a5958b3269c",
-                "reference": "1a991ae58bc824551a91e2cdd72d2a5958b3269c",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/59d5d5fe3c8da33807cae0ed1b7f1518d643e21d",
+                "reference": "59d5d5fe3c8da33807cae0ed1b7f1518d643e21d",
                 "shasum": ""
             },
             "require": {
@@ -8725,7 +8725,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-09-10T21:05:30+00:00"
+            "time": "2018-09-12T20:10:35+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
