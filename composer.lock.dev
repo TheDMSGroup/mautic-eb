@@ -8579,12 +8579,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "165e158de313abcc3207980ac00c1d0f5e530761"
+                "reference": "903d09507bdd92aa31347c7bd094daa7c8af4a37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/165e158de313abcc3207980ac00c1d0f5e530761",
-                "reference": "165e158de313abcc3207980ac00c1d0f5e530761",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/903d09507bdd92aa31347c7bd094daa7c8af4a37",
+                "reference": "903d09507bdd92aa31347c7bd094daa7c8af4a37",
                 "shasum": ""
             },
             "require": {
@@ -8614,7 +8614,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-09-12T20:43:23+00:00"
+            "time": "2018-09-13T13:48:42+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8659,12 +8659,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "b79ab98df8b3878bd8a5b45117f39b04af8999dc"
+                "reference": "ef5e40c1f6f4123f65606fca3b568eed04846e57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/b79ab98df8b3878bd8a5b45117f39b04af8999dc",
-                "reference": "b79ab98df8b3878bd8a5b45117f39b04af8999dc",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/ef5e40c1f6f4123f65606fca3b568eed04846e57",
+                "reference": "ef5e40c1f6f4123f65606fca3b568eed04846e57",
                 "shasum": ""
             },
             "require": {
@@ -8688,7 +8688,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-08-27T21:24:16+00:00"
+            "time": "2018-09-13T13:48:51+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
