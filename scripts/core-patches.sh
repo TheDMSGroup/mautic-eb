@@ -107,3 +107,9 @@ echo "----------------------------------------------------"
 echo "Update Maxmind test with a new IP"
 echo "https://github.com/mautic/mautic/pull/6438"
 curl -L "https://github.com/mautic/mautic/pull/6438.diff" | git apply -v
+
+# Add Campaign Event object to event config array for pushLead processing accuracy ENG-558
+echo "----------------------------------------------------"
+echo "Add Campaign Event object to event config array for pushLead processing accuracy"
+echo "https://github.com/mautic/mautic/pull/6638"
+curl -L "https://github.com/mautic/mautic/pull/6638.diff" | git apply -v
