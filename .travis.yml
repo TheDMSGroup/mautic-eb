@@ -39,7 +39,7 @@ install:
 script:
   # Run PHPUnit on the complete build.
   - cd mautic
-  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
+  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --stop-on-failure
   - cd -
 
 before_deploy:
