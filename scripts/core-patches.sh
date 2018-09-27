@@ -113,3 +113,9 @@ echo "----------------------------------------------------"
 echo "Add Campaign Event object to event config array for pushLead processing accuracy"
 echo "https://github.com/mautic/mautic/pull/6638"
 curl -L "https://github.com/mautic/mautic/pull/6638.diff" | git apply -v
+
+# Already merged.
+echo "----------------------------------------------------"
+echo "Fix checkbox bool overwrite"
+echo "https://github.com/mautic/mautic/pull/6282"
+curl -L "https://github.com/mautic/mautic/pull/6282.diff" | git apply -v
