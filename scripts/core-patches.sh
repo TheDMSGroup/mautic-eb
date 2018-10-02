@@ -119,3 +119,9 @@ echo "----------------------------------------------------"
 echo "Fix checkbox bool overwrite"
 echo "https://github.com/mautic/mautic/pull/6282"
 curl -L "https://github.com/mautic/mautic/pull/6282.diff" | git apply -v
+
+# Already merged, will be in 2.14.2
+echo "----------------------------------------------------"
+echo "Prevent memory leak in reports and export more than 10K rows"
+echo "https://github.com/mautic/mautic/pull/6530"
+curl -L "https://github.com/mautic/mautic/pull/6530.diff" | git apply -v
