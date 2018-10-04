@@ -12,11 +12,11 @@ echo "----------------------------------------------------"
 echo "Applying selected patches to Mautic core."
 cd ./mautic
 
-# Ready for tagging.
-echo "----------------------------------------------------"
-echo "[Bug] Plugin content locking (referrer POST) causes 500. #5789"
-echo "https://github.com/mautic/mautic/pull/5789"
-curl -L "https://github.com/mautic/mautic/pull/5789.diff" | git apply -v
+# Merging to 2.14.2 and now incompatible.
+# echo "----------------------------------------------------"
+# echo "[Bug] Plugin content locking (referrer POST) causes 500. #5789"
+# echo "https://github.com/mautic/mautic/pull/5789"
+# curl -L "https://github.com/mautic/mautic/pull/5789.diff" | git apply -v
 
 # Should go into 2.14.0 but is not merged yet.
 echo "----------------------------------------------------"
