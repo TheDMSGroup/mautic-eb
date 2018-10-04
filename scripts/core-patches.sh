@@ -125,3 +125,9 @@ echo "----------------------------------------------------"
 echo "Prevent memory leak in reports and export more than 10K rows"
 echo "https://github.com/mautic/mautic/pull/6530"
 curl -L "https://github.com/mautic/mautic/pull/6530.diff" | git apply -v
+
+# Already merged, in 2.14.1
+echo "----------------------------------------------------"
+echo "Fixes campaign bug that prevented some events from executing for all contacts"
+echo "https://github.com/mautic/mautic/pull/6482"
+curl -L "https://github.com/mautic/mautic/pull/6482.diff" | git apply -v
