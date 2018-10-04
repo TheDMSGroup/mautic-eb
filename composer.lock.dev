@@ -8838,12 +8838,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-health.git",
-                "reference": "867be6f22f91939b93db280bf3262867435cde02"
+                "reference": "b5a861427dfd89262d1078e348212c286e417596"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/867be6f22f91939b93db280bf3262867435cde02",
-                "reference": "867be6f22f91939b93db280bf3262867435cde02",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/b5a861427dfd89262d1078e348212c286e417596",
+                "reference": "b5a861427dfd89262d1078e348212c286e417596",
                 "shasum": ""
             },
             "require": {
@@ -8867,7 +8867,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-07-26T19:03:42+00:00"
+            "time": "2018-10-04T19:14:14+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
