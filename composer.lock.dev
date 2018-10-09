@@ -8793,12 +8793,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "2603446518d8aeb5e4a4ceab8c85eca01fbba8c5"
+                "reference": "34a365cd67da2f4578c060863b6f8d877b79d074"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/2603446518d8aeb5e4a4ceab8c85eca01fbba8c5",
-                "reference": "2603446518d8aeb5e4a4ceab8c85eca01fbba8c5",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/34a365cd67da2f4578c060863b6f8d877b79d074",
+                "reference": "34a365cd67da2f4578c060863b6f8d877b79d074",
                 "shasum": ""
             },
             "require": {
@@ -8830,7 +8830,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-09T14:38:40+00:00"
+            "time": "2018-10-09T18:49:57+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
