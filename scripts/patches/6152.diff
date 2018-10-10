@@ -57,8 +57,8 @@ index 8e75084569..8daf65c1f3 100644
   * @returns {boolean}
   */
  Mautic.campaignBuilderValidateConnection = function (epDetails, targetType, targetEvent) {
-@@ -1888,6 +1894,48 @@ Mautic.toggleCampaignTabData = function (elem) {
-     });
+@@ -1888,6 +1894,48 @@ Mautic.cancelScheduledCampaignEvent = function(eventId, contactId) {
+     );
  };
  
 +/**
@@ -106,6 +106,13 @@ index 8e75084569..8daf65c1f3 100644
  /**
   * Update the "Jump to Event" select list to be available events.
   */
+@@ -1935,6 +1983,3 @@ Mautic.highlightJumpTarget = function(event, el) {
+         jumpTarget.css("z-index", 2010);
+     }
+ };
+-
+-
+-
 diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
 index 2b8b0bf4f8..6edd5ed618 100644
 --- a/app/bundles/CampaignBundle/Config/config.php
@@ -137,8 +144,8 @@ index 2b8b0bf4f8..6edd5ed618 100644
          'models'       => [
              'mautic.campaign.model.campaign'  => [
 @@ -270,6 +289,9 @@
-                     'mautic.helper.ip_lookup',
-                 ],
+             'mautic.campaign.model.summary' => [
+                 'class'     => 'Mautic\CampaignBundle\Model\SummaryModel',
              ],
 +            'mautic.campaign.model.tag' => [
 +                'class' => 'Mautic\LeadBundle\Model\TagModel',
@@ -235,7 +242,7 @@ index 3cf49a0472..aaae9da0ac 100644
 +
 +        return $this->sendJsonResponse($data);
 +    }
- 
+ }
 diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
 index 0c9fc82a63..6a4980e7c0 100644
 --- a/app/bundles/CampaignBundle/Controller/CampaignController.php
