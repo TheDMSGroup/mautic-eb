@@ -12,13 +12,7 @@ echo "----------------------------------------------------"
 echo "Applying selected patches to Mautic core."
 cd ./mautic
 
-# Merging to 2.14.2 and now incompatible.
-# echo "----------------------------------------------------"
-# echo "[Bug] Plugin content locking (referrer POST) causes 500. #5789"
-# echo "https://github.com/mautic/mautic/pull/5789"
-# curl -L "https://github.com/mautic/mautic/pull/5789.diff" | git apply -v
-
-# Should go into 2.14.0 but is not merged yet.
+# Should go into 2.15.0 but is not merged yet.
 echo "----------------------------------------------------"
 echo "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911"
 echo "https://github.com/mautic/mautic/pull/5911"
@@ -30,65 +24,43 @@ echo "[Enhancement] Support includes/excludes with text fields for bulk filterin
 echo "https://github.com/mautic/mautic/pull/5925"
 curl -L "https://github.com/mautic/mautic/pull/5925.diff" | git apply -v
 
-# Conflicts resolved (again), needs testing.
-echo "----------------------------------------------------"
-echo "Campaign Details View tabbed content, allow filtering data by date range OR \"to date\" (current default) #6021"
-echo "https://github.com/mautic/mautic/pull/6021"
-curl -L "https://github.com/mautic/mautic/pull/6021.diff" | git apply -v
-
-# Conflicts resolved. Ready for tagging.
+# Conflicts resolved. Ready for tagging. But needs fix for dashboard widgets.
 echo "----------------------------------------------------"
 echo "Config option for default date range on DateRangeFilter. #6091"
 echo "https://github.com/mautic/mautic/pull/6091"
 curl -L "https://github.com/mautic/mautic/pull/6091.diff" | git apply -v
 
-# Should go into 2.14.0 but is not merged yet.
-echo "----------------------------------------------------"
-echo "Drastically improve performance of long-running campaign rendering. #6092"
-echo "https://github.com/mautic/mautic/pull/6092"
-curl -L "https://github.com/mautic/mautic/pull/6092.diff" | git apply -v
-
-# Conflicts resolved. Ready for tagging. Needs developer documentation.
+# Ready for tagging. Needs developer documentation before merging.
 echo "----------------------------------------------------"
 echo "API call to clone an existing campaign. #6125"
 echo "https://github.com/mautic/mautic/pull/6125"
 curl -L "https://github.com/mautic/mautic/pull/6125.diff" | git apply -v
 
-# Ready for tagging.
+# Should go into 2.15.0 but is not merged yet.
 echo "----------------------------------------------------"
 echo "[Feature] Chained actions #6187"
 echo "https://github.com/mautic/mautic/pull/6187"
+# Removed app.js from diff.
 cat "../scripts/patches/6187.diff" | git apply -v
 
 # Ready for tagging.
 echo "----------------------------------------------------"
-echo "[Bug] Contact limiter threads (2.14)"
-echo "https://github.com/mautic/mautic/pull/6211"
-curl -L "https://github.com/mautic/mautic/pull/6211.diff" | git apply -v
+echo "Campaign summary statistics (performance boost and date range specificity) #6651"
+echo "https://github.com/mautic/mautic/pull/6651"
+curl -L "https://github.com/mautic/mautic/pull/6651.diff" | git apply -v
 
-# Ready for tagging.
-echo "----------------------------------------------------"
-echo "Support --quiet for faster mautic:campaigns:trigger processing #6224"
-echo "https://github.com/mautic/mautic/pull/6224"
-curl -L "https://github.com/mautic/mautic/pull/6224.diff" | git apply -v
-
-# Ready for tagging. Avoids conflicts with #6021.
-echo "----------------------------------------------------"
-echo "[Bug] Symfony Master/Slave support is broken #5969"
-echo "https://github.com/mautic/mautic/pull/5970"
-cat "../scripts/patches/5970.diff" | git apply -v
-
-# Ready for tagging. Gist avoids conflicts with #6021 and #6187
+# Should go into 2.15.0 but is not merged yet.
 echo "----------------------------------------------------"
 echo "Create a Soft delete process for campaign events #6247"
 echo "https://github.com/mautic/mautic/pull/6247"
+# Removed campaign_schema.sql
 cat "../scripts/patches/6247.diff" | git apply -v
 
-# Gist Applies patches for Campaign Tagging
+# Ready for tagging.
 echo "----------------------------------------------------"
 echo "Applies patches for Campaign Tagging"
 echo "https://github.com/mautic/mautic/pull/6152"
-# Modified to prevent collisions with diffs above.
+# Removed app.js and added mautic.campaign.model.summary
 cat "../scripts/patches/6152.diff" | git apply -v
 
 # Temporary state abbreviation patch
@@ -96,38 +68,8 @@ echo "----------------------------------------------------"
 echo "Converts United States proper names to abbreviations"
 cat "../scripts/patches/us_state_abbrev_acceptance.diff" | git apply -v
 
-# Report Event Dispatch called earlier to prevent fatal error when pagination used
-echo "----------------------------------------------------"
-echo "Report Event Dispatch called earlier to prevent fatal error when pagination used"
-echo "https://github.com/mautic/mautic/pull/6330"
-curl -L "https://github.com/mautic/mautic/pull/6330.diff" | git apply -v
-
-# Ready for commit (temporary patch for tests to succeed)
-echo "----------------------------------------------------"
-echo "Update Maxmind test with a new IP"
-echo "https://github.com/mautic/mautic/pull/6438"
-curl -L "https://github.com/mautic/mautic/pull/6438.diff" | git apply -v
-
-# Add Campaign Event object to event config array for pushLead processing accuracy ENG-558
+# Should go into 2.15.0 but is not merged yet.
 echo "----------------------------------------------------"
 echo "Add Campaign Event object to event config array for pushLead processing accuracy"
 echo "https://github.com/mautic/mautic/pull/6638"
 curl -L "https://github.com/mautic/mautic/pull/6638.diff" | git apply -v
-
-# Already merged.
-echo "----------------------------------------------------"
-echo "Fix checkbox bool overwrite"
-echo "https://github.com/mautic/mautic/pull/6282"
-curl -L "https://github.com/mautic/mautic/pull/6282.diff" | git apply -v
-
-# Already merged, will be in 2.14.2
-echo "----------------------------------------------------"
-echo "Prevent memory leak in reports and export more than 10K rows"
-echo "https://github.com/mautic/mautic/pull/6530"
-curl -L "https://github.com/mautic/mautic/pull/6530.diff" | git apply -v
-
-# Already merged, in 2.14.1
-echo "----------------------------------------------------"
-echo "Fixes campaign bug that prevented some events from executing for all contacts"
-echo "https://github.com/mautic/mautic/pull/6482"
-curl -L "https://github.com/mautic/mautic/pull/6482.diff" | git apply -v
