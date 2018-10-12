@@ -73,3 +73,9 @@ echo "----------------------------------------------------"
 echo "Add Campaign Event object to event config array for pushLead processing accuracy"
 echo "https://github.com/mautic/mautic/pull/6638"
 curl -L "https://github.com/mautic/mautic/pull/6638.diff" | git apply -v
+
+# Should go into 2.14.2 but is not merged yet.
+echo "----------------------------------------------------"
+echo "[Bug] Symfony Master/Slave support is broken #5970"
+echo "https://github.com/mautic/mautic/pull/5970"
+cat "../scripts/patches/5970.diff" | git apply -v

@@ -40,7 +40,7 @@ index 589253a618..5442ca10d5 100644
              ->where(
 @@ -449,7 +450,7 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
       */
-     public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], $dateRangeValues = null)
+     public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], \DateTime $dateFrom = null, \DateTime $dateTo = null)
      {
 -        $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
 +        $q = $this->getSlaveConnection()->createQueryBuilder();
@@ -79,7 +79,7 @@ index c9282494b1..d7aba37b84 100644
      {
 @@ -219,7 +220,7 @@ public function getUpcomingEvents(array $options = null)
       */
-     public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true, $dateRangeValues = null)
+     public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true, \DateTime $dateFrom = null, \DateTime $dateTo = null)
      {
 -        $q = $this->_em->getConnection()->createQueryBuilder()
 +        $q = $this->getSlaveConnection()->createQueryBuilder()
