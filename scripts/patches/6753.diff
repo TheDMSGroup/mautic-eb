@@ -58,7 +58,7 @@ index 4a1e33d48f..aa417057ab 100644
  
          $this->completeRun();
 diff --git a/app/bundles/CampaignBundle/Entity/CampaignRepository.php b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
-index e8c2fe0373..7377b92d32 100644
+index e8c2fe0373..f9aacaa85c 100644
 --- a/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 @@ -394,6 +394,10 @@ public function getCountsForPendingContacts($campaignId, array $pendingEvents, C
@@ -77,7 +77,7 @@ index e8c2fe0373..7377b92d32 100644
              ->setParameter('campaignId', (int) $campaignId);
  
 -        $results = $q->execute()->fetchAll();
-+        if ($limiter->hasCampaignLimit()) {
++        if ($limiter->hasCampaignLimit() && $limiter->getCampaignLimitRemaining() < $limiter->getBatchLimit()) {
 +            $q->setMaxResults($limiter->getCampaignLimitRemaining());
 +        }
  
@@ -98,7 +98,7 @@ index e8c2fe0373..7377b92d32 100644
      }
  
 diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
-index c9282494b1..fbcfb5edcd 100644
+index c9282494b1..a6802fb5cf 100644
 --- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 @@ -386,6 +386,10 @@ public function getChartQuery($options)
@@ -117,7 +117,7 @@ index c9282494b1..fbcfb5edcd 100644
          $this->updateOrmQueryFromContactLimiter('o', $q, $limiter);
  
 -        return new ArrayCollection($q->getQuery()->getResult());
-+        if ($limiter->hasCampaignLimit()) {
++        if ($limiter->hasCampaignLimit() && $limiter->getCampaignLimitRemaining() < $limiter->getBatchLimit()) {
 +            $q->setMaxResults($limiter->getCampaignLimitRemaining());
 +        }
 +
@@ -132,14 +132,14 @@ index c9282494b1..fbcfb5edcd 100644
  
      /**
 diff --git a/app/bundles/CampaignBundle/Entity/LeadRepository.php b/app/bundles/CampaignBundle/Entity/LeadRepository.php
-index a0e7409de4..190229fe26 100644
+index a0e7409de4..82b855e861 100644
 --- a/app/bundles/CampaignBundle/Entity/LeadRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadRepository.php
 @@ -252,12 +252,20 @@ public function getInactiveContacts($campaignId, $decisionId, $parentDecisionId,
              );
          }
  
-+        if ($limiter->hasCampaignLimit()) {
++        if ($limiter->hasCampaignLimit() && $limiter->getCampaignLimitRemaining() < $limiter->getBatchLimit()) {
 +            $q->setMaxResults($limiter->getCampaignLimitRemaining());
 +        }
 +
