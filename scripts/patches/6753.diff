@@ -69,7 +69,7 @@ index e8c2fe0373..f9aacaa85c 100644
 +            return [];
 +        }
 +
-         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
+         $q = $this->getSlaveConnection($limiter)->createQueryBuilder();
  
          $q->select('cl.lead_id')
 @@ -426,15 +430,21 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
@@ -109,9 +109,9 @@ index c9282494b1..a6802fb5cf 100644
 +            return new ArrayCollection();
 +        }
 +
+         $this->getSlaveConnection($limiter);
          $q = $this->createQueryBuilder('o');
  
-         $q->select('o, e, c')
 @@ -406,7 +410,17 @@ public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter)
  
          $this->updateOrmQueryFromContactLimiter('o', $q, $limiter);
