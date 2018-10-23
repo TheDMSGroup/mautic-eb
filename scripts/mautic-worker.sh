@@ -35,5 +35,5 @@ fi
 # Get the count of instances running this script (including the current one).
 for (( i = 1; i <= $workers; i++ ))
 do
-    cronloop mautic:campaign:trigger --thread-id $i --max-threads $workers --batch-limit 250 --quiet --force &
+    cronloop mautic:campaign:trigger --thread-id $i --max-threads $workers --batch-limit 250 --campaign-limit 2500 --quiet --force &
 done

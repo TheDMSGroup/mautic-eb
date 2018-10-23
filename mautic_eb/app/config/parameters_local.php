@@ -14,15 +14,6 @@ $parameters = [
     'db_password'         => getenv('DB_PASSWD') ?: $parameters['db_password'] ?? '',
     'mailer_from_name'    => getenv('MAILER_FROM_NAME') ?: $parameters['mailer_from_name'] ?? 'Web Developer',
     'mailer_from_email'   => getenv('MAILER_FROM_EMAIL') ?: $parameters['mailer_from_email'] ?? 'web@developer.com',
-    'mailer_transport'    => 'mail',
-    'mailer_host'         => null,
-    'mailer_port'         => null,
-    'mailer_user'         => 'root',
-    'mailer_password'     => 'root',
-    'mailer_encryption'   => null,
-    'mailer_auth_mode'    => null,
-    'mailer_spool_type'   => 'file',
-    'mailer_spool_path'   => '%kernel.root_dir%/spool',
     'secret_key'          => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
     'site_url'            => getenv('APP_URL') ?: 'http://mautic.loc',
     'tmp_path'            => '/tmp',
@@ -32,7 +23,6 @@ $parameters = [
         ['/mautic/app/cache', '/app/cache'],
         __DIR__
     ),
-    'cached_data_timeout' => '30',
 ];
 /**
  * Multisite environment variable overrides based on the inbound domain.

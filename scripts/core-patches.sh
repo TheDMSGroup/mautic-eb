@@ -79,3 +79,9 @@ echo "----------------------------------------------------"
 echo "[Bug] Symfony Master/Slave support is broken #5970"
 echo "https://github.com/mautic/mautic/pull/5970"
 cat "../scripts/patches/5970.diff" | git apply -v
+
+# Recreates campaign limit in mautic:campaigns:trigger as --camapign-limit
+echo "----------------------------------------------------"
+echo "[Feature] mautic:campaigns:trigger --camapign-limit=XXX"
+echo "https://github.com/mautic/mautic/pull/6753"
+cat "../scripts/patches/6753.diff" | git apply -v
