@@ -33,11 +33,15 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
 
 #### Optional:
 
-    MAUTIC_INSTALL        - Set to "1" to initialize mautic for the first/cold deployment only!
-    MAUTIC_WORKERS        - Number of concurrent campaign trigger workers to run on the leading instance.
-    NR_APPNAME            - Newrelic application name.
-    NR_APM_INSTALL_KEY    - NewRelic install key for Application Monitoring.
-    NR_INF_INSTALL_KEY    - NewRelic install key for Infrastructure.
+    MAUTIC_INSTALL           - Set to "1" to initialize mautic for the first/cold deployment only!
+    MAUTIC_WORKERS           - Number of concurrent campaign trigger workers to run on the leading instance.
+                             - Instead of MAUTIC_WORKERS, we reccomend using the following 3 variables now to better control your timing.
+    MAUTIC_WORKERS_KICKOFF   - Number of concurrent campaign trigger workers running kickoff actions only. Overrides MAUTIC_WORKERS when present.
+    MAUTIC_WORKERS_SCHEDULED - Number of concurrent campaign trigger workers running scheduled actions only. Overrides MAUTIC_WORKERS when present.
+    MAUTIC_WORKERS_INACTIVE  - Number of concurrent campaign trigger workers running inactive actions only. Overrides MAUTIC_WORKERS when present.
+    NR_APPNAME               - Newrelic application name.
+    NR_APM_INSTALL_KEY       - NewRelic install key for Application Monitoring.
+    NR_INF_INSTALL_KEY       - NewRelic install key for Infrastructure.
 
 ### Travis CI Environment Variables
 

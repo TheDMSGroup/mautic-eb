@@ -24,16 +24,71 @@ then
     . /opt/elasticbeanstalk/support/envvars
 fi
 
-# Establish the current worker count based on environment variables.
-if [ -z "$MAUTIC_WORKERS" ]
+globalworkers=10
+kickoffworkers=0
+scheduledworkers=0
+inactiveworkers=0
+
+# Get the global worker count if defined.
+if [ ! -z "$MAUTIC_WORKERS" ]
 then
-    workers=10
-else
-    workers=$MAUTIC_WORKERS
+    globalworkers=$MAUTIC_WORKERS
 fi
 
-# Get the count of instances running this script (including the current one).
-for (( i = 1; i <= $workers; i++ ))
-do
-    cronloop mautic:campaign:trigger --thread-id $i --max-threads $workers --batch-limit 250 --campaign-limit 2500 --quiet --force &
-done
+# Check for kickoff worker setting.
+if [ ! -z "$MAUTIC_WORKERS_KICKOFF" ]
+then
+    globalworkers=0
+    kickoffworkers=$MAUTIC_WORKERS_KICKOFF
+fi
+
+# Check for scheduled worker setting.
+if [ ! -z "$MAUTIC_WORKERS_SCHEDULED" ]
+then
+    globalworkers=0
+    scheduledworkers=$MAUTIC_WORKERS_SCHEDULED
+fi
+
+# Check for inactive worker setting.
+if [ ! -z "$MAUTIC_WORKERS_INACTIVE" ]
+then
+    globalworkers=0
+    inactiveworkers=$MAUTIC_WORKERS_INACTIVE
+fi
+
+# Start global event workers
+if [ $globalworkers -gt 0 ]
+then
+    for (( i = 1; i <= $globalworkers; i++ ))
+    do
+        cronloop mautic:campaign:trigger --thread-id $i --max-threads $globalworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
+    done
+fi
+
+# Start kickoff event workers.
+if [ $kickoffworkers -gt 0 ]
+then
+    for (( i = 1; i <= $kickoffworkers; i++ ))
+    do
+        cronloop mautic:campaign:trigger --thread-id $i --kickoff-only --max-threads $scheduledworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
+    done
+fi
+
+# Start scheduled event workers.
+if [ $scheduledworkers -gt 0 ]
+then
+    for (( i = 1; i <= $scheduledworkers; i++ ))
+    do
+        cronloop mautic:campaign:trigger --thread-id $i --scheduled-only --max-threads $scheduledworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
+    done
+fi
+
+# Start inactive event workers.
+if [ $inactiveworkers -gt 0 ]
+then
+    for (( i = 1; i <= $inactiveworkers; i++ ))
+    do
+        cronloop mautic:campaign:trigger --thread-id $i --inactive-only --max-threads $inactiveworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
+    done
+fi
+
