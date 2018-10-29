@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "ce40c5e79c01b2ce0de8cc61bbe624f8",
@@ -8744,7 +8744,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-07-03T17:04:35+00:00"
+            "time": "2018-04-25T20:40:55+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8873,6 +8873,43 @@
                 "plugin"
             ],
             "time": "2018-10-04T19:14:14+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-segment-extras-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
+                "reference": "5d4adda090a133da2e9564750075458ad0a834c7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/5d4adda090a133da2e9564750075458ad0a834c7",
+                "reference": "5d4adda090a133da2e9564750075458ad0a834c7",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Scott Shipman",
+                    "email": "scottshipmang@gmail.com"
+                }
+            ],
+            "description": "Extends Mautic Lead Bundle's Lead List (Segment) functionality.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-10-19T19:42:27+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
@@ -11502,7 +11539,8 @@
         "thedmsgroup/mautic-health-bundle": 20,
         "thedmsgroup/mautic-api-services-bundle": 20,
         "thedmsgroup/mautic-campaign-watch-bundle": 20,
-        "thedmsgroup/mautic-dashboard-warm-bundle": 20
+        "thedmsgroup/mautic-dashboard-warm-bundle": 20,
+        "thedmsgroup/mautic-segment-extras-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
