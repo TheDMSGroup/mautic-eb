@@ -1,0 +1,226 @@
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLog.php b/app/bundles/CampaignBundle/Entity/LeadEventLog.php
+index 9d0a59286e..905e72cd39 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLog.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLog.php
+@@ -113,6 +113,7 @@ public static function loadMetadata(ORM\ClassMetadata $metadata)
+             ->setCustomRepositoryClass('Mautic\CampaignBundle\Entity\LeadEventLogRepository')
+             ->addIndex(['is_scheduled', 'lead_id'], 'campaign_event_upcoming_search')
+             ->addIndex(['campaign_id', 'is_scheduled', 'trigger_date'], 'campaign_event_schedule_counts')
++            ->addIndex(['event_id', 'is_scheduled', 'trigger_date'], 'campaign_event_scheduled_events')
+             ->addIndex(['date_triggered'], 'campaign_date_triggered')
+             ->addIndex(['lead_id', 'campaign_id', 'rotation'], 'campaign_leads')
+             ->addIndex(['channel', 'channel_id', 'lead_id'], 'campaign_log_channel')
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+index c9282494b1..9848788425 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+@@ -602,4 +602,78 @@ public function removeScheduledEvents($campaignId, $leadId)
+             'is_scheduled' => 1,
+         ]);
+     }
++
++    /**
++     * @param $campaignId
++     *
++     * @return array
++     */
++    public function getPublishedEventIds($campaignId)
++    {
++        if (!$campaignId) {
++            return [];
++        }
++
++        $q    = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $expr = $q->expr()->andX(
++        // requires PR 6247 (https://github.com/mautic/mautic/pull/6247) where e.is_published is created
++            $q->expr()->eq('e.is_published', 1),
++            $q->expr()->eq('c.is_published', 1),
++            $q->expr()->eq('e.campaign_id', ':campaignId')
++        );
++        $q->select('e.id')
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_events', 'e')
++            ->join('e', MAUTIC_TABLE_PREFIX.'campaigns', 'c', 'e.campaign_id = c.id')
++            ->where($expr)
++            ->setParameter('campaignId', $campaignId);
++
++        $results = $q->execute()
++            ->fetchAll(\PDO::FETCH_COLUMN);
++
++        return $results;
++    }
++
++    /**
++     * @param array          $eventIds2 ) private funded
++     * @param \DateTime      $date
++     * @param ContactLimiter $limiter
++     *
++     * @return array
++     */
++    public function getScheduledEvents($eventIds, \DateTime $date, ContactLimiter $limiter)
++    {
++        if (!$eventIds) {
++            return [];
++        }
++        $now = clone $date;
++        $now->setTimezone(new \DateTimeZone('UTC'));
++
++        $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
++
++        $expr = $q->expr()->andX(
++            $q->expr()->in('l.event_id', ':ids'),
++            $q->expr()->lte('l.trigger_date', ':now'),
++            $q->expr()->eq('l.is_scheduled', ':true')
++        );
++
++        $this->updateQueryFromContactLimiter('l', $q, $limiter, true);
++
++        $results = $q->select('COUNT(*) as event_count, l.event_id')
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
++            ->where($expr)
++            ->setParameter('ids', $eventIds, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
++            ->setParameter('true', true)
++            ->setParameter('now', $now->format('Y-m-d H:i:s'))
++            ->groupBy('l.event_id')
++            ->execute()
++            ->fetchAll();
++
++        $events = [];
++
++        foreach ($results as $result) {
++            $events[$result['event_id']] = $result['event_count'];
++        }
++
++        return $events;
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php b/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
+index 67017ed444..15155c6e4f 100644
+--- a/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
+@@ -144,7 +144,6 @@ public function execute(Campaign $campaign, ContactLimiter $limiter, OutputInter
+         $this->counter    = new Counter();
+
+         $this->logger->debug('CAMPAIGN: Triggering scheduled events');
+-
+         try {
+             $this->prepareForExecution();
+             $this->executeOrRecheduleEvent();
+@@ -247,29 +246,34 @@ private function prepareForExecution()
+     {
+         $this->progressBar = null;
+         $this->now         = new \Datetime();
++        $withCounts        = $this->output instanceof NullOutput ? false : true;
+
+-        // Get counts by event
+-        $scheduledEvents       = $this->repo->getScheduledCounts($this->campaign->getId(), $this->now, $this->limiter);
+-        $totalScheduledCount   = $scheduledEvents ? array_sum($scheduledEvents) : 0;
+-        $this->scheduledEvents = array_keys($scheduledEvents);
+-        $this->logger->debug('CAMPAIGN: '.$totalScheduledCount.' events scheduled to execute.');
+-
+-        $this->output->writeln(
+-            $this->translator->trans(
+-                'mautic.campaign.trigger.event_count',
+-                [
+-                    '%events%' => $totalScheduledCount,
+-                    '%batch%'  => $this->limiter->getBatchLimit(),
+-                ]
+-            )
+-        );
++        // replaces call to getScheduledCounts
++        $eventIds        = $this->repo->getPublishedEventIds($this->campaign->getId());
++        $scheduledEvents = $this->repo->getScheduledEvents($eventIds, $this->now, $this->limiter);
+
++        $totalScheduledCount   = $scheduledEvents ? array_sum($scheduledEvents) : 0;
++        $this->scheduledEvents = $scheduledEvents ? array_keys($scheduledEvents) : [];
+         if (!$totalScheduledCount) {
+             throw new NoEventsFoundException();
+-        }
++        } else {
++            if ($withCounts) {
++                $this->logger->debug('CAMPAIGN: '.$totalScheduledCount.' events scheduled to execute.');
++
++                $this->output->writeln(
++                    $this->translator->trans(
++                        'mautic.campaign.trigger.event_count',
++                        [
++                            '%events%' => $totalScheduledCount,
++                            '%batch%'  => $this->limiter->getBatchLimit(),
++                        ]
++                    )
++                );
++            }
+
+-        $this->progressBar = ProgressBarHelper::init($this->output, $totalScheduledCount);
+-        $this->progressBar->start();
++            $this->progressBar = ProgressBarHelper::init($this->output, $totalScheduledCount);
++            $this->progressBar->start();
++        }
+     }
+
+     /**
+@@ -286,7 +290,6 @@ private function executeOrRecheduleEvent()
+
+         foreach ($this->scheduledEvents as $eventId) {
+             $this->counter->advanceEventCount();
+-
+             // Loop over contacts until the entire campaign is executed
+             $this->executeScheduled($eventId, $now);
+         }
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php
+index c69d2543ea..7be253301d 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/ScheduledExecutionerTest.php
+@@ -78,7 +78,7 @@ protected function setUp()
+     public function testNoEventsResultInEmptyResults()
+     {
+         $this->repository->expects($this->once())
+-            ->method('getScheduledCounts')
++            ->method('getScheduledEvents')
+             ->willReturn(['nada' => 0]);
+
+         $this->repository->expects($this->never())
+@@ -94,10 +94,17 @@ public function testNoEventsResultInEmptyResults()
+         $this->assertEquals(0, $counter->getTotalEvaluated());
+     }
+
++    /**
++     * @throws \Doctrine\ORM\Query\QueryException
++     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogNotProcessedException
++     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogPassedAndFailedException
++     * @throws \Mautic\CampaignBundle\Executioner\Exception\CannotProcessEventException
++     * @throws \Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableException
++     */
+     public function testEventsAreExecuted()
+     {
+         $this->repository->expects($this->once())
+-            ->method('getScheduledCounts')
++            ->method('getScheduledEvents')
+             ->willReturn([1 => 2, 2 => 2]);
+
+         $campaign = $this->getMockBuilder(Campaign::class)
+@@ -152,7 +159,6 @@ public function testEventsAreExecuted()
+             ->willReturn(new \DateTime());
+
+         $limiter = new ContactLimiter(0, 0, 0, 0);
+-
+         $counter = $this->getExecutioner()->execute($campaign, $limiter, new BufferedOutput());
+
+         $this->assertEquals(4, $counter->getTotalEvaluated());
+@@ -161,7 +167,7 @@ public function testEventsAreExecuted()
+     public function testEventsAreExecutedInQuietMode()
+     {
+         $this->repository->expects($this->once())
+-            ->method('getScheduledCounts')
++            ->method('getScheduledEvents')
+             ->willReturn([1 => 2, 2 => 2]);
+
+         $campaign = $this->getMockBuilder(Campaign::class)
+@@ -283,7 +289,7 @@ public function testSpecificEventsAreExecuted()
+     public function testEventsAreScheduled()
+     {
+         $this->repository->expects($this->once())
+-            ->method('getScheduledCounts')
++            ->method('getScheduledEvents')
+             ->willReturn([1 => 2]);
+
+         $campaign = $this->getMockBuilder(Campaign::class)
