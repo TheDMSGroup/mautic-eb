@@ -2,7 +2,7 @@ diff --git a/app/bundles/DashboardBundle/Event/WidgetDetailEvent.php b/app/bundl
 index 3d05d425d6..1fcf7fd579 100644
 --- a/app/bundles/DashboardBundle/Event/WidgetDetailEvent.php
 +++ b/app/bundles/DashboardBundle/Event/WidgetDetailEvent.php
-@@ -166,7 +166,9 @@ public function setTemplateData(array $templateData, $skipCache = false)
+@@ -177,7 +177,9 @@ public function setTemplateData(array $templateData, $skipCache = false)
          // Store the template data to the cache
          if (!$skipCache && $this->cacheDir && $this->widget->getCacheTimeout() > 0) {
              $cache = new CacheStorageHelper($this->cacheDir, $this->uniqueCacheDir);
@@ -12,3 +12,4 @@ index 3d05d425d6..1fcf7fd579 100644
 +            $cache->set($this->getUniqueWidgetId(), $templateData, (int) $expireTime);
          }
      }
+
