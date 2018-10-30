@@ -91,3 +91,9 @@ echo "----------------------------------------------------"
 echo "Refactor queries for getting event counts on campaign trigger for performance [ENG-620]"
 echo "https://github.com/mautic/mautic/pull/6787"
 cat "../scripts/patches/6787.diff" | git apply -v
+
+# Set cache on Dashboard Widgets [ENG-624]
+echo "----------------------------------------------------"
+echo "Set cache on Dashboard Widgets [ENG-624]"
+echo "https://github.com/mautic/mautic/pull/6798"
+cat "../scripts/patches/6798.diff" | git apply -v
