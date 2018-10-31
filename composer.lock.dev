@@ -8701,12 +8701,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
-                "reference": "34e3333d31a477f87a06b905226a44e3076657c5"
+                "reference": "39876a88a158e62916f716cfa49ed8663293752e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/34e3333d31a477f87a06b905226a44e3076657c5",
-                "reference": "34e3333d31a477f87a06b905226a44e3076657c5",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/39876a88a158e62916f716cfa49ed8663293752e",
+                "reference": "39876a88a158e62916f716cfa49ed8663293752e",
                 "shasum": ""
             },
             "require": {
@@ -8730,7 +8730,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-03T17:50:01+00:00"
+            "time": "2018-10-31T13:00:33+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8738,7 +8738,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
-                "reference": "master"
+                "reference": "538863d68f3f434a03644300bcab7526a2abc53f"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*"
