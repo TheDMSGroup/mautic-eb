@@ -139,6 +139,17 @@ else
     cd -
 fi
 
+if [ ! -d "./plugins/MauticSegmentExtrasBundle/.git" ]
+then
+    rm -rf ./plugins/MauticSegmentExtrasBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-segment-extras.git ./plugins/MauticSegmentExtrasBundle
+else
+    cd ./plugins/MauticSegmentExtrasBundle
+    git checkout master
+    git pull
+    cd -
+fi
+
 if [ ! -d "./mautic_custom/.git" ]
 then
     rm -rf ./mautic_custom
