@@ -22,9 +22,11 @@ newrelic.logfile = "/var/log/newrelic/php_agent.log"
 newrelic.appname = "$NR_APPNAME"
 newrelic.error_collector.record_database_errors = false
 newrelic.framework = "symfony2"
+newrelic.framework.drupal.modules = 0
+newrelic.framework.wordpress.hooks = 0
 EOM
 
-if [ !-z "$NR_APM_INSTALL_KEY" ]
+if [ ! -z "$NR_APM_INSTALL_KEY" ]
 then
 
     chmod 000644 /etc/php.d/newrelic.ini
@@ -39,7 +41,7 @@ else
     echo "Please set the global variable NR_APM_INSTALL_KEY if you wish to use NewRelic APM reporting."
 fi
 
-if [ !-z "$NR_INF_INSTALL_KEY" ]
+if [ ! -z "$NR_INF_INSTALL_KEY" ]
 then
     # Start the System monitor.
     nrsysmond-config --set license_key=$NR_INF_INSTALL_KEY

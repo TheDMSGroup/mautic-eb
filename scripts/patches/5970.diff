@@ -1,6 +1,5 @@
-
 diff --git a/app/bundles/CampaignBundle/Entity/CampaignRepository.php b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
-index 589253a618..5442ca10d5 100644
+index e8c2fe0373..b45897ffc2 100644
 --- a/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 @@ -22,6 +22,7 @@
@@ -40,7 +39,7 @@ index 589253a618..5442ca10d5 100644
              ->where(
 @@ -449,7 +450,7 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
       */
-     public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], $dateRangeValues = null)
+     public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], \DateTime $dateFrom = null, \DateTime $dateTo = null)
      {
 -        $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
 +        $q = $this->getSlaveConnection()->createQueryBuilder();
@@ -79,12 +78,12 @@ index c9282494b1..d7aba37b84 100644
      {
 @@ -219,7 +220,7 @@ public function getUpcomingEvents(array $options = null)
       */
-     public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true, $dateRangeValues = null)
+     public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true, \DateTime $dateFrom = null, \DateTime $dateTo = null)
      {
 -        $q = $this->_em->getConnection()->createQueryBuilder()
 +        $q = $this->getSlaveConnection()->createQueryBuilder()
                         ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'o')
-                        ->leftJoin(
+                        ->innerJoin(
                             'o',
 @@ -253,7 +254,7 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
          }
@@ -143,7 +142,7 @@ index c9282494b1..d7aba37b84 100644
              ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
              ->where(
 diff --git a/app/bundles/CampaignBundle/Entity/LeadRepository.php b/app/bundles/CampaignBundle/Entity/LeadRepository.php
-index 123906b41b..6c8c8177d1 100644
+index a0e7409de4..a56a2699bd 100644
 --- a/app/bundles/CampaignBundle/Entity/LeadRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadRepository.php
 @@ -23,6 +23,7 @@
@@ -199,6 +198,42 @@ index 123906b41b..6c8c8177d1 100644
              $eventQb->select('null')
                  ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
                  ->where(
+@@ -385,7 +386,7 @@ public function getCountsForCampaignContactsBySegment($campaignId, ContactLimite
+             return new CountResult(0, 0, 0);
+         }
+ 
+-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection($limiter)->createQueryBuilder();
+         $qb->select('min(ll.lead_id) as min_id, max(ll.lead_id) as max_id, count(distinct(ll.lead_id)) as the_count')
+             ->from(MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'll')
+             ->where(
+@@ -420,7 +421,7 @@ public function getCampaignContactsBySegments($campaignId, ContactLimiter $limit
+             return [];
+         }
+ 
+-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection($limiter)->createQueryBuilder();
+         $qb->select('distinct(ll.lead_id) as id')
+             ->from(MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'll')
+             ->where(
+@@ -457,7 +458,7 @@ public function getCountsForOrphanedContactsBySegments($campaignId, ContactLimit
+     {
+         $segments = $this->getCampaignSegments($campaignId);
+ 
+-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection($limiter)->createQueryBuilder();
+         $qb->select('min(cl.lead_id) as min_id, max(cl.lead_id) as max_id, count(cl.lead_id) as the_count')
+             ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
+             ->where(
+@@ -486,7 +487,7 @@ public function getOrphanedContacts($campaignId, ContactLimiter $limiter)
+     {
+         $segments = $this->getCampaignSegments($campaignId);
+ 
+-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection($limiter)->createQueryBuilder();
+         $qb->select('cl.lead_id as id')
+             ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
+             ->where(
 diff --git a/app/bundles/CampaignBundle/Entity/SlaveConnectionTrait.php b/app/bundles/CampaignBundle/Entity/SlaveConnectionTrait.php
 new file mode 100644
 index 0000000000..234c7e43df
@@ -273,3 +308,33 @@ index afbc659b49..c358f828c0 100644
      }
  
      /**
+diff --git a/app/bundles/LeadBundle/Segment/Query/ContactSegmentQueryBuilder.php b/app/bundles/LeadBundle/Segment/Query/ContactSegmentQueryBuilder.php
+index 277813a766..3486b7df6f 100644
+--- a/app/bundles/LeadBundle/Segment/Query/ContactSegmentQueryBuilder.php
++++ b/app/bundles/LeadBundle/Segment/Query/ContactSegmentQueryBuilder.php
+@@ -11,6 +11,8 @@
+ 
+ namespace Mautic\LeadBundle\Segment\Query;
+ 
++use Doctrine\DBAL\Connection;
++use Doctrine\DBAL\Connections\MasterSlaveConnection;
+ use Doctrine\ORM\EntityManager;
+ use Mautic\LeadBundle\Entity\LeadList;
+ use Mautic\LeadBundle\Event\LeadListFilteringEvent;
+@@ -63,8 +65,15 @@ public function __construct(EntityManager $entityManager, RandomParameterName $r
+      */
+     public function assembleContactsSegmentQueryBuilder($segmentId, $segmentFilters)
+     {
++        /** @var Connection $connection */
++        $connection = $this->entityManager->getConnection();
++        if ($connection instanceof MasterSlaveConnection) {
++            // Prefer a slave connection if available.
++            $connection->connect('slave');
++        }
++
+         /** @var QueryBuilder $queryBuilder */
+-        $queryBuilder = new QueryBuilder($this->entityManager->getConnection());
++        $queryBuilder = new QueryBuilder($connection);
+ 
+         $queryBuilder->select('l.id')->from(MAUTIC_TABLE_PREFIX.'leads', 'l');
+ 

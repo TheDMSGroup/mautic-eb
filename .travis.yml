@@ -1,4 +1,4 @@
-dist: precise
+dist: trusty
 
 language: php
 
@@ -39,14 +39,20 @@ install:
 script:
   # Run PHPUnit on the complete build.
   - cd mautic
-  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --fail-on-warning --stop-on-failure
+  - bin/phpunit -d memory_limit=2048M --bootstrap vendor/autoload.php --configuration app/phpunit.xml.dist --stop-on-failure
   - cd -
 
 before_deploy:
+  # Generate a version label based on git describe and preserve description before above.
+  - VERSION=`git describe --long --tags --always`
+  - DESCRIPTION=`git log -n 1 --pretty=%B`
+  - export ELASTIC_BEANSTALK_LABEL="$VERSION"
+  - echo "Version label is '$ELASTIC_BEANSTALK_LABEL'"
+  - export ELASTIC_BEANSTALK_DESCRIPTION="$DESCRIPTION"
+  - echo "Version description is '$ELASTIC_BEANSTALK_DESCRIPTION'"
   # Travis uses .gitignore instead of .ebignore https://github.com/travis-ci/dpl/issues/411
   # Overcome this issue by pretending everything has been committed, and removing all .gitignore files
   # This will allow Travis to deploy in effectively the same way as `eb deploy`
-  - DESCRIPTION=`git log -n 1 --pretty=%B`
   - find . -name ".gitignore" -type f -exec rm -f '{}' \;
   - cd mautic ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
   - cd vendor ; find . -name ".git" -type d -exec rm -rf '{}' \; ; cd -
@@ -57,12 +63,6 @@ before_deploy:
   - git config --global user.name "NA"
   - git add -A
   - git commit -m "Surpassing Travis EB incompatibility" --quiet
-  # Generate a version label based on git describe and preserve description before above.
-  - VERSION=`git describe --always --long`
-  - export ELASTIC_BEANSTALK_LABEL="$VERSION"
-  - echo "Version label is '$ELASTIC_BEANSTALK_LABEL'"
-  - export ELASTIC_BEANSTALK_DESCRIPTION="$DESCRIPTION"
-  - echo "Version description is '$ELASTIC_BEANSTALK_DESCRIPTION'"
 
 deploy:
   # Optional deployment to Elastic Beanstalk (Environment Variables must be configured in your Travis settings)

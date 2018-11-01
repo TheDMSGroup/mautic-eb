@@ -1,38 +1,29 @@
 <?php
-
-
 /**
  * Global default environment variable overrides for Mautic EB
  * To override for your instance use parameters_local.php
  */
 $parameters = [
-    'db_driver'         => 'pdo_mysql',
-    'db_table_prefix'   => null,
-    'db_host'           => getenv('DB_HOST') ?: $parameters['db_host'] ?? '127.0.0.1',
-    'db_host_ro'        => getenv('DB_HOST_RO') ?: null,
-    'db_port'           => getenv('DB_PORT') ?: $parameters['db_port'] ?? '3306',
-    'db_name'           => getenv('DB_NAME') ?: $parameters['db_name'] ?? 'mautic_eb_site_0',
-    'db_user'           => getenv('DB_USER') ?: $parameters['db_user'] ?? 'root',
-    'db_password'       => getenv('DB_PASSWD') ?: $parameters['db_password'] ?? '',
-    'mailer_from_name'  => getenv('MAILER_FROM_NAME') ?: $parameters['mailer_from_name'] ?? 'Web Developer',
-    'mailer_from_email' => getenv('MAILER_FROM_EMAIL') ?: $parameters['mailer_from_email'] ?? 'web@developer.com',
-    'mailer_transport'  => 'mail',
-    'mailer_host'       => null,
-    'mailer_port'       => null,
-    'mailer_user'       => 'root',
-    'mailer_password'   => 'root',
-    'mailer_encryption' => null,
-    'mailer_auth_mode'  => null,
-    'mailer_spool_type' => 'file',
-    'mailer_spool_path' => '%kernel.root_dir%/spool',
-    'secret_key'        => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
-    'site_url'          => getenv('APP_URL') ?: 'http://mautic.loc',
-    'tmp_path'          => '/tmp',
+    'db_driver'           => 'pdo_mysql',
+    'db_table_prefix'     => null,
+    'db_host'             => getenv('DB_HOST') ?: $parameters['db_host'] ?? '127.0.0.1',
+    'db_host_ro'          => getenv('DB_HOST_RO') ?: null,
+    'db_port'             => getenv('DB_PORT') ?: $parameters['db_port'] ?? '3306',
+    'db_name'             => getenv('DB_NAME') ?: $parameters['db_name'] ?? 'mautic_eb_site_0',
+    'db_user'             => getenv('DB_USER') ?: $parameters['db_user'] ?? 'root',
+    'db_password'         => getenv('DB_PASSWD') ?: $parameters['db_password'] ?? '',
+    'mailer_from_name'    => getenv('MAILER_FROM_NAME') ?: $parameters['mailer_from_name'] ?? 'Web Developer',
+    'mailer_from_email'   => getenv('MAILER_FROM_EMAIL') ?: $parameters['mailer_from_email'] ?? 'web@developer.com',
+    'secret_key'          => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
+    'site_url'            => getenv('APP_URL') ?: 'http://mautic.loc',
+    'tmp_path'            => '/tmp',
     // Support the cache path for "ondeck" during deployment, switching to "current" when there.
-    'cache_path'        => str_replace('/mautic_eb/app/config', '/mautic/app/cache', __DIR__),
-    'cached_data_timeout' => '30',
+    'cache_path'          => str_replace(
+        ['/mautic_eb/app/config', '/app/config'],
+        ['/mautic/app/cache', '/app/cache'],
+        __DIR__
+    ),
 ];
-
 /**
  * Multisite environment variable overrides based on the inbound domain.
  *
@@ -89,27 +80,20 @@ if (!function_exists('mauticEBMultisite')) {
                         switch ($array['status']) {
                             case 0:
                                 throw \Exception('This site is awaiting setup.');
-
                             case 1:
                                 throw \Exception('Storage is being allocated for this site.');
-
                             case 2:
                                 throw \Exception('A database is being created for this site.');
-
                             case 3:
                                 // Site is running and enabled.
                                 $site = $array;
                                 break;
-
                             case 4:
                                 throw \Exception('This site has been temporarily disabled.');
-
                             case 5:
                                 throw \Exception('This site is being restored to active duty.');
-
                             case 6:
                                 throw \Exception('This site is being decommissioned permanently.');
-
                             case 7:
                                 throw \Exception('This site has been decommissioned permanently.');
                         }
@@ -127,7 +111,6 @@ if (!function_exists('mauticEBMultisite')) {
                     // Global cookie for route filtering at the apache level for later security.
                     setcookie('EB_MULTI_SITE_ID', $site['id'], time() + 604800, '/', $site['host'], false, false);
                 }
-
                 // Override parameters array with the JSON array in the parameters column if possible.
                 if (!empty($site['parameters'])) {
                     $jsonParams = json_decode($site['parameters']);
@@ -137,19 +120,14 @@ if (!function_exists('mauticEBMultisite')) {
                         $parameters = array_merge($parameters, $jsonParams);
                     }
                 }
-
                 // Set the path for log entry output.
                 $parameters['log_path'] = 'multi/'.$site['id'].'/logs';
-
                 // Set the path for images.
                 $parameters['image_path'] = 'multi/'.$site['id'].'/media/images';
-
                 // Set the path for generic uploads.
                 $parameters['upload_dir'] = 'multi/'.$site['id'].'/media/files';
-
                 // Set the database name.
                 $parameters['db_name'] = 'mautic_eb_site_'.$site['id'];
-
                 // Explicitly set the site URL based on the inbound host, allow flexible SSL.
                 if (
                     isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
@@ -165,6 +143,4 @@ if (!function_exists('mauticEBMultisite')) {
         }
     }
 }
-
 mauticEBMultisite($parameters);
-
