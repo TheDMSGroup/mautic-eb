@@ -8738,13 +8738,13 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
-                "reference": "538863d68f3f434a03644300bcab7526a2abc53f"
+                "reference": "master"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-07-03T17:04:35+00:00"
+            "time": "2018-10-26T18:40:57+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8752,12 +8752,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "6053414b659e93fabb7a9c8659a3ea45bb789081"
+                "reference": "8b9ed06a29050da88bcb6f98f5cabb3e167d4dde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6053414b659e93fabb7a9c8659a3ea45bb789081",
-                "reference": "6053414b659e93fabb7a9c8659a3ea45bb789081",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/8b9ed06a29050da88bcb6f98f5cabb3e167d4dde",
+                "reference": "8b9ed06a29050da88bcb6f98f5cabb3e167d4dde",
                 "shasum": ""
             },
             "require": {
@@ -8791,7 +8791,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T15:45:52+00:00"
+            "time": "2018-11-01T13:50:50+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
