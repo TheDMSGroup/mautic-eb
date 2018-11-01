@@ -59,9 +59,11 @@ cat "../scripts/patches/6247.diff" | git apply -v
 # Ready for tagging.
 echo "----------------------------------------------------"
 echo "Applies patches for Campaign Tagging"
-echo "https://github.com/mautic/mautic/pull/6152"
+#echo "https://github.com/mautic/mautic/pull/6152"
 # Removed app.js and added mautic.campaign.model.summary
-cat "../scripts/patches/6152.diff" | git apply -v
+#cat "../scripts/patches/6152.diff" | git apply -v
+echo "https://github.com/mautic/mautic/pull/6792"
+cat "../scripts/patches/6792.diff" | git apply -v
 
 # Temporary state abbreviation patch
 echo "----------------------------------------------------"
