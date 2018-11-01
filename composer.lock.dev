@@ -8881,12 +8881,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
-                "reference": "edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3"
+                "reference": "0f2d8d9ed8df4674f6b5e18a1b104c79e6f0092e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3",
-                "reference": "edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/0f2d8d9ed8df4674f6b5e18a1b104c79e6f0092e",
+                "reference": "0f2d8d9ed8df4674f6b5e18a1b104c79e6f0092e",
                 "shasum": ""
             },
             "require": {
@@ -8910,7 +8910,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T17:34:16+00:00"
+            "time": "2018-11-01T14:25:33+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
