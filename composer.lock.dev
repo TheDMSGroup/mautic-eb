@@ -8701,12 +8701,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
-                "reference": "34e3333d31a477f87a06b905226a44e3076657c5"
+                "reference": "39876a88a158e62916f716cfa49ed8663293752e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/34e3333d31a477f87a06b905226a44e3076657c5",
-                "reference": "34e3333d31a477f87a06b905226a44e3076657c5",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/39876a88a158e62916f716cfa49ed8663293752e",
+                "reference": "39876a88a158e62916f716cfa49ed8663293752e",
                 "shasum": ""
             },
             "require": {
@@ -8730,7 +8730,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-03T17:50:01+00:00"
+            "time": "2018-10-31T13:00:33+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8744,7 +8744,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-07-03T17:04:35+00:00"
+            "time": "2018-10-26T18:40:57+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8752,12 +8752,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "6053414b659e93fabb7a9c8659a3ea45bb789081"
+                "reference": "8b9ed06a29050da88bcb6f98f5cabb3e167d4dde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6053414b659e93fabb7a9c8659a3ea45bb789081",
-                "reference": "6053414b659e93fabb7a9c8659a3ea45bb789081",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/8b9ed06a29050da88bcb6f98f5cabb3e167d4dde",
+                "reference": "8b9ed06a29050da88bcb6f98f5cabb3e167d4dde",
                 "shasum": ""
             },
             "require": {
@@ -8791,7 +8791,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T15:45:52+00:00"
+            "time": "2018-11-01T13:50:50+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8881,12 +8881,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
-                "reference": "edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3"
+                "reference": "0f2d8d9ed8df4674f6b5e18a1b104c79e6f0092e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3",
-                "reference": "edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/0f2d8d9ed8df4674f6b5e18a1b104c79e6f0092e",
+                "reference": "0f2d8d9ed8df4674f6b5e18a1b104c79e6f0092e",
                 "shasum": ""
             },
             "require": {
@@ -8910,7 +8910,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T17:34:16+00:00"
+            "time": "2018-11-01T14:25:33+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",

@@ -1,0 +1,943 @@
+diff --git a/app/bundles/CampaignBundle/Assets/js/campaign.js b/app/bundles/CampaignBundle/Assets/js/campaign.js
+index 971c60a561..766b934b8a 100644
+--- a/app/bundles/CampaignBundle/Assets/js/campaign.js
++++ b/app/bundles/CampaignBundle/Assets/js/campaign.js
+@@ -3,6 +3,7 @@
+  * Setup the campaign view
+  *
+  * @param container
++ * @param response
+  */
+ Mautic.campaignOnLoad = function (container, response) {
+     if (mQuery(container + ' #list-search').length) {
+@@ -955,9 +956,11 @@ Mautic.campaignBeforeDetachCallback = function(connection) {
+ };
+
+ /**
+- * Process beforeDetach event callbacks
++ * Process beforeDrag event callbacks
+  *
+- * @param connection
++ * @param endpoint
++ * @param source
++ * @param sourceId
+  */
+ Mautic.campaignBeforeDragCallback = function(endpoint, source, sourceId) {
+     var sourceEndpoint = Mautic.campaignBuilderGetEndpointDetails(sourceId);
+@@ -1011,9 +1014,11 @@ Mautic.campaignBeforeStartDetachCallback = function(endpoint, source, sourceId,
+ };
+
+ /**
+- * Process beforeDetach event callbacks
++ * Process hover event callbacks
+  *
+- * @param connection
++ * @param sourceEndpoint
++ * @param endpoint
++ * @param event
+  */
+ Mautic.campaignHoverCallback = function(sourceEndpoint, endpoint, event) {
+     var callbackAllowed = null;
+@@ -1742,7 +1747,6 @@ Mautic.campaignBuilderUpdateEventList = function (groups, hidden, view, active,
+ /**
+  *
+  * @param endpoint
+- * @param nameOnly
+  * @returns {{endpointName: *, elementId: *}}
+  */
+ Mautic.campaignBuilderGetEndpointDetails = function(endpoint) {
+@@ -1791,7 +1795,9 @@ Mautic.campaignBuilderPrepareNewSource = function () {
+ /**
+  *
+  * @param epDetails
+- * @param optionVal
++ * @param targetType
++ * @param targetEvent
++ *
+  * @returns {boolean}
+  */
+ Mautic.campaignBuilderValidateConnection = function (epDetails, targetType, targetEvent) {
+@@ -1955,6 +1961,48 @@ Mautic.cancelScheduledCampaignEvent = function(eventId, contactId) {
+     );
+ };
+
++/**
++ * Update tags on campaign, adding Tag if necessary
++ */
++Mautic.updateCampaignTags = function () {
++    Mautic.activateLabelLoadingIndicator('campaign_tags_tags');
++    var formData = mQuery('form[name="campaign_tags"]').serialize();
++    Mautic.ajaxActionRequest('campaign:updateCampaignTags', formData, function(response) {
++        if (response.tags) {
++            mQuery('#lead_tags_tags').html(response.tags);
++            mQuery('#lead_tags_tags').trigger('chosen:updated');
++        }
++        Mautic.removeLabelLoadingIndicator();
++    });
++};
++
++Mautic.createCampaignTag = function (el) {
++    var newFound = false;
++    mQuery('#' + mQuery(el).attr('id') + ' :selected').each(function (i, selected) {
++        if (!mQuery.isNumeric(mQuery(selected).val())) {
++            newFound = true;
++        }
++    });
++
++    if (!newFound) {
++        return;
++    }
++
++    Mautic.activateLabelLoadingIndicator(mQuery(el).attr('id'));
++
++    var tags = JSON.stringify(mQuery(el).val());
++
++    Mautic.ajaxActionRequest('campaign:addCampaignTags', {tags: tags}, function (response) {
++        if (response.tags) {
++            mQuery('#' + mQuery(el).attr('id')).html(response.tags);
++            mQuery('#' + mQuery(el).attr('id')).trigger('chosen:updated');
++        }
++
++        Mautic.removeLabelLoadingIndicator();
++    });
++};
++
++
+ /**
+  * Update the "Jump to Event" select list to be available events.
+  */
+@@ -2002,6 +2050,3 @@ Mautic.highlightJumpTarget = function(event, el) {
+         jumpTarget.css("z-index", 2010);
+     }
+ };
+-
+-
+-
+diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
+index 8aaa9994e1..8c3961ea09 100644
+--- a/app/bundles/CampaignBundle/Config/config.php
++++ b/app/bundles/CampaignBundle/Config/config.php
+@@ -228,6 +228,25 @@
+                 'arguments' => 'translator',
+                 'alias'     => 'campaignconfig',
+             ],
++            'mautic.form.type.campaign_tags' => [
++                'class'     => Mautic\LeadBundle\Form\Type\TagListType::class,
++                'alias'     => 'lead_tags',
++                'arguments' => ['translator'],
++            ],
++            'mautic.form.type.campaign_tag' => [
++                'class'     => 'Mautic\LeadBundle\Form\Type\TagType',
++                'alias'     => 'lead_tag',
++                'arguments' => ['doctrine.orm.entity_manager'],
++            ],
++            'mautic.form.type.modify_campaign_tags' => [
++                'class'     => Mautic\LeadBundle\Form\Type\ModifyLeadTagsType::class,
++                'alias'     => 'modify_lead_tags',
++                'arguments' => ['translator'],
++            ],
++            'mautic.form.type.campaign_entity_tag' => [
++                'class' => 'Mautic\LeadBundle\Form\Type\TagEntityType',
++                'alias' => 'Mautic\LeadBundle\Form\Type\TagEntityType',
++            ],
+         ],
+         'models'       => [
+             'mautic.campaign.model.campaign'  => [
+@@ -270,6 +289,9 @@
+             'mautic.campaign.model.summary' => [
+                 'class'     => 'Mautic\CampaignBundle\Model\SummaryModel',
+             ],
++            'mautic.campaign.model.tag' => [
++                'class' => 'Mautic\LeadBundle\Model\TagModel',
++            ],
+         ],
+         'repositories' => [
+             'mautic.campaign.repository.campaign' => [
+diff --git a/app/bundles/CampaignBundle/Controller/AjaxController.php b/app/bundles/CampaignBundle/Controller/AjaxController.php
+index 3cf49a0472..aaae9da0ac 100644
+--- a/app/bundles/CampaignBundle/Controller/AjaxController.php
++++ b/app/bundles/CampaignBundle/Controller/AjaxController.php
+@@ -138,4 +138,85 @@ protected function getContactEventLog($eventId, $contactId)
+
+         return null;
+     }
++
++    /**
++     * @param Request $request
++     *
++     * @return \Symfony\Component\HttpFoundation\JsonResponse
++     */
++    protected function updateCampaignTagsAction(Request $request)
++    {
++        /** @var \Mautic\CampaignBundle\Model\CampaignModel $campaignModel */
++        $campaignModel   = $this->getModel('campaign');
++        $post            = $request->request->get('campaign_tags', [], true);
++        $campaign        = $campaignModel->getEntity((int) $post['id']);
++        $updatedTags     = (!empty($post['tags']) && is_array($post['tags'])) ? $post['tags'] : [];
++        $data            = ['success' => 0];
++
++        if ($campaign !== null && $this->get('mautic.security')->hasEntityAccess('campaign:campaigns:editown', 'campaign:campaigns:editother', $campaign->getPermissionUser())) {
++            $campaignModel->setTags($campaign, $updatedTags, true);
++
++            /** @var \Doctrine\ORM\PersistentCollection $campaignTags */
++            $campaignTags    = $campaign->getTags();
++            $campaignTagKeys = $campaignTags->getKeys();
++
++            // Get an updated list of tags
++            $tags       = $campaignModel->getTagRepository()->getSimpleList(null, [], 'tag');
++            $tagOptions = '';
++
++            foreach ($tags as $tag) {
++                $selected = (in_array($tag['label'], $campaignTagKeys)) ? ' selected="selected"' : '';
++                $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
++            }
++
++            $data['success'] = 1;
++            $data['tags']    = $tagOptions;
++        }
++
++        return $this->sendJsonResponse($data);
++    }
++
++    /**
++     * @param Request $request
++     *
++     * @return \Symfony\Component\HttpFoundation\JsonResponse
++     */
++    protected function addCampaignTagsAction(Request $request)
++    {
++        $tags = $request->request->get('tags');
++        $tags = json_decode($tags, true);
++
++        if (is_array($tags)) {
++            $campaignModel = $this->getModel('campaign');
++            $newTags       = [];
++
++            foreach ($tags as $tag) {
++                if (!is_numeric($tag)) {
++                    $newTags[] = $campaignModel->getTagRepository()->getTagByNameOrCreateNewOne($tag);
++                }
++            }
++
++            if (!empty($newTags)) {
++                $campaignModel->getTagRepository()->saveEntities($newTags);
++            }
++
++            // Get an updated list of tags
++            $allTags    = $campaignModel->getTagRepository()->getSimpleList(null, [], 'tag');
++            $tagOptions = '';
++
++            foreach ($allTags as $tag) {
++                $selected = (in_array($tag['value'], $tags) || in_array($tag['label'], $tags)) ? ' selected="selected"' : '';
++                $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
++            }
++
++            $data = [
++                'success' => 1,
++                'tags'    => $tagOptions,
++            ];
++        } else {
++            $data = ['success' => 0];
++        }
++
++        return $this->sendJsonResponse($data);
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Controller/Api/CampaignApiController.php b/app/bundles/CampaignBundle/Controller/Api/CampaignApiController.php
+index d828a91961..c54f66af76 100644
+--- a/app/bundles/CampaignBundle/Controller/Api/CampaignApiController.php
++++ b/app/bundles/CampaignBundle/Controller/Api/CampaignApiController.php
+@@ -31,7 +31,7 @@ public function initialize(FilterControllerEvent $event)
+         $this->entityClass      = 'Mautic\CampaignBundle\Entity\Campaign';
+         $this->entityNameOne    = 'campaign';
+         $this->entityNameMulti  = 'campaigns';
+-        $this->serializerGroups = ['campaignDetails', 'campaignEventDetails', 'categoryList', 'publishDetails', 'leadListList', 'formList'];
++        $this->serializerGroups = ['campaignDetails', 'campaignEventDetails', 'categoryList', 'publishDetails', 'leadListList', 'formList', 'tagList'];
+
+         parent::initialize($event);
+     }
+@@ -187,6 +187,10 @@ protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
+             $this->model->setEvents($entity, $parameters['events'], $parameters['canvasSettings'], $deletedEvents);
+         }
+
++        if (isset($this->entityRequestParameters['tags'])) {
++            $this->model->modifyTags($entity, $this->entityRequestParameters['tags'], null, false);
++        }
++
+         // Persist to the database before building connection so that IDs are available
+         $this->model->saveEntity($entity);
+
+@@ -305,4 +309,23 @@ public function getContactsAction($id)
+
+         return $this->handleView($view);
+     }
++
++    /**
++     * {@inheritdoc}
++     */
++    protected function prepareParametersForBinding($parameters, $entity, $action)
++    {
++        // Unset the tags from params to avoid a validation error
++        if (isset($parameters['tags'])) {
++            unset($parameters['tags']);
++        }
++
++        if (count($entity->getTags()) > 0) {
++            foreach ($entity->getTags() as $tag) {
++                $parameters['tags'][] = $tag->getId();
++            }
++        }
++
++        return $parameters;
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
+index 0c9fc82a63..6a4980e7c0 100644
+--- a/app/bundles/CampaignBundle/Controller/CampaignController.php
++++ b/app/bundles/CampaignBundle/Controller/CampaignController.php
+@@ -566,6 +566,25 @@ protected function getPostActionRedirectArguments(array $args, $action)
+         return $args;
+     }
+
++    /**
++     * Get tags from session.
++     *
++     * @param $id
++     *
++     * @return array
++     */
++    protected function getSessionTags($id)
++    {
++        $session = $this->get('session');
++
++        $modifiedEvents = $session->get('mautic.campaign.'.$id.'.tags.modified', []);
++        $deletedEvents  = $session->get('mautic.campaign.'.$id.'.tags.deleted', []);
++
++        $events = array_diff_key($modifiedEvents, array_flip($deletedEvents));
++
++        return [$modifiedEvents, $deletedEvents, $events];
++    }
++
+     /**
+      * Get events from session.
+      *
+@@ -706,6 +725,7 @@ protected function getViewArguments(array $args, $action)
+                         'stats'           => $stats,
+                         'events'          => $sortedEvents,
+                         'eventSettings'   => $this->getCampaignModel()->getEvents(),
++                        'tags'            => $this->getCampaignModel()->getTagList(),
+                         'sources'         => $this->getCampaignModel()->getLeadSources($entity),
+                         'dateRangeForm'   => $dateRangeForm->createView(),
+                         'campaignSources' => $this->campaignSources,
+diff --git a/app/bundles/CampaignBundle/Entity/Campaign.php b/app/bundles/CampaignBundle/Entity/Campaign.php
+index cbf3067e32..7977cf990f 100644
+--- a/app/bundles/CampaignBundle/Entity/Campaign.php
++++ b/app/bundles/CampaignBundle/Entity/Campaign.php
+@@ -20,6 +20,7 @@
+ use Mautic\FormBundle\Entity\Form;
+ use Mautic\LeadBundle\Entity\Lead as Contact;
+ use Mautic\LeadBundle\Entity\LeadList;
++use Mautic\LeadBundle\Entity\Tag;
+ use Symfony\Component\Validator\Constraints as Assert;
+ use Symfony\Component\Validator\Mapping\ClassMetadata;
+
+@@ -78,6 +79,11 @@ class Campaign extends FormEntity
+      */
+     private $forms;
+
++    /**
++     * @var ArrayCollection
++     */
++    private $tags;
++
+     /**
+      * @var array
+      */
+@@ -97,6 +103,7 @@ public function __construct()
+         $this->leads  = new ArrayCollection();
+         $this->lists  = new ArrayCollection();
+         $this->forms  = new ArrayCollection();
++        $this->tags   = new ArrayCollection();
+     }
+
+     public function __clone()
+@@ -105,6 +112,7 @@ public function __clone()
+         $this->events = new ArrayCollection();
+         $this->lists  = new ArrayCollection();
+         $this->forms  = new ArrayCollection();
++        $this->tags   = new ArrayCollection();
+         $this->id     = null;
+
+         parent::__clone();
+@@ -154,6 +162,18 @@ public static function loadMetadata(ORM\ClassMetadata $metadata)
+             ->addJoinColumn('campaign_id', 'id', true, false, 'CASCADE')
+             ->build();
+
++        $builder->createManyToMany('tags', 'Mautic\LeadBundle\Entity\Tag')
++            ->setJoinTable('campaign_tags_xref')
++            ->addInverseJoinColumn('tag_id', 'id', false)
++            ->addJoinColumn('campaign_id', 'id', false, false, 'CASCADE')
++            ->setOrderBy(['tag' => 'ASC'])
++            ->setIndexBy('tag')
++            ->fetchLazy()
++            ->cascadeMerge()
++            ->cascadePersist()
++            ->cascadeDetach()
++            ->build();
++
+         $builder->createField('canvasSettings', 'array')
+             ->columnName('canvas_settings')
+             ->nullable()
+@@ -184,7 +204,8 @@ public static function loadValidatorMetadata(ClassMetadata $metadata)
+      */
+     public static function loadApiMetadata(ApiMetadataDriver $metadata)
+     {
+-        $metadata->setGroupPrefix('campaign')
++        $metadata
++            ->setGroupPrefix('campaign')
+             ->addListProperties(
+                 [
+                     'id',
+@@ -200,6 +221,7 @@ public static function loadApiMetadata(ApiMetadataDriver $metadata)
+                     'publishDown',
+                     'events',
+                     'forms',
++                    'tags',
+                     'lists', // @deprecated, will be renamed to 'segments' in 3.0.0
+                     'canvasSettings',
+                 ]
+@@ -241,6 +263,12 @@ protected function isChanged($prop, $val)
+             if ($currentId != $newId) {
+                 $this->changes[$prop] = [$currentId, $newId];
+             }
++        } elseif ($prop == 'tags') {
++            if ($val instanceof Tag) {
++                $this->changes['tags']['added'][] = $val->getTag();
++            } else {
++                $this->changes['tags']['removed'][] = $val;
++            }
+         } else {
+             parent::isChanged($prop, $val);
+         }
+@@ -660,10 +688,56 @@ public function getContactMembership(Contact $contact)
+     {
+         return $this->leads->matching(
+             Criteria::create()
+-                    ->where(
+-                        Criteria::expr()->eq('lead', $contact)
+-                    )
+-                    ->orderBy(['dateAdded' => Criteria::DESC])
++                ->where(
++                    Criteria::expr()->eq('lead', $contact)
++                )
++                ->orderBy(['dateAdded' => Criteria::DESC])
+         );
+     }
++
++    /**
++     * Add tag.
++     *
++     * @param Tag $tag
++     *
++     * @return $this
++     */
++    public function addTag(Tag $tag)
++    {
++        $this->isChanged('tags', $tag);
++        $this->tags[$tag->getTag()] = $tag;
++
++        return $this;
++    }
++
++    /**
++     * Remove tag.
++     *
++     * @param Tag $tag
++     */
++    public function removeTag(Tag $tag)
++    {
++        $this->isChanged('tags', $tag->getTag());
++        $this->tags->removeElement($tag);
++    }
++
++    /**
++     * @return mixed
++     */
++    public function getTags()
++    {
++        return $this->tags;
++    }
++
++    /**
++     * @param $tags
++     *
++     * @return $this
++     */
++    public function setTags($tags)
++    {
++        $this->tags = $tags;
++
++        return $this;
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Form/Type/CampaignType.php b/app/bundles/CampaignBundle/Form/Type/CampaignType.php
+index e139e870a8..6bf4810f01 100644
+--- a/app/bundles/CampaignBundle/Form/Type/CampaignType.php
++++ b/app/bundles/CampaignBundle/Form/Type/CampaignType.php
+@@ -14,6 +14,7 @@
+ use Mautic\CoreBundle\Factory\MauticFactory;
+ use Mautic\CoreBundle\Form\EventListener\CleanFormSubscriber;
+ use Mautic\CoreBundle\Form\EventListener\FormExitSubscriber;
++use Mautic\LeadBundle\Form\Type\TagType;
+ use Symfony\Component\Form\AbstractType;
+ use Symfony\Component\Form\FormBuilderInterface;
+ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+@@ -85,6 +86,20 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+             $data     = false;
+         }
+
++        $builder->add(
++            'tags',
++            TagType::class,
++            [
++                'by_reference' => false,
++                'attr'         => [
++                    'data-placeholder'     => $this->translator->trans('mautic.lead.tags.select_or_create'),
++                    'data-no-results-text' => $this->translator->trans('mautic.lead.tags.enter_to_create'),
++                    'data-allow-add'       => 'true',
++                    'onchange'             => 'Mautic.createCampaignTag(this)',
++                ],
++            ]
++        );
++
+         $builder->add('isPublished', 'yesno_button_group', [
+             'read_only' => $readonly,
+             'data'      => $data,
+diff --git a/app/bundles/CampaignBundle/Model/CampaignModel.php b/app/bundles/CampaignBundle/Model/CampaignModel.php
+index 504a7f9666..4f12e1263c 100644
+--- a/app/bundles/CampaignBundle/Model/CampaignModel.php
++++ b/app/bundles/CampaignBundle/Model/CampaignModel.php
+@@ -26,10 +26,12 @@
+ use Mautic\CampaignBundle\Membership\MembershipManager;
+ use Mautic\CoreBundle\Helper\Chart\ChartQuery;
+ use Mautic\CoreBundle\Helper\Chart\LineChart;
++use Mautic\CoreBundle\Helper\InputHelper;
+ use Mautic\CoreBundle\Model\FormModel as CommonFormModel;
+ use Mautic\FormBundle\Entity\Form;
+ use Mautic\FormBundle\Model\FormModel;
+ use Mautic\LeadBundle\Entity\Lead;
++use Mautic\LeadBundle\Entity\Tag;
+ use Mautic\LeadBundle\Model\LeadModel;
+ use Mautic\LeadBundle\Model\ListModel;
+ use Symfony\Component\Console\Output\OutputInterface;
+@@ -131,6 +133,16 @@ public function getCampaignLeadRepository()
+         return $this->em->getRepository('MauticCampaignBundle:Lead');
+     }
+
++    /**
++     * Get the tags repository.
++     *
++     * @return \Mautic\LeadBundle\Entity\TagRepository
++     */
++    public function getTagRepository()
++    {
++        return $this->em->getRepository('MauticLeadBundle:Tag');
++    }
++
+     /**
+      * @return \Mautic\CampaignBundle\Entity\LeadEventLogRepository
+      */
+@@ -580,6 +592,14 @@ public function getSourceLists($sourceType = null, $globalOnly = false)
+         return ($sourceType == null) ? $choices : $choices[$sourceType];
+     }
+
++    /**
++     * Get array of available lead tags.
++     */
++    public function getTagList()
++    {
++        return $this->getTagRepository()->getSimpleList(null, [], 'tag', 'id');
++    }
++
+     /**
+      * @param mixed $form
+      *
+@@ -965,6 +985,101 @@ public function removeLeads(Campaign $campaign, array $leads, $manuallyRemoved =
+         }
+     }
+
++    /**
++     * Modify tags with support to remove via a prefixed minus sign.
++     *
++     * @param Campaign $campaign
++     * @param          $tags
++     * @param          $removeTags
++     * @param          $persist    True if tags modified
++     *
++     * @return bool
++     */
++    public function modifyTags(Campaign $campaign, $tags, array $removeTags = null, $persist = true)
++    {
++        $tagsModified = false;
++        $campaignTags = $campaign->getTags();
++
++        if (!$campaignTags->isEmpty()) {
++            $this->logger->debug('CAMPAIGN: Campaign currently has tags '.implode(', ', $campaignTags->getKeys()));
++        } else {
++            $this->logger->debug('CAMPAIGN: Campaign currently does not have any tags');
++        }
++
++        if (!is_array($tags)) {
++            $tags = explode(',', $tags);
++        }
++
++        if (empty($tags) && empty($removeTags)) {
++            return false;
++        }
++
++        $this->logger->debug('CAMPAIGN: Adding '.implode(', ', $tags).' to campaign ID# '.$campaign->getId());
++
++        array_walk($tags, function (&$val) {
++            $val = trim($val);
++            InputHelper::clean($val);
++        });
++
++        // See which tags already exist
++        $foundTags = $this->getTagRepository()->getTagsByName($tags);
++        foreach ($tags as $tag) {
++            if (strpos($tag, '-') === 0) {
++                // Tag to be removed
++                $tag = substr($tag, 1);
++
++                if (array_key_exists($tag, $foundTags) && $campaignTags->contains($foundTags[$tag])) {
++                    $tagsModified = true;
++                    $campaign->removeTag($foundTags[$tag]);
++
++                    $this->logger->debug('CAMPIAGN: Removed '.$tag);
++                }
++            } else {
++                $tagToBeAdded = null;
++
++                if (!array_key_exists($tag, $foundTags)) {
++                    $tagToBeAdded = new Tag($tag);
++                } elseif (!$campaignTags->contains($foundTags[$tag])) {
++                    $tagToBeAdded = $foundTags[$tag];
++                }
++
++                if ($tagToBeAdded) {
++                    $campaign->addTag($tagToBeAdded);
++                    $tagsModified = true;
++                    $this->logger->debug('CAMPAIGN: Added '.$tag);
++                }
++            }
++        }
++
++        if (!empty($removeTags)) {
++            $this->logger->debug('CAMPAIGN: Removing '.implode(', ', $removeTags).' for campaign ID# '.$campaign->getId());
++
++            array_walk($removeTags, function (&$val) {
++                $val = trim($val);
++                InputHelper::clean($val);
++            });
++
++            // See which tags really exist
++            $foundRemoveTags = $this->getTagRepository()->getTagsByName($removeTags);
++
++            foreach ($removeTags as $tag) {
++                // Tag to be removed
++                if (array_key_exists($tag, $foundRemoveTags) && $campaignTags->contains($foundRemoveTags[$tag])) {
++                    $campaign->removeTag($foundRemoveTags[$tag]);
++                    $tagsModified = true;
++
++                    $this->logger->debug('CAMPAIGN: Removed '.$tag);
++                }
++            }
++        }
++
++        if ($persist) {
++            $this->saveEntity($campaign);
++        }
++
++        return $tagsModified;
++    }
++
+     /**
+      * @deprecated 2.14 to be removed in 3.0
+      *
+diff --git a/app/bundles/CampaignBundle/Translations/en_US/messages.ini b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
+index 88324607b2..1b815dc68b 100644
+--- a/app/bundles/CampaignBundle/Translations/en_US/messages.ini
++++ b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
+@@ -7,6 +7,7 @@ mautic.campaign.campaign.addremovelead="Add / remove contact"
+ mautic.campaign.campaign.description="<strong>Campaign description:</strong> %description%"
+ mautic.campaign.campaign.launch.builder="Launch Campaign Builder"
+ mautic.campaign.campaign.leads="Contacts added"
++mautic.campaign.campaign.tags="Tags"
+ mautic.campaign.campaigns="Campaigns"
+ mautic.campaign.connection.trigger.date.label="wait until %full%"
+ mautic.campaign.connection.trigger.date.label_inaction="by %full%"
+diff --git a/app/bundles/CampaignBundle/Views/Campaign/details.html.php b/app/bundles/CampaignBundle/Views/Campaign/details.html.php
+index 85110508e5..170ef40351 100644
+--- a/app/bundles/CampaignBundle/Views/Campaign/details.html.php
++++ b/app/bundles/CampaignBundle/Views/Campaign/details.html.php
+@@ -90,6 +90,16 @@
+                                 'MauticCoreBundle:Helper:details.html.php',
+                                 ['entity' => $campaign]
+                             ); ?>
++                            <?php if (!empty($tags)): ?>
++                                <tr>
++                                    <td width="20%"><span class="fw-b">
++                                    <?php echo $view['translator']->trans('mautic.campaign.campaign.tags'); ?>
++                                    </td>
++                                    <td>
++                                        <?php echo implode(', ', array_map(function ($ele) { return $ele['label']; }, $tags)); ?>
++                                    </td>
++                                </tr>
++                            <?php endif; ?>
+                             <?php foreach ($sources as $sourceType => $typeNames): ?>
+                             <?php if (!empty($typeNames)): ?>
+                             <tr>
+diff --git a/app/bundles/CampaignBundle/Views/Campaign/form.html.php b/app/bundles/CampaignBundle/Views/Campaign/form.html.php
+index 5f99020e1c..5c38382eec 100644
+--- a/app/bundles/CampaignBundle/Views/Campaign/form.html.php
++++ b/app/bundles/CampaignBundle/Views/Campaign/form.html.php
+@@ -31,6 +31,9 @@
+                 <div class="col-md-6">
+                     <?php echo $view['form']->row($form['name']); ?>
+                 </div>
++                <div class="col-md-6">
++                    <?php echo $view['form']->row($form['tags']); ?>
++                </div>
+             </div>
+             <div class="row">
+                 <div class="col-md-12">
+diff --git a/app/bundles/CoreBundle/Assets/css/app.css b/app/bundles/CoreBundle/Assets/css/app.css
+index 21f6039398..fe66b73e6a 100644
+--- a/app/bundles/CoreBundle/Assets/css/app.css
++++ b/app/bundles/CoreBundle/Assets/css/app.css
+@@ -4314,9 +4314,6 @@ lesshat-selector { -lh-property: 0 ;
+   width: 70%;
+   height: 100%;
+ }
+-.builder-panel #preview .panel-body {
+-  padding: 7px 0;
+-}
+ .code-mode .builder-panel {
+   width: 50%;
+   position: fixed;
+diff --git a/app/bundles/CoreBundle/Assets/css/libraries/builder.css b/app/bundles/CoreBundle/Assets/css/libraries/builder.css
+index a98dea7800..d429bee833 100644
+--- a/app/bundles/CoreBundle/Assets/css/libraries/builder.css
++++ b/app/bundles/CoreBundle/Assets/css/libraries/builder.css
+@@ -5489,19 +5489,18 @@ div[data-slot].ui-sortable-helper {
+   font: normal normal normal 14px/1 FontAwesome;
+ }
+ .codemodeHtmlContainer {
+-  background:#eee;
+-  padding:1em 0 0 0;
+-  display:block;
+-  position:relative;
+-  margin-bottom:2px;
++  background: #eee;
++  padding: 1em 0 0 0;
++  display: block;
++  position: relative;
++  margin-bottom: 2px;
+ }
+ .codemodeHtmlContainer:before {
+   content: "\f121";
+   font: normal normal normal 14px/1 FontAwesome;
+-  position:absolute;
++  position: absolute;
+   right: 2px;
+   top: 2px;
+-  color:gray;
+-  font-size:small;
++  color: gray;
++  font-size: small;
+ }
+-
+diff --git a/app/bundles/LeadBundle/Entity/TagRepository.php b/app/bundles/LeadBundle/Entity/TagRepository.php
+index 3a84ae7b53..cd80f4b8c2 100644
+--- a/app/bundles/LeadBundle/Entity/TagRepository.php
++++ b/app/bundles/LeadBundle/Entity/TagRepository.php
+@@ -11,6 +11,7 @@
+
+ namespace Mautic\LeadBundle\Entity;
+
++use Mautic\CampaignBundle\Entity\Campaign;
+ use Mautic\CoreBundle\Entity\CommonRepository;
+
+ /**
+@@ -23,16 +24,27 @@ class TagRepository extends CommonRepository
+      */
+     public function deleteOrphans()
+     {
+-        $qb       = $this->_em->getConnection()->createQueryBuilder();
+-        $havingQb = $this->_em->getConnection()->createQueryBuilder();
++        $qb                 = $this->_em->getConnection()->createQueryBuilder();
++        $havingLeadsQb      = $this->_em->getConnection()->createQueryBuilder();
++        $havingCampaignsQb  = $this->_em->getConnection()->createQueryBuilder();
+
+-        $havingQb->select('count(x.lead_id) as the_count')
+-            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'x')
+-            ->where('x.tag_id = t.id');
++        $havingLeadsQb->select('count(xl.lead_id) as lead_count')
++            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'xl')
++            ->where('xl.tag_id = t.id');
++
++        $havingCampaignsQb->select('count(xc.campaign_id) as campaign_count')
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_tags_xref', 'xc')
++            ->where('xc.campaign_id = t.id');
+
+         $qb->select('t.id')
+             ->from(MAUTIC_TABLE_PREFIX.'lead_tags', 't')
+-            ->having(sprintf('(%s)', $havingQb->getSQL()).' = 0');
++            ->having(
++                $qb->expr()->andX(
++                    sprintf('(%s)', $havingLeadsQb->getSQL()).' = 0',
++                    sprintf('(%s)', $havingCampaignsQb->getSQL()).' = 0'
++                )
++            );
++
+         $delete = $qb->execute()->fetch();
+
+         if (count($delete)) {
+@@ -117,6 +129,37 @@ public function checkLeadByTags(Lead $lead, $tags)
+         return (bool) $q->execute()->fetchColumn();
+     }
+
++    /**
++     * Check Campaign tags by Ids.
++     *
++     * @param Lead $lead
++     * @param $tags
++     *
++     * @return bool
++     */
++    public function checkCampaignByTags(Campaign $campaign, $tags)
++    {
++        if (empty($tags)) {
++            return false;
++        }
++
++        $q = $this->_em->getConnection()->createQueryBuilder();
++        $q->select('c.id')
++            ->from(MAUTIC_TABLE_PREFIX.'campaigns', 'c')
++            ->join('l', MAUTIC_TABLE_PREFIX.'campaign_tags_xref', 'x', 'c.id = x.campaign_id')
++            ->join('l', MAUTIC_TABLE_PREFIX.'lead_tags', 't', 'x.tag_id = t.id')
++            ->where(
++                $q->expr()->andX(
++                    $q->expr()->in('t.tag', ':tags'),
++                    $q->expr()->eq('c.id', ':campaignId')
++                )
++            )
++            ->setParameter('tags', $tags, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
++            ->setParameter('campaignId', $campaign->getId());
++
++        return (bool) $q->execute()->fetchColumn();
++    }
++
+     /**
+      * @param string $name
+      *
+diff --git a/media/css/libraries.css b/media/css/libraries.css
+index b81521dbc0..59857fd1e8 100644
+--- a/media/css/libraries.css
++++ b/media/css/libraries.css
+@@ -276,7 +276,8 @@ solid #4e5e9e}.slot-placeholder{border:2px
+ dotted #4e5e9e}[data-slot="text"].fr-box{padding:initial}[data-slot="text"].fr-box .fr-toolbar{border-top:2px solid #4e5e9e;position:absolute;left:-15px;bottom:initial !important;min-width:385px}[data-slot="text"].fr-box .fr-toolbar.fr-top{top:-78px !important;bottom:initial !important}[data-slot="text"].fr-box .fr-toolbar.fr-bottom{bottom:-78px !important;top:initial !important}[data-slot="text"].fr-box .fr-wrapper{border-radius:0 0 0px 0px;-moz-border-radius:0 0 0px 0px;-webkit-border-radius:0 0 0px 0px;-webkit-box-shadow:none  !important;-moz-box-shadow:none  !important;box-shadow:none  !important;background:transparent !important}[data-slot="text"].fr-box .fr-wrapper .fr-element{text-align:inherit !important;padding:0
+ !important;overflow-x:initial !important;color:inherit !important;min-height:inherit !important}.slot-type-handle.btn,.section-type-handle.btn{float:left;width:111px;margin:2px;height:75px;padding-left:5px;padding-right:5px;text-align:center;word-wrap:break-word}.slot-type-handle.ui-draggable-dragging,.section-type-handle.ui-draggable-dragging{color:#5d6c7c;background-color:#f5f5f5;border-color:#d3d3d3;padding:10px
+ 16px;font-size:16px;line-height:1.25;border-radius:4px;margin:2px;text-align:center}.theme-list .panel-body{height:350px}.theme-list .select-theme-link{margin-top:5px}.theme-list .select-theme-selected{margin-top:5px}[data-slot="dynamicContent"]{z-index:50}.chosen-container .chosen-results
+-li{font-family:"Open Sans",Helvetica,Arial,sans-serif}.chosen-container .chosen-results li:before{font:normal normal normal 14px/1 FontAwesome}
++li{font-family:"Open Sans",Helvetica,Arial,sans-serif}.chosen-container .chosen-results li:before{font:normal normal normal 14px/1 FontAwesome}.codemodeHtmlContainer{background:#eee;padding:1em
++0 0 0;display:block;position:relative;margin-bottom:2px}.codemodeHtmlContainer:before{content:"\f121";font:normal normal normal 14px/1 FontAwesome;position:absolute;right:2px;top:2px;color:gray;font-size:small}
+ /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
+ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{font-size:2em;margin:0.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em
+ 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,
+diff --git a/media/js/app.js b/media/js/app.js
+index 8f12fd902e..6bb31f56e2 100644
+--- a/media/js/app.js
++++ b/media/js/app.js
+@@ -68,8 +68,8 @@ Mautic.startIconSpinOnEvent(event);mQuery('#'+id).click();};mQuery("<button type
+ textarea.on('froalaEditor.blur',function(e,editor){editor.popups.hideAll();});var maxButtons=['undo','redo','|','bold','italic','underline','paragraphFormat','fontFamily','fontSize','color','align','formatOL','formatUL','quote','clearFormatting','token','insertLink','insertImage','insertGatedVideo','insertTable','html','fullscreen'];var minButtons=['undo','redo','|','bold','italic','underline'];if(textarea.hasClass('editor-email')){maxButtons=mQuery.grep(maxButtons,function(value){return value!='insertGatedVideo';});maxButtons.push('dynamicContent');}
+ if(textarea.hasClass('editor-dynamic-content')){minButtons=['undo','redo','|','bold','italic','underline','paragraphFormat','fontFamily','fontSize','color','align','formatOL','formatUL','quote','clearFormatting','insertLink','insertImage','insertGatedVideo','insertTable','html','fullscreen'];}
+ if(textarea.hasClass('editor-basic')){minButtons=['undo','redo','|','bold','italic','underline','paragraphFormat','fontFamily','fontSize','color','align','formatOL','formatUL','quote','clearFormatting','insertLink','insertImage','insertTable','html','fullscreen'];}
+-if(textarea.hasClass('editor-advanced')||textarea.hasClass('editor-basic-fullpage')){var options={toolbarButtons:maxButtons,toolbarButtonsMD:maxButtons,heightMin:300};if(textarea.hasClass('editor-basic-fullpage')){options.fullPage=true;options.htmlAllowedTags=['.*'];options.htmlAllowedAttrs=['.*'];options.htmlRemoveTags=[];options.lineBreakerTags=[];}
+-textarea.on('froalaEditor.focus',function(e,editor){Mautic.showChangeThemeWarning=true;});textarea.froalaEditor(mQuery.extend({},Mautic.basicFroalaOptions,options));}else{textarea.froalaEditor(mQuery.extend({},Mautic.basicFroalaOptions,{toolbarButtons:minButtons,toolbarButtonsMD:minButtons,toolbarButtonsSM:minButtons,toolbarButtonsXS:minButtons,heightMin:100}));}});}
++if(textarea.hasClass('editor-advanced')||textarea.hasClass('editor-basic-fullpage')){var options={toolbarButtons:maxButtons,toolbarButtonsMD:maxButtons,heightMin:300,useClasses:false};if(textarea.hasClass('editor-basic-fullpage')){options.fullPage=true;options.htmlAllowedTags=['.*'];options.htmlAllowedAttrs=['.*'];options.htmlRemoveTags=[];options.lineBreakerTags=[];}
++textarea.on('froalaEditor.focus',function(e,editor){Mautic.showChangeThemeWarning=true;});textarea.froalaEditor(mQuery.extend({},Mautic.basicFroalaOptions,options));}else{textarea.froalaEditor(mQuery.extend({},Mautic.basicFroalaOptions,{toolbarButtons:minButtons,toolbarButtonsMD:minButtons,toolbarButtonsSM:minButtons,toolbarButtonsXS:minButtons,heightMin:100,useClasses:false}));}});}
+ if(mQuery(container+' .shuffle-grid').length){var grid=mQuery(container+" .shuffle-grid");setTimeout(function(){grid.shuffle({itemSelector:".shuffle",sizer:false});mQuery("html").on("fa.sidebar.minimize",function(){grid.shuffle("update");}).on("fa.sidebar.maximize",function(){grid.shuffle("update");});if(grid.parents('.tab-pane').length){var tabId=grid.parents('.tab-pane').first().attr('id');var tab=mQuery('a[href="#'+tabId+'"]').on('shown.bs.tab',function(){grid.shuffle("update");});}},1000);}
+ if(mQuery(container+' .dropdown-menu-form').length){mQuery(container+' .dropdown-menu-form').on('click',function(e){e.stopPropagation();});}
+ if(response&&response.updateSelect&&typeof response.id!=='undefined'){Mautic.updateEntitySelect(response);}
+@@ -110,7 +110,7 @@ this.qs1.cache();this.qs2.cache();moveOption(value);},afterDeselect:function(val
+ this.qs1.cache();this.qs2.cache();},selectableHeader:"<input type='text' class='ms-search form-control' autocomplete='off'>",selectionHeader:"<input type='text' class='ms-search form-control' autocomplete='off'>",keepOrder:true});};Mautic.activateModalEmbeddedForms=function(container){mQuery(container+" *[data-embedded-form='cancel']").off('click.embeddedform');mQuery(container+" *[data-embedded-form='cancel']").on('click.embeddedform',function(event){event.preventDefault();var modal=mQuery(this).closest('.modal');mQuery(modal).modal('hide');if(mQuery(this).attr('data-embedded-form-clear')==='true'){Mautic.resetForm(modal);}
+ if(typeof mQuery(this).attr('data-embedded-form-callback')!='undefined'){if(typeof window["Mautic"][mQuery(this).attr('data-embedded-form-callback')]=='function'){window["Mautic"][mQuery(this).attr('data-embedded-form-callback')].apply('window',[this,modal]);}}});mQuery(container+" *[data-embedded-form='add']").each(function(){var submitButton=this;var modal=mQuery(this).closest('.modal');if(typeof mQuery(modal).data('bs.modal')!=='undefined'&&typeof mQuery(modal).data('bs.modal').options!=='undefined'){mQuery(modal).data('bs.modal').options.keyboard=false;mQuery(modal).data('bs.modal').options.backdrop='static';}else{mQuery(modal).attr('data-keyboard',false);mQuery(modal).attr('data-backdrop','static');}
+ mQuery(modal).on('show.bs.modal',function(){mQuery(this).on("keydown.embeddedForm",":input:not(textarea)",function(event){if(event.keyCode==13){event.preventDefault();if(event.metaKey||event.ctrlKey){mQuery(submitButton).click();}}});});mQuery(modal).on('hidden.bs.modal',function(){mQuery(this).off("keydown.embeddedForm",":input:not(textarea)");});});mQuery(container+" *[data-embedded-form='add']").off('click.embeddedform');mQuery(container+" *[data-embedded-form='add']").on('click.embeddedform',function(event){event.preventDefault();var modal=mQuery(this).closest('.modal');mQuery(modal).modal('hide');if(typeof mQuery(this).attr('data-embedded-form-callback')!='undefined'){if(typeof window["Mautic"][mQuery(this).attr('data-embedded-form-callback')]=='function'){window["Mautic"][mQuery(this).attr('data-embedded-form-callback')].apply('window',[this,modal]);}}});};Mautic.activateDateTimeInputs=function(el,type){if(typeof type=='undefined'){type='datetime';}
+-var format=mQuery(el).data('format');if(type=='datetime'){mQuery(el).datetimepicker({format:(format)?format:'Y-m-d H:i:s',lazyInit:true,validateOnBlur:false,allowBlank:true,scrollInput:false});}else if(type=='date'){mQuery(el).datetimepicker({timepicker:false,format:(format)?format:'Y-m-d',lazyInit:true,validateOnBlur:false,allowBlank:true,scrollInput:false,closeOnDateSelect:true});}else if(type=='time'){mQuery(el).datetimepicker({datepicker:false,format:(format)?format:'H:i:s',lazyInit:true,validateOnBlur:false,allowBlank:true,scrollInput:false});}
++var format=mQuery(el).data('format');if(type=='datetime'){mQuery(el).datetimepicker({format:(format)?format:'Y-m-d H:i',lazyInit:true,validateOnBlur:false,allowBlank:true,scrollInput:false});}else if(type=='date'){mQuery(el).datetimepicker({timepicker:false,format:(format)?format:'Y-m-d',lazyInit:true,validateOnBlur:false,allowBlank:true,scrollInput:false,closeOnDateSelect:true});}else if(type=='time'){mQuery(el).datetimepicker({datepicker:false,format:(format)?format:'H:i',lazyInit:true,validateOnBlur:false,allowBlank:true,scrollInput:false});}
+ mQuery(el).addClass('calendar-activated');};Mautic.activateSearchAutocomplete=function(elId,modelName){if(mQuery('#'+elId).length){var livesearch=(mQuery('#'+elId).attr("data-toggle=['livesearch']"))?true:false;var typeaheadObject=Mautic.activateTypeahead('#'+elId,{prefetch:true,remote:false,limit:0,action:'commandList&model='+modelName,multiple:true});mQuery(typeaheadObject).on('typeahead:selected',function(event,datum){if(livesearch){MauticVars.lastSearchStr='';mQuery('#'+elId).keyup();}}).on('typeahead:autocompleted',function(event,datum){if(livesearch){MauticVars.lastSearchStr='';mQuery('#'+elId).keyup();}});}};Mautic.activateLiveSearch=function(el,searchStrVar,liveCacheVar){if(!mQuery(el).length){return;}
+ var btn="button[data-livesearch-parent='"+mQuery(el).attr('id')+"']";mQuery(el).on('focus',function(){Mautic.currentSearchString=mQuery(this).val().trim();});mQuery(el).on('change keyup paste',{},function(event){var searchStr=mQuery(el).val().trim();var spaceKeyPressed=(event.which==32||event.keyCode==32);var enterKeyPressed=(event.which==13||event.keyCode==13);var deleteKeyPressed=(event.which==8||event.keyCode==8);if(!enterKeyPressed&&Mautic.currentSearchString&&Mautic.currentSearchString==searchStr){return;}
+ var target=mQuery(el).attr('data-target');var diff=searchStr.length-MauticVars[searchStrVar].length;if(diff<0){diff=parseInt(diff)*-1;}
+@@ -383,13 +383,14 @@ Mautic.initializeCalendarModals(container);if(response.flashes){Mautic.setFlashe
+ if(mQuery('#CampaignEventPanel').length){mQuery('#CampaignEventPanelGroups button').on('click',function(){var eventType=mQuery(this).data('type');Mautic.campaignBuilderUpdateEventList([eventType],false,'lists',true);});mQuery('#CampaignEventPanelLists button').on('click',function(){Mautic.campaignBuilderUpdateEventList(Mautic.campaignBuilderAnchorClickedAllowedEvents,true,'groups',true);});if(!(mQuery('.preview').length)){mQuery('#CampaignCanvas .list-campaign-event, #CampaignCanvas .list-campaign-source').off('.eventbuttons').on('mouseover.eventbuttons',function(){mQuery(this).find('.campaign-event-buttons').removeClass('hide');}).on('mouseout.eventbuttons',function(){mQuery(this).find('.campaign-event-buttons').addClass('hide');}).on('dblclick.eventbuttons',function(event){event.preventDefault();mQuery(this).find('.btn-edit').first().click();});}else{mQuery("#CampaignCanvas div.list-campaign-event").each(function(){var thisId=mQuery(this).attr('id');var option=mQuery('#'+thisId+' option[value="'+mQuery(this).val()+'"]');});}
+ mQuery('.campaign-event-selector').on('chosen:showing_dropdown',function(event){mQuery('.builder-content').css('overflow','hidden');var thisSelect=mQuery(event.target).attr('id');Mautic.campaignBuilderUpdateEventListTooltips(thisSelect,false);mQuery('#'+thisSelect+'_chosen .chosen-search input').on('keydown.toolip',function(){Mautic.campaignBuilderUpdateEventListTooltips(thisSelect,true);}).on('keyup.tooltip',function(){Mautic.campaignBuilderUpdateEventListTooltips(thisSelect,false);});});mQuery('.campaign-event-selector').on('chosen:hiding_dropdown',function(event){mQuery('.builder-content').css('overflow','auto');var thisSelect=mQuery(event.target).attr('id');Mautic.campaignBuilderUpdateEventListTooltips(thisSelect,true);mQuery('#'+thisSelect+'_chosen .chosen-search input').off('keyup.toolip').off('keydown.tooltip');});mQuery('.campaign-event-selector').on('change',function(){if(!mQuery('#CampaignEvent_newsource').length){mQuery('#CampaignEventPanel').addClass('hide');}
+ var thisId=mQuery(this).attr('id');var option=mQuery('#'+thisId+' option[value="'+mQuery(this).val()+'"]');if(option.attr('data-href')&&Mautic.campaignBuilderAnchorNameClicked){var updatedUrl=option.attr('data-href').replace(/anchor=(.*?)$/,"anchor="+Mautic.campaignBuilderAnchorNameClicked+"&anchorEventType="+Mautic.campaignBuilderAnchorEventTypeClicked);option.attr('data-href',updatedUrl);}
+-mQuery('#'+thisId).trigger('chosen:close');Mautic.ajaxifyModal(option);mQuery(this).val('');mQuery(this).trigger('chosen:updated');});mQuery('#CampaignCanvas').on('click',function(event){if(!mQuery(event.target).parents('#CampaignCanvas').length&&!mQuery('#CampaignEvent_newsource').length){mQuery('#CampaignEventPanel').addClass('hide');}});Mautic.prepareCampaignCanvas();if(response&&response.inBuilder){Mautic.launchCampaignEditor();Mautic.processBuilderErrors(response);}}};Mautic.campaignBuilderUpdateEventListTooltips=function(theSelect,destroy)
+-{mQuery('#'+theSelect+' option').each(function(){if(mQuery(this).attr('id')){var chosenOption='#'+theSelect+'_chosen .option_'+mQuery(this).attr('id');if(destroy){mQuery(chosenOption).tooltip('destroy');}else{mQuery(chosenOption).tooltip({html:true,container:'body',placement:'left'});}}});}
++mQuery('#'+thisId).trigger('chosen:close');Mautic.ajaxifyModal(option);mQuery(this).val('');mQuery(this).trigger('chosen:updated');});mQuery('#CampaignCanvas').on('click',function(event){if(!mQuery(event.target).parents('#CampaignCanvas').length&&!mQuery('#CampaignEvent_newsource').length){mQuery('#CampaignEventPanel').addClass('hide');}});Mautic.prepareCampaignCanvas();if(response&&response.inBuilder){Mautic.launchCampaignEditor();Mautic.processBuilderErrors(response);}}};Mautic.campaignBuilderUpdateEventListTooltips=function(theSelect,destroy){mQuery('#'+theSelect+' option').each(function(){if(mQuery(this).attr('id')){var chosenOption='#'+theSelect+'_chosen .option_'+mQuery(this).attr('id');if(destroy){mQuery(chosenOption).tooltip('destroy');}else{mQuery(chosenOption).tooltip({html:true,container:'body',placement:'left'});}}});}
+ Mautic.campaignOnUnload=function(container){delete Mautic.campaignBuilderInstance;delete Mautic.campaignBuilderLabels;}
+-Mautic.campaignEventOnLoad=function(container,response){if(!response.hasOwnProperty('eventId')){return;}
++Mautic.campaignEventOnLoad=function(container,response){if(mQuery('#campaignevent_triggerHour').length){Mautic.campaignEventShowHideIntervalSettings();Mautic.campaignEventUpdateIntervalHours();mQuery('#campaignevent_triggerHour').on('change',Mautic.campaignEventUpdateIntervalHours);mQuery('#campaignevent_triggerRestrictedStartHour').on('change',Mautic.campaignEventUpdateIntervalHours);mQuery('#campaignevent_triggerRestrictedStopHour').on('change',Mautic.campaignEventUpdateIntervalHours);mQuery('#campaignevent_triggerIntervalUnit').on('change',Mautic.campaignEventShowHideIntervalSettings);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_0').on('change',Mautic.campaignEventSelectDOW);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_1').on('change',Mautic.campaignEventSelectDOW);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_2').on('change',Mautic.campaignEventSelectDOW);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_3').on('change',Mautic.campaignEventSelectDOW);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_4').on('change',Mautic.campaignEventSelectDOW);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_7').on('change',Mautic.campaignEventSelectDOW);}
++if(!response.hasOwnProperty('eventId')){return;}
+ var domEventId='CampaignEvent_'+response.eventId;var eventId='#'+domEventId;Mautic.campaignBuilderLabels[domEventId]=(response.label)?response.label:'';if(!response.success&&Mautic.campaignBuilderConnectionRequiresUpdate){Mautic.campaignBuilderInstance.detach(Mautic.campaignBuilderLastConnection);}
+ Mautic.campaignBuilderConnectionRequiresUpdate=false;Mautic.campaignBuilderUpdateLabel(domEventId);Mautic.campaignBuilderCanvasEvents[response.event.id]=response.event;if(response.deleted){Mautic.campaignBuilderInstance.remove(document.getElementById(domEventId));delete Mautic.campaignBuilderEventPositions[domEventId];delete Mautic.campaignBuilderCanvasEvents[response.event.id];}else if(response.updateHtml){mQuery(eventId+" .campaign-event-content").replaceWith(response.updateHtml);}else if(response.eventHtml){var newHtml=response.eventHtml;var x=parseInt(mQuery('#droppedX').val());var y=parseInt(mQuery('#droppedY').val());Mautic.campaignBuilderEventPositions[domEventId]={'left':x,'top':y};mQuery(newHtml).appendTo('#CampaignCanvas');mQuery(eventId).css({'left':x+'px','top':y+'px'});Mautic.campaignBuilderRegisterAnchors(Mautic.getAnchorsForEvent(response.event),eventId);Mautic.campaignBuilderInstance.draggable(domEventId,Mautic.campaignDragOptions);mQuery(eventId+" a[data-toggle='ajax']").click(function(event){event.preventDefault();return Mautic.ajaxifyLink(this,event);});mQuery(eventId+" a[data-toggle='ajaxmodal']").on('click.ajaxmodal',function(event){event.preventDefault();Mautic.ajaxifyModal(this,event);});mQuery(eventId).off('.eventbuttons').on('mouseover.eventbuttons',function(){mQuery(this).find('.campaign-event-buttons').removeClass('hide');}).on('mouseout.eventbuttons',function(){mQuery(this).find('.campaign-event-buttons').addClass('hide');}).on('dblclick.eventbuttons',function(event){event.preventDefault();mQuery(this).find('.btn-edit').first().click();});mQuery(eventId+" *[data-toggle='tooltip']").tooltip({html:true});Mautic.campaignBuilderInstance.connect({uuids:[Mautic.campaignBuilderAnchorClicked,domEventId+'_top']});}
+-Mautic.campaignBuilderInstance.repaintEverything();};Mautic.getAnchorsForEvent=function(event){var restrictions=Mautic.campaignBuilderConnectionRestrictions[event.type].target;if(restrictions.decision.length===1&&restrictions.decision[0]==="none"&&restrictions.action.length===1&&restrictions.action[0]==="none"&&restrictions.condition.length===1&&restrictions.condition[0]==="none"){return['top'];}
++Mautic.campaignBuilderInstance.repaintEverything();};Mautic.campaignEventUpdateIntervalHours=function(){var hour=mQuery('#campaignevent_triggerHour').val();var start=mQuery('#campaignevent_triggerRestrictedStartHour').val();var stop=mQuery('#campaignevent_triggerRestrictedStopHour').val();if(hour){mQuery('#campaignevent_triggerRestrictedStartHour').val('');mQuery('#campaignevent_triggerRestrictedStopHour').val('');mQuery('#campaignevent_triggerRestrictedStartHour').prop('disabled',true);mQuery('#campaignevent_triggerRestrictedStopHour').prop('disabled',true);}else if(start||stop){mQuery('#campaignevent_triggerHour').val('');mQuery('#campaignevent_triggerHour').prop('disabled',true);}else{mQuery('#campaignevent_triggerHour').val('');mQuery('#campaignevent_triggerRestrictedStartHour').val('');mQuery('#campaignevent_triggerRestrictedStopHour').val('');mQuery('#campaignevent_triggerHour').prop('disabled',false);mQuery('#campaignevent_triggerRestrictedStartHour').prop('disabled',false);mQuery('#campaignevent_triggerRestrictedStopHour').prop('disabled',false);}};Mautic.campaignEventShowHideIntervalSettings=function(){var unit=mQuery('#campaignevent_triggerIntervalUnit').val();if(unit==='i'||unit==='h'){mQuery('#interval_settings').addClass('hide');}else{mQuery('#interval_settings').removeClass('hide');}};Mautic.campaignEventSelectDOW=function(){if(mQuery('#campaignevent_triggerRestrictedDaysOfWeek_7').prop('checked')){mQuery('#campaignevent_triggerRestrictedDaysOfWeek_0').prop('checked',true);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_1').prop('checked',true);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_2').prop('checked',true);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_3').prop('checked',true);mQuery('#campaignevent_triggerRestrictedDaysOfWeek_4').prop('checked',true);}
++mQuery('#campaignevent_triggerRestrictedDaysOfWeek_7').prop('checked',false);};Mautic.getAnchorsForEvent=function(event){var restrictions=Mautic.campaignBuilderConnectionRestrictions[event.type].target;if(restrictions.decision.length===1&&restrictions.decision[0]==="none"&&restrictions.action.length===1&&restrictions.action[0]==="none"&&restrictions.condition.length===1&&restrictions.condition[0]==="none"){return['top'];}
+ if(event.eventType==='decision'||event.eventType==='condition'){return['top','yes','no'];}
+ return['top','bottom'];};Mautic.campaignSourceOnLoad=function(container,response){var domEventId='CampaignEvent_'+response.sourceType;var eventId='#'+domEventId;if(response.deleted){Mautic.campaignBuilderInstance.remove(document.getElementById(domEventId));delete Mautic.campaignBuilderEventPositions[domEventId];mQuery('#campaignLeadSource_'+response.sourceType).prop('disabled',false);mQuery('#SourceList').trigger('chosen:updated');if(!mQuery('.list-campaign-source:not(#CampaignEvent_newsource_hide)').length){mQuery('#CampaignEvent_newsource_hide').attr('id','CampaignEvent_newsource');Mautic.campaignBuilderPrepareNewSource();}}else if(response.updateHtml){mQuery(eventId+" .campaign-event-content").html(response.updateHtml);}else if(response.sourceHtml){mQuery('#campaignLeadSource_'+response.sourceType).prop('disabled',true);mQuery('#SourceList').trigger('chosen:updated');var newHtml=response.sourceHtml;if(mQuery('#CampaignEvent_newsource').length){var x=mQuery('#CampaignEvent_newsource').position().left;var y=mQuery('#CampaignEvent_newsource').position().top;mQuery('#CampaignEvent_newsource').attr('id','CampaignEvent_newsource_hide');mQuery('#CampaignEventPanel').addClass('hide');var autoConnect=false;}else{var x=parseInt(mQuery('#droppedX').val());var y=parseInt(mQuery('#droppedY').val());var autoConnect=true;}
+ mQuery(newHtml).appendTo('#CampaignCanvas');Mautic.campaignBuilderEventPositions[domEventId]={'left':x,'top':y};mQuery(eventId).css({'left':x+'px','top':y+'px'});Mautic.campaignBuilderRegisterAnchors(['leadSource','leadSourceLeft','leadSourceRight'],eventId);Mautic.campaignBuilderInstance.draggable(domEventId,Mautic.campaignDragOptions);mQuery(eventId+" a[data-toggle='ajax']").click(function(event){event.preventDefault();return Mautic.ajaxifyLink(this,event);});mQuery(eventId+" a[data-toggle='ajaxmodal']").on('click.ajaxmodal',function(event){event.preventDefault();Mautic.ajaxifyModal(this,event);});mQuery(eventId).off('.eventbuttons').on('mouseover.eventbuttons',function(){mQuery(this).find('.campaign-event-buttons').removeClass('hide');}).on('mouseout.eventbuttons',function(){mQuery(this).find('.campaign-event-buttons').addClass('hide');}).on('dblclick.eventbuttons',function(event){event.preventDefault();mQuery(this).find('.btn-edit').first().click();});mQuery(eventId+" *[data-toggle='tooltip']").tooltip({html:true});if(autoConnect){if(Mautic.campaignBuilderAnchorClicked.search('left')!==-1){var source=domEventId+'_leadsourceright';var target=Mautic.campaignBuilderAnchorClicked;}else{var source=Mautic.campaignBuilderAnchorClicked;var target=domEventId+'_leadsourceleft';}
+@@ -457,7 +458,10 @@ if(typeof Mautic.campaignBuilderConnectionRestrictions[sourceEvent]!=='undefined
+ if(typeof Mautic.campaignBuilderConnectionRestrictions['anchor'][sourceType]!=='undefined'&&typeof Mautic.campaignBuilderConnectionRestrictions['anchor'][sourceType][targetEvent]!=='undefined'){mQuery(Mautic.campaignBuilderConnectionRestrictions['anchor'][sourceType][targetEvent]).each(function(key,anchor){switch(anchor){case'inaction':anchor='no';break;case'action':anchor='yes';break;}
+ if(anchor==epDetails.anchorName){valid=false;return false;}});}
+ return valid;};Mautic.updateScheduledCampaignEvent=function(eventId,contactId){mQuery('#timeline-campaign-event-'+eventId+' .btn-edit').prop('disabled',true).addClass('disabled');var converting=false;var eventWrapper='#timeline-campaign-event-'+eventId;var eventSpan='.timeline-campaign-event-date-'+eventId;var eventText='#timeline-campaign-event-text-'+eventId;var originalDate=mQuery(eventWrapper+' '+eventSpan).first().text();var revertInput=function(input){converting=true;mQuery(input).datetimepicker('destroy');mQuery(eventSpan).text(originalDate);mQuery(eventWrapper+' .btn').prop('disabled',false).removeClass('disabled');};var date=mQuery(eventSpan).attr('data-date');var input=mQuery('<input type="text" id="timeline-reschedule"/>').css('height','20px').css('color','#000000').val(date).on('keyup',function(e){var code=e.keyCode||e.which;if(code==13){e.preventDefault();converting=true
+-mQuery(input).prop('readonly',true);mQuery(input).datetimepicker('destroy');Mautic.ajaxActionRequest('campaign:updateScheduledCampaignEvent',{eventId:eventId,contactId:contactId,date:mQuery(this).val(),originalDate:date},function(response){mQuery(eventSpan).text(response.formattedDate);mQuery(eventSpan).attr('data-data',response.date);mQuery(eventWrapper+' .btn').prop('disabled',false).removeClass('disabled');if(response.success){mQuery(eventText).removeClass('text-warning').addClass('text-info');mQuery(eventSpan).css('textDecoration','inherit');mQuery('.fa.timeline-campaign-event-cancelled-'+eventId).remove();mQuery('.timeline-campaign-event-scheduled-'+eventId).removeClass('hide');mQuery('.timeline-campaign-event-cancelled-'+eventId).addClass('hide');}},false);}else if(code==27){e.preventDefault();revertInput(input);}}).on('blur',function(e){if(!converting){revertInput(input);}});mQuery('#timeline-campaign-event-'+eventId+' '+eventSpan).html(input);Mautic.activateDateTimeInputs('#timeline-reschedule');};Mautic.cancelScheduledCampaignEvent=function(eventId,contactId){mQuery('#timeline-campaign-event-'+eventId+' .btn').prop('disabled',true).addClass('disabled');var eventWrapper='#timeline-campaign-event-'+eventId;var eventSpan='.timeline-campaign-event-date-'+eventId;var eventText='#timeline-campaign-event-text-'+eventId;Mautic.ajaxActionRequest('campaign:cancelScheduledCampaignEvent',{eventId:eventId,contactId:contactId,},function(response){if(response.success){mQuery(eventText).removeClass('text-info').addClass('text-warning');mQuery(eventWrapper+' .btn-edit').prop('disabled',false).removeClass('disabled');mQuery('.timeline-campaign-event-scheduled-'+eventId).addClass('hide');mQuery('.timeline-campaign-event-cancelled-'+eventId).removeClass('hide');}else{mQuery(eventWrapper+' .btn').prop('disabled',false).removeClass('disabled');}},false);};Mautic.updateJumpToEventOptions=function(){var jumpToEventSelectNode=mQuery("#campaignevent_properties_jumpToEvent");jumpToEventSelectNode.children().remove();for(var eventId in Mautic.campaignBuilderCanvasEvents){var event=Mautic.campaignBuilderCanvasEvents[eventId];if(event.type!=='campaign.jump_to_event'&&event.eventType!=='decision'){var opt=mQuery("<option />").attr("value",event.id).text(event.name)
++mQuery(input).prop('readonly',true);mQuery(input).datetimepicker('destroy');Mautic.ajaxActionRequest('campaign:updateScheduledCampaignEvent',{eventId:eventId,contactId:contactId,date:mQuery(this).val(),originalDate:date},function(response){mQuery(eventSpan).text(response.formattedDate);mQuery(eventSpan).attr('data-data',response.date);mQuery(eventWrapper+' .btn').prop('disabled',false).removeClass('disabled');if(response.success){mQuery(eventText).removeClass('text-warning').addClass('text-info');mQuery(eventSpan).css('textDecoration','inherit');mQuery('.fa.timeline-campaign-event-cancelled-'+eventId).remove();mQuery('.timeline-campaign-event-scheduled-'+eventId).removeClass('hide');mQuery('.timeline-campaign-event-cancelled-'+eventId).addClass('hide');}},false);}else if(code==27){e.preventDefault();revertInput(input);}}).on('blur',function(e){if(!converting){revertInput(input);}});mQuery('#timeline-campaign-event-'+eventId+' '+eventSpan).html(input);Mautic.activateDateTimeInputs('#timeline-reschedule');};Mautic.cancelScheduledCampaignEvent=function(eventId,contactId){mQuery('#timeline-campaign-event-'+eventId+' .btn').prop('disabled',true).addClass('disabled');var eventWrapper='#timeline-campaign-event-'+eventId;var eventSpan='.timeline-campaign-event-date-'+eventId;var eventText='#timeline-campaign-event-text-'+eventId;Mautic.ajaxActionRequest('campaign:cancelScheduledCampaignEvent',{eventId:eventId,contactId:contactId,},function(response){if(response.success){mQuery(eventText).removeClass('text-info').addClass('text-warning');mQuery(eventWrapper+' .btn-edit').prop('disabled',false).removeClass('disabled');mQuery('.timeline-campaign-event-scheduled-'+eventId).addClass('hide');mQuery('.timeline-campaign-event-cancelled-'+eventId).removeClass('hide');}else{mQuery(eventWrapper+' .btn').prop('disabled',false).removeClass('disabled');}},false);};Mautic.updateCampaignTags=function(){Mautic.activateLabelLoadingIndicator('campaign_tags_tags');var formData=mQuery('form[name="campaign_tags"]').serialize();Mautic.ajaxActionRequest('campaign:updateCampaignTags',formData,function(response){if(response.tags){mQuery('#lead_tags_tags').html(response.tags);mQuery('#lead_tags_tags').trigger('chosen:updated');}
++Mautic.removeLabelLoadingIndicator();});};Mautic.createCampaignTag=function(el){var newFound=false;mQuery('#'+mQuery(el).attr('id')+' :selected').each(function(i,selected){if(!mQuery.isNumeric(mQuery(selected).val())){newFound=true;}});if(!newFound){return;}
++Mautic.activateLabelLoadingIndicator(mQuery(el).attr('id'));var tags=JSON.stringify(mQuery(el).val());Mautic.ajaxActionRequest('campaign:addCampaignTags',{tags:tags},function(response){if(response.tags){mQuery('#'+mQuery(el).attr('id')).html(response.tags);mQuery('#'+mQuery(el).attr('id')).trigger('chosen:updated');}
++Mautic.removeLabelLoadingIndicator();});};Mautic.updateJumpToEventOptions=function(){var jumpToEventSelectNode=mQuery("#campaignevent_properties_jumpToEvent");jumpToEventSelectNode.children().remove();for(var eventId in Mautic.campaignBuilderCanvasEvents){var event=Mautic.campaignBuilderCanvasEvents[eventId];if(event.type!=='campaign.jump_to_event'&&event.eventType!=='decision'){var opt=mQuery("<option />").attr("value",event.id).text(event.name)
+ if(event.id==jumpToEventSelectNode.data("selected")){opt.attr("selected","selected");}
+ jumpToEventSelectNode.append(opt);}}
+ jumpToEventSelectNode.trigger("chosen:updated");};Mautic.highlightJumpTarget=function(event,el){var element=mQuery(el);var parentEventElement=element.parent().parent();var highlightedAlready=parentEventElement.data('highlighted');var jumpTargetID='#CampaignEvent_'+element.data('jumpTarget');var jumpTarget=mQuery(jumpTargetID);var overlay=mQuery('#EventJumpOverlay');if(highlightedAlready){parentEventElement.data('highlighted',false);overlay.hide();parentEventElement.css("z-index",1010);jumpTarget.css("z-index",1010);}else{parentEventElement.data('highlighted',true);overlay.show();parentEventElement.css("z-index",2010);jumpTarget.css("z-index",2010);}};;Mautic.categoryOnLoad=function(container,response){if(mQuery(container+' #list-search').length){Mautic.activateSearchAutocomplete('list-search','category');}
+@@ -543,7 +547,7 @@ mQuery('#'+prefix+'_filters .panel').each(function(){Mautic.updateFilterPosition
+ var suffix=id.split(/[_]+/).pop();mQuery(this).attr('id',prefix+'_filters_'+counter+'_'+suffix);mQuery(this).attr('name',prefix+'[filters]['+counter+']['+suffix+']');});++counter;});mQuery('#'+prefix+'_filters .panel-heading').removeClass('hide');mQuery('#'+prefix+'_filters .panel-heading').first().addClass('hide');mQuery('#'+prefix+'_filters .panel').first().removeClass('in-group');};Mautic.convertLeadFilterInput=function(el){var prefix='leadlist';var parent=mQuery(el).parents('.dynamic-content-filter, .dwc-filter');if(parent.length){prefix=parent.attr('id');}
+ var operator=mQuery(el).val();var regExp=/_filters_(\d+)_operator/;var matches=regExp.exec(mQuery(el).attr('id'));var filterNum=matches[1];var filterId='#'+prefix+'_filters_'+filterNum+'_filter';if(mQuery(filterId).parent().hasClass('has-error')){mQuery(filterId).parent().find('div.help-block').hide();mQuery(filterId).parent().removeClass('has-error');}
+ var disabled=(operator=='empty'||operator=='!empty');mQuery(filterId+', #'+prefix+'_filters_'+filterNum+'_display').prop('disabled',disabled);if(disabled){mQuery(filterId).val('');}
+-var newName='';var lastPos;if(mQuery(filterId).is('select')){var isMultiple=mQuery(filterId).attr('multiple');var multiple=(operator=='in'||operator=='!in');var placeholder=mQuery(filterId).attr('data-placeholder');if(multiple&&!isMultiple){mQuery(filterId).attr('multiple','multiple');newName=mQuery(filterId).attr('name')+'[]';mQuery(filterId).attr('name',newName);placeholder=mauticLang['chosenChooseMore'];}else if(!multiple&&isMultiple){mQuery(filterId).removeAttr('multiple');newName=filterEl.attr('name');lastPos=newName.lastIndexOf('[]');newName=newName.substring(0,lastPos);mQuery(filterId).attr('name',newName);placeholder=mauticLang['chosenChooseOne'];}
++var newName='';var lastPos;if(mQuery(filterId).is('select')){var isMultiple=mQuery(filterId).attr('multiple');var multiple=(operator=='in'||operator=='!in');var placeholder=mQuery(filterId).attr('data-placeholder');if(multiple&&!isMultiple){mQuery(filterId).attr('multiple','multiple');newName=mQuery(filterId).attr('name')+'[]';mQuery(filterId).attr('name',newName);placeholder=mauticLang['chosenChooseMore'];}else if(!multiple&&isMultiple){mQuery(filterId).removeAttr('multiple');newName=mQuery(filterId).attr('name');lastPos=newName.lastIndexOf('[]');newName=newName.substring(0,lastPos);mQuery(filterId).attr('name',newName);placeholder=mauticLang['chosenChooseOne'];}
+ if(multiple){mQuery(filterId).find('option[value=""]').remove();mQuery(filterId+' option:selected').removeAttr('selected');}else{mQuery(filterId).prepend("<option value='' selected></option>");}
+ if(mQuery(filterId+'_chosen').length){mQuery(filterId).chosen('destroy');}
+ mQuery(filterId).attr('data-placeholder',placeholder);Mautic.activateChosenSelect(mQuery(filterId));}};Mautic.updateLookupListFilter=function(field,datum){if(datum&&datum.id){var filterField='#'+field.replace('_display','_filter');mQuery(filterField).val(datum.id);}};Mautic.activateSegmentFilterTypeahead=function(displayId,filterId,fieldOptions,mQueryObject){if(typeof mQueryObject=='function'){mQuery=mQueryObject;}
+@@ -603,9 +607,10 @@ if(response&&response.inBuilder){Mautic.launchBuilder('page');Mautic.processBuil
+ Mautic.activateLabelLoadingIndicator('page_variantSettings_winnerCriteria');var pageId=mQuery('#page_sessionId').val();var query="action=page:getAbTestForm&abKey="+mQuery(abKey).val()+"&pageId="+pageId;mQuery.ajax({url:mauticAjaxUrl,type:"POST",data:query,dataType:"json",success:function(response){if(typeof response.html!='undefined'){if(mQuery('#page_variantSettings_properties').length){mQuery('#page_variantSettings_properties').replaceWith(response.html);}else{mQuery('#page_variantSettings').append(response.html);}
+ if(response.html!=''){Mautic.onPageLoad('#page_variantSettings_properties',response);}}
+ Mautic.removeLabelLoadingIndicator();},error:function(request,textStatus,errorThrown){Mautic.processAjaxError(request,textStatus,errorThrown);spinner.remove();},complete:function(){Mautic.removeLabelLoadingIndicator();}});};Mautic.autoHideRedirectUrl=function(container){var select=mQuery(container+' select[name="page[redirectType]"]');var input=mQuery(container+' input[name="page[redirectUrl]"]');if(select.val()==''){input.closest('.form-group').hide();input.val('');}else{input.closest('.form-group').show();}};;if(typeof MauticPrefCenterLoaded==='undefined'){var MauticPrefCenterLoaded=true;function replaceSlotParams(slot){var i;var text=slot.dataset['paramLabelText'];if(text){setLabelText(slot,'label.control-label',text);var channels=slot.querySelectorAll('label[data-channel]');for(i=0;i<channels.length;i++){channels[i].innerHTML=text.replace('%channel%',channels[i].dataset['channel']);}}
+-var numOfLabelsInSlot=4;for(i=1;i<=numOfLabelsInSlot;i++){text=slot.dataset['paramLabelText'+i];if(typeof text!=="undefined"){setLabelText(slot,'label.label'+i,text);}}}
++var numOfLabelsInSlot=4;for(i=1;i<=numOfLabelsInSlot;i++){text=slot.dataset['paramLabelText'+i];if(typeof text!=="undefined"){setLabelText(slot,'label.label'+i,text);}}
++text=slot.dataset['paramLinkText'];if(typeof text!=="undefined"){var labels=slot.querySelectorAll('.button');labels[0].innerHTML=text;}}
+ function setLabelText(slot,querySelector,text){var labels=slot.querySelectorAll(querySelector);for(var i=0;i<labels.length;i++){labels[i].innerHTML=text;}}
+-var callback=function(){var slots=document.querySelectorAll('div[data-slot="segmentlist"], div[data-slot="categorylist"], div[data-slot="preferredchannel"], div[data-slot="channelfrequency"]');for(var i=0;i<slots.length;i++){replaceSlotParams(slots[i]);}};if(document.readyState==="complete"||!(document.readyState==="loading"||document.documentElement.doScroll)){callback();}else{document.addEventListener("DOMContentLoaded",callback);}
++var callback=function(){var slots=document.querySelectorAll('div[data-slot="segmentlist"], div[data-slot="categorylist"], div[data-slot="preferredchannel"], div[data-slot="channelfrequency"],div[data-slot="saveprefsbutton"]');for(var i=0;i<slots.length;i++){replaceSlotParams(slots[i]);}};if(document.readyState==="complete"||!(document.readyState==="loading"||document.documentElement.doScroll)){callback();}else{document.addEventListener("DOMContentLoaded",callback);}
+ function togglePreferredChannel(channel){var status=document.getElementById(channel).checked;if(status){document.getElementById('lead_contact_frequency_rules_frequency_number_'+channel).disabled=false;document.getElementById('lead_contact_frequency_rules_frequency_time_'+channel).disabled=false;document.getElementById('lead_contact_frequency_rules_contact_pause_start_date_'+channel).disabled=false;document.getElementById('lead_contact_frequency_rules_contact_pause_end_date_'+channel).disabled=false;}else{document.getElementById('lead_contact_frequency_rules_frequency_number_'+channel).disabled=true;document.getElementById('lead_contact_frequency_rules_frequency_time_'+channel).disabled=true;document.getElementById('lead_contact_frequency_rules_contact_pause_start_date_'+channel).disabled=true;document.getElementById('lead_contact_frequency_rules_contact_pause_end_date_'+channel).disabled=true;}}
+ function saveUnsubscribePreferences(formId){var forms=document.getElementsByName(formId);for(var i=0;i<forms.length;i++){if(forms[i].tagName==='FORM'){forms[i].submit();}}}};Mautic.matchedFields=function(index,object,integration){var compoundMauticFields=['mauticContactId','mauticContactTimelineLink'];if(mQuery('#integration_details_featureSettings_updateDncByDate_0').is(':checked')){compoundMauticFields.push('mauticContactIsContactableByEmail');}
+ var integrationField=mQuery('#integration_details_featureSettings_'+object+'Fields_i_'+index).attr('data-value');var mauticField=mQuery('#integration_details_featureSettings_'+object+'Fields_m_'+index+' option:selected').val();if(mQuery.inArray(mauticField,compoundMauticFields)>=0){mQuery('.btn-arrow'+index).removeClass('active');mQuery('#integration_details_featureSettings_'+object+'Fields_update_mautic'+index+'_0').attr('checked','checked');mQuery('input[name="integration_details[featureSettings]['+object+'Fields][update_mautic'+index+']"]').prop('disabled',true).trigger("chosen:updated");mQuery('.btn-arrow'+index).addClass('disabled');}else{mQuery('input[name="integration_details[featureSettings]['+object+'Fields][update_mautic'+index+']"]').prop('disabled',false).trigger("chosen:updated");mQuery('.btn-arrow'+index).removeClass('disabled');}
+@@ -633,7 +638,7 @@ if(mQuery('#triggerEventPlaceholder').length){mQuery('#triggerEventPlaceholder')
+ if(mQuery('div[id=report_filters]').length){mQuery('div[id=report_filters]').attr('data-index',Mautic.getHighestIndex('report_filters'));mQuery('div[id=report_tableOrder]').attr('data-index',Mautic.getHighestIndex('report_tableOrder'));mQuery('div[id=report_aggregators]').attr('data-index',Mautic.getHighestIndex('report_aggregators'));if(mQuery('.filter-columns').length){mQuery('.filter-columns').each(function(){Mautic.updateReportFilterValueInput(this,true);mQuery(this).on('change',function(){Mautic.updateReportFilterValueInput(this);});});}}else{mQuery('#report-shelves .collapse').on('show.bs.collapse',function(e){var actives=mQuery('#report-shelves').find('.in, .collapsing');actives.each(function(index,element){mQuery(element).collapse('hide');var id=mQuery(element).attr('id');mQuery('a[aria-controls="'+id+'"]').addClass('collapsed');})})}
+ Mautic.updateReportGlueTriggers();Mautic.checkSelectedGroupBy();Mautic.initDateRangePicker();var $isScheduled=mQuery('[data-report-schedule="isScheduled"]');var $unitTypeId=mQuery('[data-report-schedule="scheduleUnit"]');var $scheduleDay=mQuery('[data-report-schedule="scheduleDay"]');var $scheduleMonthFrequency=mQuery('[data-report-schedule="scheduleMonthFrequency"]');mQuery($isScheduled).change(function(){Mautic.scheduleDisplay($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);});mQuery($unitTypeId).change(function(){Mautic.scheduleDisplay($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);});mQuery($scheduleDay).change(function(){Mautic.schedulePreview($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);});mQuery($scheduleMonthFrequency).change(function(){Mautic.schedulePreview($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);});Mautic.scheduleDisplay($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);};Mautic.scheduleDisplay=function($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency){Mautic.checkIsScheduled($isScheduled);var unitVal=mQuery($unitTypeId).val();mQuery('#scheduleDay, #scheduleDay label, #scheduleMonthFrequency').hide();if(unitVal==='WEEKLY'||unitVal==='MONTHLY'){mQuery('#scheduleDay').show();}
+ if(unitVal==='MONTHLY'){mQuery('#scheduleMonthFrequency').show();mQuery('#scheduleDay label').hide();}else{mQuery('#scheduleDay label').show();}
+-Mautic.schedulePreview($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);};Mautic.schedulePreview=function($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency){var previewUrl=mQuery('#schedule_preview_url').data('url');var $schedulePreviewData=mQuery('#schedule_preview_data');var isScheduledVal=0;if(!mQuery($isScheduled).prop("checked")){isScheduledVal=1;}
++if($isScheduled.length){Mautic.schedulePreview($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency);}};Mautic.schedulePreview=function($isScheduled,$unitTypeId,$scheduleDay,$scheduleMonthFrequency){var previewUrl=mQuery('#schedule_preview_url').data('url');var $schedulePreviewData=mQuery('#schedule_preview_data');var isScheduledVal=0;if(!mQuery($isScheduled).prop("checked")){isScheduledVal=1;}
+ if(!isScheduledVal){$schedulePreviewData.hide();return;}
+ var unitVal=mQuery($unitTypeId).val();var scheduleDayVal=mQuery($scheduleDay).val();var scheduleMonthFrequencyVal=mQuery($scheduleMonthFrequency).val();mQuery.get(previewUrl+'/'+isScheduledVal+'/'+unitVal+'/'+scheduleDayVal+'/'+scheduleMonthFrequencyVal,function(data){if(!data.html){return;}
+ mQuery("#schedule_preview_data_content").html(data.html);$schedulePreviewData.show();});};Mautic.checkIsScheduled=function($isScheduled){var $scheduleForm=mQuery('#schedule-container .schedule_form');if(!mQuery($isScheduled).prop("checked")){$scheduleForm.show();return;}

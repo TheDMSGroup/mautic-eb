@@ -42,6 +42,7 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     NR_APPNAME               - Newrelic application name.
     NR_APM_INSTALL_KEY       - NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY       - NewRelic install key for Infrastructure.
+    NR_API_KEY               - NewRelic API key (optional, for Health plugin).
 
 ### Travis CI Environment Variables
 
