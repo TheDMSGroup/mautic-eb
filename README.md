@@ -33,6 +33,7 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
 
 #### Optional:
 
+    REDIS_PATH               - Set to the path of your Redis server/cluster to use Redis for session storage. Helps avoid CSRF errors when scaling. See https://github.com/phpredis/phpredis
     MAUTIC_INSTALL           - Set to "1" to initialize mautic for the first/cold deployment only!
     MAUTIC_WORKERS           - Number of concurrent campaign trigger workers to run on the leading instance.
                              - Instead of MAUTIC_WORKERS, we reccomend using the following 3 variables now to better control your timing.

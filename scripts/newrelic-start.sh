@@ -8,6 +8,7 @@
 if [ -z "$NR_APPNAME" ]
 then
     echo "Please set the global variable NR_APPNAME if you wish to use NewRelic reporting."
+    rm -rf /etc/php.d/newrelic.ini
     exit 0
 fi
 
