@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Configures PHPRedis for session storage.
-# This requires an environment variable $REDIS_PATH to be set.
+# This requires an environment variable $REDIS_HOST to be set.
 
 . /opt/elasticbeanstalk/support/envvars
 
