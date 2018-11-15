@@ -99,3 +99,9 @@ echo "----------------------------------------------------"
 echo "Set cache on Dashboard Widgets [ENG-624]"
 echo "https://github.com/mautic/mautic/pull/6798"
 cat "../scripts/patches/6798.diff" | git apply -v
+
+# Prefer a slave connection for segment counts [ENG-647] #6889
+echo "----------------------------------------------------"
+echo "Prefer a slave connection for segment counts [ENG-647] #6889"
+echo "https://github.com/mautic/mautic/pull/6889"
+cat "../scripts/patches/6889.diff" | git apply -v
