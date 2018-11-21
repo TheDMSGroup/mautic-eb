@@ -31,11 +31,8 @@ fi
 if [ -n "$MAUTIC_HV_SEGMENTS" ]
 then
     IFS=','
-    while [ 1 ]
+    for segment in $MAUTIC_HV_SEGMENTS
     do
-        for segment in $MAUTIC_HV_SEGMENTS
-        do
-            consoleloop mautic:segments:update --list-id=$segment --batch-limit=10000 --max-contacts=10000 &
-        done
+        consoleloop mautic:segments:update --list-id=$segment --batch-limit=10000 --max-contacts=10000 &
     done
 fi
