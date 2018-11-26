@@ -105,3 +105,8 @@ echo "----------------------------------------------------"
 echo "Prefer a slave connection for segment counts [ENG-647] #6889"
 echo "https://github.com/mautic/mautic/pull/6889"
 cat "../scripts/patches/6889.diff" | git apply -v
+
+echo "----------------------------------------------------"
+echo "Add a \"Created By\" column to the Imports list. #6929"
+echo "https://github.com/mautic/mautic/pull/6929"
+cat "../scripts/patches/6929.diff" | git apply -v
