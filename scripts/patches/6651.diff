@@ -1,0 +1,1494 @@
+diff --git a/app/bundles/CampaignBundle/Command/SummarizeCommand.php b/app/bundles/CampaignBundle/Command/SummarizeCommand.php
+new file mode 100644
+index 0000000000..90d643486d
+--- /dev/null
++++ b/app/bundles/CampaignBundle/Command/SummarizeCommand.php
+@@ -0,0 +1,122 @@
++<?php
++
++/*
++ * @copyright   2018 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CampaignBundle\Command;
++
++use Mautic\CampaignBundle\Model\SummaryModel;
++use Mautic\CoreBundle\Command\ModeratedCommand;
++use Mautic\CoreBundle\Templating\Helper\FormatterHelper;
++use Symfony\Component\Console\Input\InputInterface;
++use Symfony\Component\Console\Input\InputOption;
++use Symfony\Component\Console\Output\OutputInterface;
++use Symfony\Component\Translation\TranslatorInterface;
++
++/**
++ * Class SummaryFillCommand.
++ */
++class SummarizeCommand extends ModeratedCommand
++{
++    use WriteCountTrait;
++
++    /**
++     * @var SummaryModel
++     */
++    private $summaryModel;
++
++    /**
++     * @var TranslatorInterface
++     */
++    private $translator;
++
++    /**
++     * @var FormatterHelper
++     */
++    private $formatterHelper;
++
++    /**
++     * SummarizeCommand constructor.
++     *
++     * @param TranslatorInterface $translator
++     * @param FormatterHelper     $formatterHelper
++     * @param SummaryModel        $summaryModel
++     */
++    public function __construct(
++        TranslatorInterface $translator,
++        FormatterHelper $formatterHelper,
++        SummaryModel $summaryModel
++    ) {
++        parent::__construct();
++
++        $this->translator      = $translator;
++        $this->formatterHelper = $formatterHelper;
++        $this->summaryModel    = $summaryModel;
++    }
++
++    /**
++     * {@inheritdoc}
++     */
++    protected function configure()
++    {
++        $this
++            ->setName('mautic:campaigns:summarize')
++            ->addOption(
++                '--batch-limit',
++                '-l',
++                InputOption::VALUE_OPTIONAL,
++                'Number of hours to process per batch.',
++                1
++            )
++            ->addOption(
++                '--max-hours',
++                null,
++                InputOption::VALUE_OPTIONAL,
++                'Optionally specify how many hours back in time you wish to summarize.'
++            )
++            ->addOption(
++                '--rebuild',
++                null,
++                InputOption::VALUE_NONE,
++                'Rebuild existing data. To be used only if database exceptions have been known to cause inaccuracies.'
++            )
++            ->setDescription('Builds historical campaign summary statistics if they do not already exist.');
++
++        parent::configure();
++    }
++
++    /**
++     * @param InputInterface  $input
++     * @param OutputInterface $output
++     *
++     * @return int|null
++     *
++     * @throws \Exception
++     */
++    protected function execute(InputInterface $input, OutputInterface $output)
++    {
++        if (!$this->checkRunStatus($input, $output)) {
++            return 0;
++        }
++
++        $batchLimit = $input->getOption('batch-limit');
++        $maxHours   = $input->getOption('max-hours');
++        $rebuild    = $input->getOption('rebuild');
++
++        $output->writeln(
++            '<info>'.$this->translator->trans('mautic.campaign.summarizing', ['%batch%' => $batchLimit]).'</info>'
++        );
++
++        $this->summaryModel->summarize($output, $batchLimit, $maxHours, $rebuild);
++
++        $this->completeRun();
++
++        return 0;
++    }
++}
+diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
+index 2b8b0bf4f8..382d502c9b 100644
+--- a/app/bundles/CampaignBundle/Config/config.php
++++ b/app/bundles/CampaignBundle/Config/config.php
+@@ -270,6 +270,9 @@
+                     'mautic.helper.ip_lookup',
+                 ],
+             ],
++            'mautic.campaign.model.summary' => [
++                'class'     => 'Mautic\CampaignBundle\Model\SummaryModel',
++            ],
+         ],
+         'repositories' => [
+             'mautic.campaign.repository.campaign' => [
+@@ -300,6 +303,13 @@
+                     \Mautic\CampaignBundle\Entity\LeadEventLog::class,
+                 ],
+             ],
++            'mautic.campaign.repository.summary' => [
++                'class'     => Doctrine\ORM\EntityRepository::class,
++                'factory'   => ['@doctrine.orm.entity_manager', 'getRepository'],
++                'arguments' => [
++                    \Mautic\CampaignBundle\Entity\Summary::class,
++                ],
++            ],
+         ],
+         'execution'    => [
+             'mautic.campaign.contact_finder.kickoff'  => [
+@@ -356,6 +366,7 @@
+                     'mautic.tracker.contact',
+                     'mautic.campaign.repository.lead_event_log',
+                     'mautic.campaign.repository.lead',
++                    'mautic.campaign.model.summary',
+                 ],
+             ],
+             'mautic.campaign.event_collector' => [
+@@ -591,9 +602,20 @@
+                 ],
+                 'tag' => 'console.command',
+             ],
++            'mautic.campaign.command.summarize' => [
++                'class'     => \Mautic\CampaignBundle\Command\SummarizeCommand::class,
++                'arguments' => [
++                    'translator',
++                    'mautic.helper.template.formatter',
++                    'mautic.campaign.model.summary',
++                ],
++                'tag' => 'console.command',
++            ],
+         ],
+     ],
+     'parameters' => [
+         'campaign_time_wait_on_event_false' => 'PT1H',
++        'campaign_use_summary'              => 0,
++        'campaign_by_range'                 => 0,
+     ],
+ ];
+diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
+old mode 100644
+new mode 100755
+index 0c9fc82a63..9777c5eb66
+--- a/app/bundles/CampaignBundle/Controller/CampaignController.php
++++ b/app/bundles/CampaignBundle/Controller/CampaignController.php
+@@ -14,6 +14,7 @@
+ use Mautic\CampaignBundle\Entity\Campaign;
+ use Mautic\CampaignBundle\Entity\Event;
+ use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
++use Mautic\CampaignBundle\Entity\SummaryRepository;
+ use Mautic\CampaignBundle\EventListener\CampaignActionJumpToEventSubscriber;
+ use Mautic\CampaignBundle\Model\CampaignModel;
+ use Mautic\CampaignBundle\Model\EventModel;
+@@ -96,12 +97,15 @@ public function cloneAction($objectId)
+     }
+ 
+     /**
+-     * @param     $objectId
+-     * @param int $page
++     * @param                $objectId
++     * @param int            $page
++     * @param null           $count
++     * @param \DateTime|null $dateFrom
++     * @param \DateTime|null $dateTo
+      *
+      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+      */
+-    public function contactsAction($objectId, $page = 1)
++    public function contactsAction($objectId, $page = 1, $count = null, \DateTime $dateFrom = null, \DateTime $dateTo = null)
+     {
+         return $this->generateContactsGrid(
+             $objectId,
+@@ -111,7 +115,16 @@ public function contactsAction($objectId, $page = 1)
+             'campaign_leads',
+             null,
+             'campaign_id',
+-            ['manually_removed' => 0]
++            ['manually_removed' => 0],
++            null,
++            null,
++            [],
++            null,
++            'entity.lead_id',
++            'DESC',
++            $count,
++            $dateFrom,
++            $dateTo
+         );
+     }
+ 
+@@ -652,12 +665,25 @@ protected function getViewArguments(array $args, $action)
+                 $dateRangeValues = $this->request->get('daterange', []);
+                 $action          = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
+                 $dateRangeForm   = $this->get('form.factory')->create('daterange', $dateRangeValues, ['action' => $action]);
+-
+-                /** @var LeadEventLogRepository $eventLogRepo */
+-                $eventLogRepo      = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:LeadEventLog');
+-                $events            = $this->getCampaignModel()->getEventRepository()->getCampaignEvents($entity->getId());
+-                $leadCount         = $this->getCampaignModel()->getRepository()->getCampaignLeadCount($entity->getId());
+-                $campaignLogCounts = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false);
++                $events          = $this->getCampaignModel()->getEventRepository()->getCampaignEvents($entity->getId());
++                $dateFrom        = null;
++                $dateTo          = null;
++                $this->setCoreParametersHelper($this->get('mautic.config'));
++                if ($this->coreParametersHelper->getParameter('campaign_by_range')) {
++                    $dateFrom        = new \DateTime($dateRangeForm->get('date_from')->getData());
++                    $dateTo          = new \DateTime($dateRangeForm->get('date_to')->getData());
++                    $dateTo->modify('+1 day');
++                }
++                if ($this->coreParametersHelper->getParameter('campaign_use_summary')) {
++                    /** @var SummaryRepository $summaryRepo */
++                    $summaryRepo       = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:Summary');
++                    $campaignLogCounts = $summaryRepo->getCampaignLogCounts($entity->getId(), $dateFrom, $dateTo);
++                } else {
++                    /** @var LeadEventLogRepository $eventLogRepo */
++                    $eventLogRepo      = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:LeadEventLog');
++                    $campaignLogCounts = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false, $dateFrom, $dateTo);
++                }
++                $leadCount         = $this->getCampaignModel()->getRepository()->getCampaignLeadCount($entity->getId(), null, [], $dateFrom, $dateTo);
+                 $sortedEvents      = [
+                     'decision'  => [],
+                     'action'    => [],
+@@ -716,6 +742,9 @@ protected function getViewArguments(array $args, $action)
+                                 'objectId'   => $entity->getId(),
+                                 'page'       => $this->get('session')->get('mautic.campaign.contact.page', 1),
+                                 'ignoreAjax' => true,
++                                'count'      => $leadCount,
++                                'dateFrom'   => $dateFrom,
++                                'dateTo'     => $dateTo,
+                             ]
+                         )->getContent(),
+                     ]
+diff --git a/app/bundles/CampaignBundle/Entity/CampaignRepository.php b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
+old mode 100644
+new mode 100755
+index 589253a618..18988afc45
+--- a/app/bundles/CampaignBundle/Entity/CampaignRepository.php
++++ b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
+@@ -11,6 +11,7 @@
+ 
+ namespace Mautic\CampaignBundle\Entity;
+ 
++use Doctrine\DBAL\Cache\QueryCacheProfile;
+ use Doctrine\DBAL\Types\Type;
+ use Mautic\CampaignBundle\Entity\Result\CountResult;
+ use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
+@@ -441,13 +442,17 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
+     /**
+      * Get a count of leads that belong to the campaign.
+      *
+-     * @param int   $campaignId
+-     * @param int   $leadId        Optional lead ID to check if lead is part of campaign
+-     * @param array $pendingEvents List of specific events to rule out
++     * @param int            $campaignId
++     * @param int            $leadId        Optional lead ID to check if lead is part of campaign
++     * @param array          $pendingEvents List of specific events to rule out
++     * @param \DateTime|null $dateFrom
++     * @param \DateTime|null $dateTo
+      *
+      * @return int
++     *
++     * @throws \Doctrine\DBAL\Cache\CacheException
+      */
+-    public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [])
++    public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], \DateTime $dateFrom = null, \DateTime $dateTo = null)
+     {
+         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
+ 
+@@ -467,6 +472,12 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
+             );
+         }
+ 
++        if ($dateFrom && $dateTo) {
++            $q->andWhere('cl.date_added BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
++                ->setParameter('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT)
++                ->setParameter('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++        }
++
+         if (count($pendingEvents) > 0) {
+             $sq = $this->getEntityManager()->getConnection()->createQueryBuilder();
+             $sq->select('null')
+@@ -478,12 +489,27 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
+                     )
+                 );
+ 
++            if ($dateFrom && $dateTo) {
++                $sq->andWhere('cl.date_triggered BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
++                    ->setParameter('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT)
++                    ->setParameter('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++            }
++
+             $q->andWhere(
+                 sprintf('NOT EXISTS (%s)', $sq->getSQL())
+             );
+         }
+ 
+-        $results = $q->execute()->fetchAll();
++        if ($q->getConnection()->getConfiguration()->getResultCacheImpl()) {
++            $results = $q->getConnection()->executeCacheQuery(
++                $q->getSQL(),
++                $q->getParameters(),
++                $q->getParameterTypes(),
++                new QueryCacheProfile(600, __METHOD__)
++            )->fetchAll();
++        } else {
++            $results = $q->execute()->fetchAll();
++        }
+ 
+         return (int) $results[0]['lead_count'];
+     }
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+old mode 100644
+new mode 100755
+index c9282494b1..b8ca565906
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+@@ -12,6 +12,7 @@
+ namespace Mautic\CampaignBundle\Entity;
+ 
+ use Doctrine\Common\Collections\ArrayCollection;
++use Doctrine\DBAL\Cache\QueryCacheProfile;
+ use Doctrine\DBAL\Types\Type;
+ use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
+ use Mautic\CoreBundle\Entity\CommonRepository;
+@@ -212,12 +213,17 @@ public function getUpcomingEvents(array $options = null)
+     }
+ 
+     /**
+-     * @param      $campaignId
+-     * @param bool $excludeScheduled
++     * @param                $campaignId
++     * @param bool           $excludeScheduled
++     * @param bool           $excludeNegative
++     * @param \DateTime|null $dateFrom
++     * @param \DateTime|null $dateTo
+      *
+      * @return array
++     *
++     * @throws \Doctrine\DBAL\Cache\CacheException
+      */
+-    public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true)
++    public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true, \DateTime $dateFrom = null, \DateTime $dateTo = null)
+     {
+         $q = $this->_em->getConnection()->createQueryBuilder()
+                        ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'o')
+@@ -259,6 +265,11 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
+             ->where(
+                 $failedSq->expr()->eq('fe.log_id', 'o.id')
+             );
++        if ($dateFrom && $dateTo) {
++            $failedSq->andWhere('fe.date_added BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
++                ->setParameter('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT)
++                ->setParameter('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++        }
+         $expr->add(
+             sprintf('NOT EXISTS (%s)', $failedSq->getSQL())
+         );
+@@ -267,7 +278,22 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
+           ->setParameter('false', false, 'boolean')
+           ->groupBy($groupBy);
+ 
+-        $results = $q->execute()->fetchAll();
++        if ($dateFrom && $dateTo) {
++            $q->andWhere('o.date_triggered BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
++                ->setParameter('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT)
++                ->setParameter('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++        }
++
++        if ($q->getConnection()->getConfiguration()->getResultCacheImpl()) {
++            $results = $q->getConnection()->executeCacheQuery(
++                $q->getSQL(),
++                $q->getParameters(),
++                $q->getParameterTypes(),
++                new QueryCacheProfile(600, __METHOD__)
++            )->fetchAll();
++        } else {
++            $results = $q->execute()->fetchAll();
++        }
+ 
+         $return = [];
+ 
+@@ -507,6 +533,24 @@ public function getDatesExecuted($eventId, array $contactIds)
+         return $dates;
+     }
+ 
++    /**
++     * Get the oldest triggered date.
++     *
++     * @return \DateTime|null
++     */
++    public function getOldestTriggeredDate()
++    {
++        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb->select('log.date_triggered')
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
++            ->orderBy('log.date_triggered', 'ASC')
++            ->setMaxResults(1);
++
++        $results = $qb->execute()->fetchAll();
++
++        return isset($results[0]['date_triggered']) ? new \DateTime($results[0]['date_triggered']) : null;
++    }
++
+     /**
+      * @param int $contactId
+      * @param int $campaignId
+diff --git a/app/bundles/CampaignBundle/Entity/Summary.php b/app/bundles/CampaignBundle/Entity/Summary.php
+new file mode 100644
+index 0000000000..a508f5a75d
+--- /dev/null
++++ b/app/bundles/CampaignBundle/Entity/Summary.php
+@@ -0,0 +1,258 @@
++<?php
++
++/*
++ * @copyright   2018 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CampaignBundle\Entity;
++
++use Doctrine\ORM\Mapping as ORM;
++use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
++
++/**
++ * Class Summary.
++ */
++class Summary
++{
++    /**
++     * @var int
++     */
++    private $id;
++
++    /**
++     * @var \DateTime
++     **/
++    private $dateTriggered;
++
++    /**
++     * @var int
++     */
++    private $scheduledCount = 0;
++
++    /**
++     * @var int
++     */
++    private $triggeredCount = 0;
++
++    /**
++     * @var int
++     */
++    private $nonActionPathTakenCount = 0;
++
++    /**
++     * @var int
++     */
++    private $failedCount = 0;
++
++    /**
++     * @var Event
++     */
++    private $event;
++
++    /**
++     * @var Campaign
++     */
++    private $campaign;
++
++    /**
++     * @param ORM\ClassMetadata $metadata
++     */
++    public static function loadMetadata(ORM\ClassMetadata $metadata)
++    {
++        $builder = new ClassMetadataBuilder($metadata);
++
++        $builder->setTable('campaign_summary')
++            ->setCustomRepositoryClass('Mautic\CampaignBundle\Entity\SummaryRepository')
++            ->addUniqueConstraint(['campaign_id', 'event_id', 'date_triggered'], 'campaign_event_date_triggered');
++
++        $builder->addId();
++
++        $builder->createManyToOne('campaign', 'Campaign')
++            ->addJoinColumn('campaign_id', 'id')
++            ->fetchExtraLazy()
++            ->build();
++
++        $builder->createManyToOne('event', 'Event')
++            ->addJoinColumn('event_id', 'id', false, false, 'CASCADE')
++            ->fetchExtraLazy()
++            ->build();
++
++        $builder->createField('dateTriggered', 'datetime')
++            ->columnName('date_triggered')
++            ->nullable()
++            ->build();
++
++        $builder->createField('scheduledCount', 'integer')
++            ->columnName('scheduled_count')
++            ->build();
++
++        $builder->createField('triggeredCount', 'integer')
++            ->columnName('triggered_count')
++            ->build();
++
++        $builder->createField('nonActionPathTakenCount', 'integer')
++            ->columnName('non_action_path_taken_count')
++            ->build();
++
++        $builder->createField('failedCount', 'integer')
++            ->columnName('failed_count')
++            ->build();
++    }
++
++    /**
++     * @return int
++     */
++    public function getScheduledCount()
++    {
++        return $this->scheduledCount;
++    }
++
++    /**
++     * @param int $scheduledCount
++     *
++     * @return $this
++     */
++    public function setScheduledCount($scheduledCount)
++    {
++        $this->scheduledCount = $scheduledCount;
++
++        return $this;
++    }
++
++    /**
++     * @return int
++     */
++    public function getTriggeredCount()
++    {
++        return $this->triggeredCount;
++    }
++
++    /**
++     * @param int $triggeredCount
++     *
++     * @return $this
++     */
++    public function setTriggeredCount($triggeredCount)
++    {
++        $this->triggeredCount = $triggeredCount;
++
++        return $this;
++    }
++
++    /**
++     * @return int
++     */
++    public function getNonActionPathTakenCount()
++    {
++        return $this->nonActionPathTakenCount;
++    }
++
++    /**
++     * @param int $nonActionPathTakenCount
++     *
++     * @return $this
++     */
++    public function setNonActionPathTakenCount($nonActionPathTakenCount)
++    {
++        $this->nonActionPathTakenCount = $nonActionPathTakenCount;
++
++        return $this;
++    }
++
++    /**
++     * @return int
++     */
++    public function getFailedCount()
++    {
++        return $this->failedCount;
++    }
++
++    /**
++     * @param int $failedCount
++     *
++     * @return $this
++     */
++    public function setFailedCount($failedCount)
++    {
++        $this->failedCount = $failedCount;
++
++        return $this;
++    }
++
++    /**
++     * @return Campaign
++     */
++    public function getCampaign()
++    {
++        return $this->campaign;
++    }
++
++    /**
++     * @param Campaign $campaign
++     *
++     * @return $this
++     */
++    public function setCampaign(Campaign $campaign)
++    {
++        $this->campaign = $campaign;
++
++        return $this;
++    }
++
++    /**
++     * @return Event
++     */
++    public function getEvent()
++    {
++        return $this->event;
++    }
++
++    /***
++     * @param $event
++     *
++     * @return $this
++     */
++    public function setEvent(Event $event)
++    {
++        $this->event = $event;
++
++        if (!$this->campaign) {
++            $this->setCampaign($event->getCampaign());
++        }
++
++        return $this;
++    }
++
++    /**
++     * @return \DateTime
++     */
++    public function getDateTriggered()
++    {
++        return $this->dateTriggered;
++    }
++
++    /**
++     * @param \DateTime|null $dateTriggered
++     *
++     * @return $this
++     */
++    public function setDateTriggered(\DateTime $dateTriggered = null)
++    {
++        $this->dateTriggered = $dateTriggered;
++
++        return $this;
++    }
++
++    /**
++     * @return mixed
++     */
++    public function getId()
++    {
++        return $this->id;
++    }
++}
+diff --git a/app/bundles/CampaignBundle/Entity/SummaryRepository.php b/app/bundles/CampaignBundle/Entity/SummaryRepository.php
+new file mode 100644
+index 0000000000..7b1a20eada
+--- /dev/null
++++ b/app/bundles/CampaignBundle/Entity/SummaryRepository.php
+@@ -0,0 +1,175 @@
++<?php
++
++/*
++ * @copyright   2018 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CampaignBundle\Entity;
++
++use Mautic\CoreBundle\Entity\CommonRepository;
++use Mautic\LeadBundle\Entity\TimelineTrait;
++
++/**
++ * SummaryRepository.
++ */
++class SummaryRepository extends CommonRepository
++{
++    use TimelineTrait;
++    use ContactLimiterTrait;
++
++    /**
++     * @return string
++     */
++    public function getTableAlias()
++    {
++        return 's';
++    }
++
++    /**
++     * Insert or update to increment existing rows with a single query.
++     *
++     * @param array $entities
++     *
++     * @throws \Doctrine\DBAL\DBALException
++     * @throws \Doctrine\ORM\OptimisticLockException
++     */
++    public function saveEntities($entities)
++    {
++        $values = [];
++        foreach ($entities as $summary) {
++            /* @var $summary Summary */
++            $values[] = implode(
++                ',',
++                [
++                    $summary->getCampaign()->getId(),
++                    $summary->getEvent()->getId(),
++                    'FROM_UNIXTIME('.$summary->getDateTriggered()->getTimestamp().')',
++                    $summary->getScheduledCount(),
++                    $summary->getTriggeredCount(),
++                    $summary->getNonActionPathTakenCount(),
++                    $summary->getFailedCount(),
++                ]
++            );
++        }
++
++        $sql = 'INSERT INTO '.MAUTIC_TABLE_PREFIX.'campaign_summary '.
++            '(campaign_id, event_id, date_triggered, scheduled_count, triggered_count, non_action_path_taken_count, failed_count) '.
++            'VALUES ('.implode('),(', $values).') '.
++            'ON DUPLICATE KEY UPDATE '.
++            'scheduled_count=scheduled_count+VALUES(scheduled_count), '.
++            'triggered_count=triggered_count+VALUES(triggered_count), '.
++            'non_action_path_taken_count=non_action_path_taken_count+VALUES(non_action_path_taken_count), '.
++            'failed_count=failed_count+VALUES(failed_count) ';
++
++        $this->getEntityManager()
++            ->getConnection()
++            ->prepare($sql)
++            ->execute();
++
++        $this->getEntityManager()->flush();
++    }
++
++    /**
++     * @param                $campaignId
++     * @param \DateTime|null $dateFrom
++     * @param \DateTime|null $dateTo
++     *
++     * @return array
++     */
++    public function getCampaignLogCounts(
++        $campaignId,
++        \DateTime $dateFrom = null,
++        \DateTime $dateTo = null
++    ) {
++        $q = $this->_em->getConnection()->createQueryBuilder()
++            ->select(
++                'cs.event_id, SUM(cs.scheduled_count) as scheduled_count, SUM(cs.triggered_count) as triggered_count, SUM(cs.non_action_path_taken_count) as non_action_path_taken_count, SUM(cs.failed_count) as failed_count'
++            )
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_summary', 'cs')
++            ->where('cs.campaign_id = '.(int) $campaignId)
++            ->groupBy('cs.event_id');
++
++        if ($dateFrom && $dateTo) {
++            $q->andWhere('cs.date_triggered BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
++                ->setParameter('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT)
++                ->setParameter('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++        }
++
++        $results = $q->execute()->fetchAll();
++
++        $return = [];
++        // Group by event id
++        foreach ($results as $row) {
++            $return[$row['event_id']] = [
++                0 => intval($row['non_action_path_taken_count']),
++                1 => intval($row['triggered_count']) + intval($row['scheduled_count']),
++            ];
++        }
++
++        return $return;
++    }
++
++    /**
++     * Get the oldest triggered time for back-filling historical data.
++     *
++     * @return \DateTime|null
++     */
++    public function getOldestTriggeredDate()
++    {
++        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb->select('cs.date_triggered')
++            ->from(MAUTIC_TABLE_PREFIX.'campaign_summary', 'cs')
++            ->orderBy('cs.date_triggered', 'ASC')
++            ->setMaxResults(1);
++
++        $results = $qb->execute()->fetchAll();
++
++        return isset($results[0]['date_triggered']) ? new \DateTime($results[0]['date_triggered']) : null;
++    }
++
++    /**
++     * Regenerate summary entries for a given time frame.
++     *
++     * @param \DateTime $dateFrom
++     * @param \DateTime $dateTo
++     *
++     * @throws \Doctrine\DBAL\DBALException
++     */
++    public function summarize(\DateTime $dateFrom, \DateTime $dateTo)
++    {
++        $sql = 'INSERT INTO '.MAUTIC_TABLE_PREFIX.'campaign_summary '.
++            '(campaign_id, event_id, date_triggered, scheduled_count, non_action_path_taken_count, failed_count, triggered_count) '.
++            '    SELECT '.
++            '        t.campaign_id as campaign_id, '.
++            '        t.event_id as event_id, '.
++            '        FROM_UNIXTIME(UNIX_TIMESTAMP(t.date_triggered) - (UNIX_TIMESTAMP(t.date_triggered) % 3600)) AS date_triggered, '.
++            '        SUM(IF(t.is_scheduled = 1 AND t.trigger_date > NOW(), 1, 0)) as scheduled_count, '.
++            '        SUM(IF(t.is_scheduled = 1 AND t.trigger_date > NOW(), 0, t.non_action_path_taken)) as non_action_path_taken_count, '.
++            '        SUM(IF((t.is_scheduled = 1 AND t.trigger_date > NOW()) OR t.non_action_path_taken, 0, fe.log_id IS NOT NULL)) as failed_count, '.
++            '        SUM(IF((t.is_scheduled = 1 AND t.trigger_date > NOW()) OR t.non_action_path_taken OR fe.log_id IS NOT NULL, 0, 1)) as triggered_count '.
++            '    FROM '.MAUTIC_TABLE_PREFIX.'campaign_lead_event_log t '.
++            '    LEFT JOIN '.MAUTIC_TABLE_PREFIX.'campaign_lead_event_failed_log fe '.
++            '        ON fe.log_id = t.id '.
++            '    WHERE (t.date_triggered BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)) '.
++            '    GROUP BY campaign_id, event_id, date_triggered '.
++            'ON DUPLICATE KEY UPDATE '.
++            'scheduled_count=VALUES(scheduled_count), '.
++            'non_action_path_taken_count=VALUES(non_action_path_taken_count), '.
++            'failed_count=VALUES(failed_count), '.
++            'triggered_count=VALUES(triggered_count); ';
++
++        $q = $this->getEntityManager()
++            ->getConnection()
++            ->prepare($sql);
++
++        $q->bindParam('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT);
++        $q->bindParam('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++
++        $q->execute();
++    }
++}
+diff --git a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
+index 14c8bd79c2..2d6efe1573 100644
+--- a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
++++ b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
+@@ -18,6 +18,7 @@
+ use Mautic\CampaignBundle\Entity\LeadRepository;
+ use Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor;
+ use Mautic\CampaignBundle\Helper\ChannelExtractor;
++use Mautic\CampaignBundle\Model\SummaryModel;
+ use Mautic\CoreBundle\Helper\IpLookupHelper;
+ use Mautic\LeadBundle\Entity\Lead;
+ use Mautic\LeadBundle\Tracker\ContactTracker;
+@@ -39,6 +40,11 @@ class EventLogger
+      */
+     private $leadEventLogRepository;
+ 
++    /**
++     * @var SummaryModel
++     */
++    private $summaryModel;
++
+     /**
+      * @var LeadRepository
+      */
+@@ -66,17 +72,20 @@ class EventLogger
+      * @param ContactTracker         $contactTracker
+      * @param LeadEventLogRepository $leadEventLogRepository
+      * @param LeadRepository         $leadRepository
++     * @param SummaryModel           $summaryModel
+      */
+     public function __construct(
+         IpLookupHelper $ipLookupHelper,
+         ContactTracker $contactTracker,
+         LeadEventLogRepository $leadEventLogRepository,
+-        LeadRepository $leadRepository
++        LeadRepository $leadRepository,
++        SummaryModel $summaryModel
+     ) {
+         $this->ipLookupHelper         = $ipLookupHelper;
+         $this->contactTracker         = $contactTracker;
+         $this->leadEventLogRepository = $leadEventLogRepository;
+         $this->leadRepository         = $leadRepository;
++        $this->summaryModel           = $summaryModel;
+ 
+         $this->persistQueue = new ArrayCollection();
+         $this->logs         = new ArrayCollection();
+@@ -100,6 +109,7 @@ public function queueToPersist(LeadEventLog $log)
+     public function persistLog(LeadEventLog $log)
+     {
+         $this->leadEventLogRepository->saveEntity($log);
++        $this->summaryModel->updateSummary([$log]);
+     }
+ 
+     /**
+@@ -168,6 +178,7 @@ public function persistCollection(ArrayCollection $collection)
+         }
+ 
+         $this->leadEventLogRepository->saveEntities($collection->getValues());
++        $this->summaryModel->updateSummary($collection->getValues());
+ 
+         return $this;
+     }
+diff --git a/app/bundles/CampaignBundle/Form/Type/ConfigType.php b/app/bundles/CampaignBundle/Form/Type/ConfigType.php
+index 79c0f15d82..a7e4378300 100644
+--- a/app/bundles/CampaignBundle/Form/Type/ConfigType.php
++++ b/app/bundles/CampaignBundle/Form/Type/ConfigType.php
+@@ -55,6 +55,28 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+                 'required' => false,
+             ]
+         );
++        $builder->add(
++            'campaign_by_range',
++            'yesno_button_group',
++            [
++                'label' => 'mautic.campaignconfig.campaign_by_range',
++                'attr'  => [
++                    'tooltip' => 'mautic.campaignconfig.campaign_by_range.tooltip',
++                ],
++                'data'  => isset($options['data']['campaign_by_range']) ? (bool) $options['data']['campaign_by_range'] : false,
++            ]
++        );
++        $builder->add(
++            'campaign_use_summary',
++            'yesno_button_group',
++            [
++                'label' => 'mautic.campaignconfig.use_summary',
++                'attr'  => [
++                    'tooltip' => 'mautic.campaignconfig.use_summary.tooltip',
++                ],
++                'data'  => isset($options['data']['campaign_use_summary']) ? (bool) $options['data']['campaign_use_summary'] : false,
++            ]
++        );
+     }
+ 
+     /**
+diff --git a/app/bundles/CampaignBundle/Model/CampaignModel.php b/app/bundles/CampaignBundle/Model/CampaignModel.php
+index 504a7f9666..7191dd8841 100644
+--- a/app/bundles/CampaignBundle/Model/CampaignModel.php
++++ b/app/bundles/CampaignBundle/Model/CampaignModel.php
+@@ -770,19 +770,24 @@ public function getCampaignMetricsLineChartData($unit, \DateTime $dateFrom, \Dat
+                 foreach ($events as $type => $eventIds) {
+                     $filter['event_id'] = $eventIds;
+ 
+-                    // Exclude failed events
+-                    $failedSq = $this->em->getConnection()->createQueryBuilder();
+-                    $failedSq->select('null')
+-                        ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_failed_log', 'fe')
+-                        ->where(
+-                            $failedSq->expr()->eq('fe.log_id', 't.id')
+-                        );
+-                    $filter['failed_events'] = [
+-                        'subquery' => sprintf('NOT EXISTS (%s)', $failedSq->getSQL()),
+-                    ];
+-
+-                    $q       = $query->prepareTimeDataQuery('campaign_lead_event_log', 'date_triggered', $filter);
+-                    $rawData = $q->execute()->fetchAll();
++                    if ($this->coreParametersHelper->getParameter('mautic.campaign_use_summary')) {
++                        $q       = $query->prepareTimeDataQuery('campaign_summary', 'date_triggered', $filter, 'triggered_count + non_action_path_taken_count', 'sum');
++                        $rawData = $q->execute()->fetchAll();
++                    } else {
++                        // Exclude failed events
++                        $failedSq = $this->em->getConnection()->createQueryBuilder();
++                        $failedSq->select('null')
++                            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_failed_log', 'fe')
++                            ->where(
++                                $failedSq->expr()->eq('fe.log_id', 't.id')
++                            );
++                        $filter['failed_events'] = [
++                            'subquery' => sprintf('NOT EXISTS (%s)', $failedSq->getSQL()),
++                        ];
++
++                        $q       = $query->prepareTimeDataQuery('campaign_lead_event_log', 'date_triggered', $filter);
++                        $rawData = $q->execute()->fetchAll();
++                    }
+ 
+                     if (!empty($rawData)) {
+                         $triggers = $query->completeTimeData($rawData);
+diff --git a/app/bundles/CampaignBundle/Model/SummaryModel.php b/app/bundles/CampaignBundle/Model/SummaryModel.php
+new file mode 100644
+index 0000000000..5a7e48e25b
+--- /dev/null
++++ b/app/bundles/CampaignBundle/Model/SummaryModel.php
+@@ -0,0 +1,145 @@
++<?php
++
++/*
++ * @copyright   2018 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CampaignBundle\Model;
++
++use Mautic\CampaignBundle\Entity\LeadEventLog;
++use Mautic\CampaignBundle\Entity\Summary;
++use Mautic\CoreBundle\Helper\ProgressBarHelper;
++use Mautic\CoreBundle\Model\AbstractCommonModel;
++use Symfony\Component\Console\Output\OutputInterface;
++
++/**
++ * Class SummaryModel.
++ */
++class SummaryModel extends AbstractCommonModel
++{
++    /** @var ProgressBarHelper */
++    private $progressBar;
++
++    /**
++     * Collapse Event Log entities into insert/update queries for the campaign summary.
++     *
++     * @param $logs
++     */
++    public function updateSummary($logs)
++    {
++        $summaries = [];
++        $now       = new \DateTime();
++        foreach ($logs as $log) {
++            /** @var LeadEventLog $log */
++            $timestamp = $log->getDateTriggered()->getTimestamp();
++            // Universally round down to the hour.
++            $timestamp = $timestamp - ($timestamp % 3600);
++            $campaign  = $log->getCampaign();
++            $event     = $log->getEvent();
++            $key       = $campaign->getId().'.'.$event->getId().'.'.$timestamp;
++            if (!isset($summaries[$key])) {
++                $dateTriggered = new \DateTime();
++                $dateTriggered->setTimestamp($timestamp);
++                $summary = new Summary();
++                $summary->setCampaign($campaign);
++                $summary->setEvent($event);
++                $summary->setDateTriggered($dateTriggered);
++                $summaries[$key] = $summary;
++            } else {
++                $summary = $summaries[$key];
++            }
++
++            if ($log->getIsScheduled() && $log->getTriggerDate() > $now) {
++                $summary->setScheduledCount($summary->getScheduledCount() + 1);
++            } elseif ($log->getNonActionPathTaken()) {
++                $summary->setNonActionPathTakenCount($summary->getNonActionPathTakenCount() + 1);
++            } elseif ($log->getFailedLog()) {
++                $summary->setFailedCount($summary->getFailedCount() + 1);
++            } elseif ($log->getSystemTriggered()) {
++                $summary->setTriggeredCount($summary->getTriggeredCount() + 1);
++            }
++        }
++        if ($summaries) {
++            $this->getRepository()->saveEntities($summaries);
++        }
++    }
++
++    /**
++     * {@inheritdoc}
++     *
++     * @return \Mautic\CampaignBundle\Entity\SummaryRepository
++     */
++    public function getRepository()
++    {
++        return $this->em->getRepository('MauticCampaignBundle:Summary');
++    }
++
++    /**
++     * {@inheritdoc}
++     *
++     * @return string
++     */
++    public function getPermissionBase()
++    {
++        return 'campaign:campaigns';
++    }
++
++    /**
++     * Summarize all of history.
++     *
++     * @param OutputInterface $output
++     * @param int             $hoursPerBatch
++     * @param null            $maxHours
++     * @param bool            $rebuild
++     *
++     * @throws \Doctrine\DBAL\DBALException
++     */
++    public function summarize(OutputInterface $output, $hoursPerBatch = 1, $maxHours = null, $rebuild = false)
++    {
++        $start = null;
++        if (!$rebuild) {
++            /** @var \DateTime $oldestSumamryDate */
++            $start = $this->getRepository()->getOldestTriggeredDate();
++        }
++        $start = $start ? $start : new \DateTime();
++        $start->setTimestamp($start->getTimestamp() - ($start->getTimestamp() % 3600));
++
++        /** @var LeadEventLog $oldestTriggeredEventLog */
++        $end = $this->getCampaignLeadEventLogRepository()->getOldestTriggeredDate();
++        $end->setTimestamp($end->getTimestamp() - ($end->getTimestamp() % 3600));
++        if ($end && $end <= $start) {
++            $hours = ($end->diff($start)->days * 24) + $end->diff($start)->h;
++            if ($maxHours && $hours > $maxHours) {
++                $end = clone $start;
++                $end = $end->sub(new \DateInterval('PT'.intval($maxHours).'H'));
++            }
++            $this->progressBar = ProgressBarHelper::init($output, $hours);
++            $this->progressBar->start();
++
++            $interval = new \DateInterval('PT'.$hoursPerBatch.'H');
++            $dateFrom = clone $start;
++            $dateTo   = clone $start;
++            do {
++                $dateFrom->sub($interval);
++                $output->write("\t".$dateFrom->format('Y-m-d H:i:s'));
++                $this->getRepository()->summarize($dateFrom, $dateTo);
++                $this->progressBar->advance($hoursPerBatch);
++                $dateTo->sub($interval);
++            } while ($end < $dateFrom);
++            $this->progressBar->finish();
++        }
++    }
++
++    /**
++     * @return \Mautic\CampaignBundle\Entity\LeadEventLogRepository
++     */
++    public function getCampaignLeadEventLogRepository()
++    {
++        return $this->em->getRepository('MauticCampaignBundle:LeadEventLog');
++    }
++}
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
+index cf3a415f78..260093f9a2 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
+@@ -16,6 +16,7 @@
+ use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
+ use Mautic\CampaignBundle\Entity\LeadRepository;
+ use Mautic\CampaignBundle\Executioner\Logger\EventLogger;
++use Mautic\CampaignBundle\Model\SummaryModel;
+ use Mautic\CoreBundle\Helper\IpLookupHelper;
+ use Mautic\LeadBundle\Tracker\ContactTracker;
+ 
+@@ -41,12 +42,16 @@ class EventLoggerTest extends \PHPUnit_Framework_TestCase
+      */
+     private $leadRepository;
+ 
++    /** @var SummaryModel */
++    private $summaryModel;
++
+     protected function setUp()
+     {
+         $this->ipLookupHelper         = $this->createMock(IpLookupHelper::class);
+         $this->contactTracker         = $this->createMock(ContactTracker::class);
+         $this->leadEventLogRepository = $this->createMock(LeadEventLogRepository::class);
+         $this->leadRepository         = $this->createMock(LeadRepository::class);
++        $this->summaryModel           = $this->createMock(summaryModel::class);
+     }
+ 
+     public function testAllLogsAreReturnedWithFinalPersist()
+@@ -80,7 +85,8 @@ private function getLogger()
+             $this->ipLookupHelper,
+             $this->contactTracker,
+             $this->leadEventLogRepository,
+-            $this->leadRepository
++            $this->leadRepository,
++            $this->summaryModel
+         );
+     }
+ }
+diff --git a/app/bundles/CampaignBundle/Translations/en_US/messages.ini b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
+index adcf2a7ac0..c9763a337a 100644
+--- a/app/bundles/CampaignBundle/Translations/en_US/messages.ini
++++ b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
+@@ -106,6 +106,7 @@ mautic.campaign.rebuild.not_found="Campaign #%id% does not exist"
+ mautic.campaign.rebuild.to_be_added="%leads% total contact(s) to be added in batches of %batch%"
+ mautic.campaign.rebuild.to_be_removed="%leads% total contact(s) to be removed in batches of %batch%"
+ mautic.campaign.scheduled="Campaign event scheduled"
++mautic.campaign.summarizing="Building summary statistics for past campaign events, in batches of %batch% hours. Will back-fill data from the newest to the oldest events."
+ mautic.campaign.trigger.event_count="%events% total events(s) to be processed in batches of %batch% contacts"
+ mautic.campaign.trigger.events_executed="{0} 0 total events were executed|{1} 1 total event was executed|[2,Inf] %events% total events were executed"
+ mautic.campaign.trigger.events_scheduled="{0} 0 total events were scheduled|{1} 1 total event was scheduled|[2,Inf] %events% total events were scheduled"
+@@ -125,6 +126,10 @@ mautic.campaign.triggered.events="Triggered Events"
+ mautic.config.tab.campaignconfig="Campaign Settings"
+ mautic.campaignconfig.campaign_time_wait_on_event_false="Wait time before retrying a failed action"
+ mautic.campaignconfig.campaign_time_wait_on_event_false_tooltip="If an action fails to execute, wait this long before trying again."
++mautic.campaignconfig.campaign_by_range="Use date range for all views"
++mautic.campaignconfig.campaign_by_range.tooltip="The actions, conditions, decisions and contacts tabs will be based on the date range provided when viewing a campaign."
++mautic.campaignconfig.use_summary="Use summary statistics"
++mautic.campaignconfig.use_summary.tooltip="Improves performance when viewing a campaign with thousands of events per day by using summarized data. May require you run a command via SSH to backfill your data once."
+ mautic.campaign.stats="Campaign statistics"
+ mautic.stage.campaign.event.change_descr="Choose a stage to change a contact to."
+ mautic.campaign.command.process.messages="Processing message queue"
+diff --git a/app/bundles/CoreBundle/DependencyInjection/Compiler/DbalPass.php b/app/bundles/CoreBundle/DependencyInjection/Compiler/DbalPass.php
+new file mode 100644
+index 0000000000..812f58605f
+--- /dev/null
++++ b/app/bundles/CoreBundle/DependencyInjection/Compiler/DbalPass.php
+@@ -0,0 +1,38 @@
++<?php
++
++/*
++ * @copyright   2018 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CoreBundle\DependencyInjection\Compiler;
++
++use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
++use Symfony\Component\DependencyInjection\ContainerBuilder;
++use Symfony\Component\DependencyInjection\Reference;
++
++/**
++ * Class DbalPass.
++ */
++class DbalPass implements CompilerPassInterface
++{
++    /**
++     * Allows result caching with DBAL using the same configuration as the orm if provided and enabled.
++     *
++     * See config_prod.php
++     */
++    public function process(ContainerBuilder $container)
++    {
++        $id = 'doctrine.dbal.default_connection.configuration';
++
++        if ($container->hasDefinition($id)) {
++            $container
++                ->getDefinition($id)
++                ->addMethodCall('setResultCacheImpl', [new Reference('doctrine.orm.default_result_cache')]);
++        }
++    }
++}
+diff --git a/app/bundles/CoreBundle/Helper/Chart/ChartQuery.php b/app/bundles/CoreBundle/Helper/Chart/ChartQuery.php
+index e0c016b803..31a0d4b941 100644
+--- a/app/bundles/CoreBundle/Helper/Chart/ChartQuery.php
++++ b/app/bundles/CoreBundle/Helper/Chart/ChartQuery.php
+@@ -227,10 +227,6 @@ public function modifyTimeDataQuery(&$query, $column, $tablePrefix = 't', $count
+         $limit   = $this->countAmountFromDateRange($this->unit);
+         $groupBy = '';
+ 
+-        if (isset($filters['groupBy'])) {
+-            $groupBy = ', '.$tablePrefix.'.'.$filters['groupBy'];
+-            unset($filters['groupBy']);
+-        }
+         $dateConstruct = 'DATE_FORMAT('.$tablePrefix.'.'.$column.', \''.$dbUnit.'\')';
+ 
+         if ($isEnumerable === true) {
+diff --git a/app/bundles/CoreBundle/MauticCoreBundle.php b/app/bundles/CoreBundle/MauticCoreBundle.php
+index 0302ab4861..b4ea24332a 100644
+--- a/app/bundles/CoreBundle/MauticCoreBundle.php
++++ b/app/bundles/CoreBundle/MauticCoreBundle.php
+@@ -26,6 +26,7 @@ class MauticCoreBundle extends Bundle
+     public function build(ContainerBuilder $container)
+     {
+         $container->addCompilerPass(new Compiler\ConfiguratorPass());
++        $container->addCompilerPass(new Compiler\DbalPass());
+         $container->addCompilerPass(new Compiler\TemplatingPass());
+         $container->addCompilerPass(new Compiler\TranslationsPass());
+         $container->addCompilerPass(new Compiler\ModelPass());
+diff --git a/app/bundles/LeadBundle/Controller/EntityContactsTrait.php b/app/bundles/LeadBundle/Controller/EntityContactsTrait.php
+index 123ca3e967..4c385a7f0a 100644
+--- a/app/bundles/LeadBundle/Controller/EntityContactsTrait.php
++++ b/app/bundles/LeadBundle/Controller/EntityContactsTrait.php
+@@ -19,17 +19,22 @@
+ trait EntityContactsTrait
+ {
+     /**
+-     * @param        $entityId
+-     * @param        $page
+-     * @param        $permission
+-     * @param        $sessionVar
+-     * @param        $entityJoinTable    Table to join to obtain list of related contacts or a DBAL QueryBuilder object defining custom joins
+-     * @param null   $dncChannel         Channel for this entity to get do not contact records for
+-     * @param null   $entityIdColumnName If the entity ID in $joinTable is not "id", set the column name here
+-     * @param array  $contactFilter      Array of additional filters for the getEntityContactsWithFields() function
+-     * @param array  $additionalJoins    [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
+-     * @param string $contactColumnName  Column of the contact in the join table
+-     * @param string $paginationTarget   DOM seletor for injecting new content when pagination is used
++     * @param                $entityId
++     * @param                $page
++     * @param                $permission
++     * @param                $sessionVar
++     * @param                $entityJoinTable    Table to join to obtain list of related contacts or a DBAL QueryBuilder object defining custom joins
++     * @param null           $dncChannel         Channel for this entity to get do not contact records for
++     * @param null           $entityIdColumnName If the entity ID in $joinTable is not "id", set the column name here
++     * @param array          $contactFilter      Array of additional filters for the getEntityContactsWithFields() function
++     * @param array          $additionalJoins    [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
++     * @param string         $contactColumnName  Column of the contact in the join table
++     * @param string         $paginationTarget   DOM seletor for injecting new content when pagination is used
++     * @param null           $orderBy            optional OrderBy column, to be used to increase performance with joins
++     * @param null           $orderByDir         optional $orderBy direction, to be used to increase performance with joins
++     * @param int            $count              optional $count if already known to avoid an extra query
++     * @param \DateTime|null $dateFrom           optionally limit to leads added between From and To dates
++     * @param \DateTime|null $dateTo             optionally limit to leads added between From and To dates
+      *
+      * @return mixed
+      */
+@@ -45,7 +50,12 @@ protected function generateContactsGrid(
+         array $additionalJoins = null,
+         $contactColumnName = null,
+         array $routeParameters = [],
+-        $paginationTarget = null
++        $paginationTarget = null,
++        $orderBy = null,
++        $orderByDir = null,
++        $count = null,
++        \DateTime $dateFrom = null,
++        \DateTime $dateTo = null
+     ) {
+         if ($permission && !$this->get('mautic.security')->isGranted($permission)) {
+             return $this->accessDenied();
+@@ -66,8 +76,8 @@ protected function generateContactsGrid(
+         $this->get('session')->set('mautic.'.$sessionVar.'.contact.filter', $search);
+ 
+         $filter     = ['string' => $search, 'force' => []];
+-        $orderBy    = $this->get('session')->get('mautic.'.$sessionVar.'.contact.orderby', 'l.id');
+-        $orderByDir = $this->get('session')->get('mautic.'.$sessionVar.'.contact.orderbydir', 'DESC');
++        $orderBy    = $orderBy ? $orderBy : $this->get('session')->get('mautic.'.$sessionVar.'.contact.orderby', 'l.id');
++        $orderByDir = $orderByDir ? $orderByDir : $this->get('session')->get('mautic.'.$sessionVar.'.contact.orderbydir', 'DESC');
+ 
+         //set limits
+         $limit = $this->get('session')->get(
+@@ -84,7 +94,7 @@ protected function generateContactsGrid(
+         $repo     = $this->getModel('lead')->getRepository();
+         $contacts = $repo->getEntityContacts(
+             [
+-                'withTotalCount' => true,
++                'withTotalCount' => ($count === null),
+                 'start'          => $start,
+                 'limit'          => $limit,
+                 'filter'         => $filter,
+@@ -96,10 +106,21 @@ protected function generateContactsGrid(
+             $contactFilter,
+             $entityIdColumnName,
+             $additionalJoins,
+-            $contactColumnName
++            $contactColumnName,
++            $dateFrom,
++            $dateTo
+         );
+ 
+-        $count = $contacts['count'];
++        // Normalize results regarding withTotalCount.
++        if (isset($contacts['count'])) {
++            $count = $contacts['count'];
++        } else {
++            $contacts = [
++                'results' => $contacts,
++                'count'   => $count,
++            ];
++        }
++
+         if ($count && $count < ($start + 1)) {
+             //the number of entities are now less then the current page so redirect to the last page
+             $lastPage = ($count === 1) ? 1 : (ceil($count / $limit)) ?: 1;
+diff --git a/app/bundles/LeadBundle/Entity/CustomFieldRepositoryTrait.php b/app/bundles/LeadBundle/Entity/CustomFieldRepositoryTrait.php
+index bc2a199b7c..a7e0c3e68c 100644
+--- a/app/bundles/LeadBundle/Entity/CustomFieldRepositoryTrait.php
++++ b/app/bundles/LeadBundle/Entity/CustomFieldRepositoryTrait.php
+@@ -49,19 +49,22 @@ public function getEntitiesWithCustomFields($object, $args, $resultsCallback = n
+         $this->buildWhereClause($dq, $args);
+ 
+         // Distinct is required here to get the correct count when group by is used due to applied filters
+-        $countSelect = ($this->useDistinctCount) ? 'COUNT(DISTINCT('.$this->getTableAlias().'.id))' : 'COUNT('.$this->getTableAlias().'.id)';
+-        $dq->select($countSelect.' as count');
++        $total = 0;
++        if (!empty($args['withTotalCount'])) {
++            $countSelect = ($this->useDistinctCount) ? 'COUNT(DISTINCT('.$this->getTableAlias().'.id))' : 'COUNT('.$this->getTableAlias().'.id)';
++            $dq->select($countSelect.' as count');
++
++            // Advanced search filters may have set a group by and if so, let's remove it for the count.
++            if ($groupBy = $dq->getQueryPart('groupBy')) {
++                $dq->resetQueryPart('groupBy');
++            }
+ 
+-        // Advanced search filters may have set a group by and if so, let's remove it for the count.
+-        if ($groupBy = $dq->getQueryPart('groupBy')) {
+-            $dq->resetQueryPart('groupBy');
++            //get a total count
++            $result = $dq->execute()->fetchAll();
++            $total  = ($result) ? $result[0]['count'] : 0;
+         }
+ 
+-        //get a total count
+-        $result = $dq->execute()->fetchAll();
+-        $total  = ($result) ? $result[0]['count'] : 0;
+-
+-        if (!$total) {
++        if (!$total && !empty($args['withTotalCount'])) {
+             $results = [];
+         } else {
+             if ($groupBy) {
+diff --git a/app/bundles/LeadBundle/Entity/LeadRepository.php b/app/bundles/LeadBundle/Entity/LeadRepository.php
+index 5176ce7403..41617e56ab 100755
+--- a/app/bundles/LeadBundle/Entity/LeadRepository.php
++++ b/app/bundles/LeadBundle/Entity/LeadRepository.php
+@@ -545,16 +545,18 @@ public function getEntitiesOrmQueryBuilder($order)
+     /**
+      * Get contacts for a specific channel entity.
+      *
+-     * @param $args - same as getEntity/getEntities
+-     * @param        $joinTable
+-     * @param        $entityId
+-     * @param array  $filters
+-     * @param string $entityColumnName
+-     * @param array  $additionalJoins  [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
++     * @param array          $args             same as getEntity/getEntities
++     * @param                $joinTable
++     * @param                $entityId
++     * @param array          $filters
++     * @param string         $entityColumnName
++     * @param array          $additionalJoins  [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
++     * @param \DateTime|null $dateFrom
++     * @param \DateTime|null $dateTo
+      *
+      * @return array
+      */
+-    public function getEntityContacts($args, $joinTable, $entityId, $filters = [], $entityColumnName = 'id', array $additionalJoins = null, $contactColumnName = 'lead_id')
++    public function getEntityContacts($args, $joinTable, $entityId, $filters = [], $entityColumnName = 'id', array $additionalJoins = null, $contactColumnName = 'lead_id', \DateTime $dateFrom = null, \DateTime $dateTo = null)
+     {
+         $qb = $this->getEntitiesDbalQueryBuilder();
+ 
+@@ -608,6 +610,12 @@ public function getEntityContacts($args, $joinTable, $entityId, $filters = [], $
+             }
+         }
+ 
++        if ($dateFrom && $dateTo) {
++            $qb->andWhere('entity.date_added BETWEEN FROM_UNIXTIME(:dateFrom) AND FROM_UNIXTIME(:dateTo)')
++                ->setParameter('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT)
++                ->setParameter('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++        }
++
+         $args['qb'] = $qb;
+ 
+         return $this->getEntities($args);

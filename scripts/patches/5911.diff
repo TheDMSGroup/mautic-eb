@@ -1,0 +1,232 @@
+diff --git a/app/bundles/CoreBundle/Form/Type/DynamicContentFilterEntryType.php b/app/bundles/CoreBundle/Form/Type/DynamicContentFilterEntryType.php
+index e1e219258b..e0b295202b 100644
+--- a/app/bundles/CoreBundle/Form/Type/DynamicContentFilterEntryType.php
++++ b/app/bundles/CoreBundle/Form/Type/DynamicContentFilterEntryType.php
+@@ -133,7 +133,7 @@ public function getName()
+     private function filterFieldChoices()
+     {
+         $this->fieldChoices['lead'] = array_filter($this->fieldChoices['lead'], function ($key) {
+-            return !in_array($key, ['company', 'leadlist', 'device_type', 'device_brand', 'device_os', 'lead_email_received', 'tags', 'dnc_bounced', 'dnc_unsubscribed', 'dnc_bounced_sms', 'dnc_unsubscribed_sms', 'hit_url']);
++            return !in_array($key, ['company', 'leadlist', 'campaign', 'device_type', 'device_brand', 'device_os', 'lead_email_received', 'tags', 'dnc_bounced', 'dnc_unsubscribed', 'dnc_bounced_sms', 'dnc_unsubscribed_sms', 'hit_url']);
+         }, ARRAY_FILTER_USE_KEY);
+     }
+ }
+diff --git a/app/bundles/DynamicContentBundle/Views/DynamicContent/form.html.php b/app/bundles/DynamicContentBundle/Views/DynamicContent/form.html.php
+index 93392d00b7..683a1d1d67 100644
+--- a/app/bundles/DynamicContentBundle/Views/DynamicContent/form.html.php
++++ b/app/bundles/DynamicContentBundle/Views/DynamicContent/form.html.php
+@@ -30,6 +30,7 @@
+     'timezones'      => 'timezone-template',
+     'select'         => 'select-template',
+     'lists'          => 'leadlist-template',
++    'campaign'       => 'campaign-template',
+     'deviceTypes'    => 'device_type-template',
+     'deviceBrands'   => 'device_brand-template',
+     'deviceOs'       => 'device_os-template',
+diff --git a/app/bundles/LeadBundle/Assets/js/lead.js b/app/bundles/LeadBundle/Assets/js/lead.js
+index 36153ad51e..e53aa15702 100644
+--- a/app/bundles/LeadBundle/Assets/js/lead.js
++++ b/app/bundles/LeadBundle/Assets/js/lead.js
+@@ -509,7 +509,7 @@ Mautic.addLeadListFilter = function (elId) {
+     var prototype = mQuery('.available-filters').data('prototype');
+     var fieldType = mQuery(filterId).data('field-type');
+     var fieldObject = mQuery(filterId).data('field-object');
+-    var isSpecial = (mQuery.inArray(fieldType, ['leadlist', 'device_type',  'device_brand', 'device_os', 'lead_email_received', 'lead_email_sent', 'tags', 'multiselect', 'boolean', 'select', 'country', 'timezone', 'region', 'stage', 'locale', 'globalcategory']) != -1);
++    var isSpecial = (mQuery.inArray(fieldType, ['leadlist', 'campaign', 'device_type',  'device_brand', 'device_os', 'lead_email_received', 'lead_email_sent', 'tags', 'multiselect', 'boolean', 'select', 'country', 'timezone', 'region', 'stage', 'locale', 'globalcategory']) != -1);
+ 
+     prototype = prototype.replace(/__name__/g, filterNum);
+     prototype = prototype.replace(/__label__/g, label);
+diff --git a/app/bundles/LeadBundle/Config/config.php b/app/bundles/LeadBundle/Config/config.php
+index 816470225e..d69fde3e27 100644
+--- a/app/bundles/LeadBundle/Config/config.php
++++ b/app/bundles/LeadBundle/Config/config.php
+@@ -486,6 +486,7 @@
+                     'mautic.stage.model.stage',
+                     'mautic.category.model.category',
+                     'mautic.helper.user',
++                    'mautic.campaign.model.campaign',
+                 ],
+                 'alias' => 'leadlist',
+             ],
+diff --git a/app/bundles/LeadBundle/Entity/LeadListRepository.php b/app/bundles/LeadBundle/Entity/LeadListRepository.php
+index 8cab66a872..e6b574bad5 100644
+--- a/app/bundles/LeadBundle/Entity/LeadListRepository.php
++++ b/app/bundles/LeadBundle/Entity/LeadListRepository.php
+@@ -1504,6 +1504,7 @@ public function getListFilterExpr($filters, &$parameters, QueryBuilder $q, $isNo
+                     break;
+                 case 'tags':
+                 case 'globalcategory':
++                case 'campaign':
+                 case 'lead_email_received':
+                 case 'lead_email_sent':
+                 case 'device_type':
+@@ -1525,6 +1526,14 @@ public function getListFilterExpr($filters, &$parameters, QueryBuilder $q, $isNo
+                             $table  = 'lead_categories';
+                             $column = 'category_id';
+                             break;
++                        case 'campaign':
++                            $table  = 'campaign_leads';
++                            $column = 'campaign_id';
++
++                            $notRemovedParameter                         = $this->generateRandomParameterName();
++                            $subQueryFilters[$alias.'.manually_removed'] = $notRemovedParameter;
++                            $parameters[$notRemovedParameter]            = 0;
++                            break;
+                         case 'lead_email_received':
+                             $table  = 'email_stats';
+                             $column = 'email_id';
+diff --git a/app/bundles/LeadBundle/Form/Type/FilterTrait.php b/app/bundles/LeadBundle/Form/Type/FilterTrait.php
+index 52e3cddf25..9729b28370 100644
+--- a/app/bundles/LeadBundle/Form/Type/FilterTrait.php
++++ b/app/bundles/LeadBundle/Form/Type/FilterTrait.php
+@@ -85,6 +85,18 @@ public function buildFiltersForm($eventName, FormEvent $event, TranslatorInterfa
+                 $customOptions['choice_translation_domain'] = false;
+                 $type                                       = 'choice';
+                 break;
++            case 'campaign':
++                if (!isset($data['filter'])) {
++                    $data['filter'] = [];
++                } elseif (!is_array($data['filter'])) {
++                    $data['filter'] = [$data['filter']];
++                }
++
++                $customOptions['choices']                   = $options['campaign'];
++                $customOptions['multiple']                  = true;
++                $customOptions['choice_translation_domain'] = false;
++                $type                                       = 'choice';
++                break;
+             case 'lead_email_received':
+                 if (!isset($data['filter'])) {
+                     $data['filter'] = [];
+diff --git a/app/bundles/LeadBundle/Form/Type/FilterType.php b/app/bundles/LeadBundle/Form/Type/FilterType.php
+index 1152a5db3d..28cdf709da 100644
+--- a/app/bundles/LeadBundle/Form/Type/FilterType.php
++++ b/app/bundles/LeadBundle/Form/Type/FilterType.php
+@@ -96,6 +96,7 @@ public function setDefaultOptions(OptionsResolverInterface $resolver)
+                 'regions',
+                 'fields',
+                 'lists',
++                'campaign',
+                 'emails',
+                 'deviceTypes',
+                 'deviceBrands',
+diff --git a/app/bundles/LeadBundle/Form/Type/ListType.php b/app/bundles/LeadBundle/Form/Type/ListType.php
+index 790d5305a0..f2cc65cfe0 100644
+--- a/app/bundles/LeadBundle/Form/Type/ListType.php
++++ b/app/bundles/LeadBundle/Form/Type/ListType.php
+@@ -13,6 +13,7 @@
+ 
+ use DeviceDetector\Parser\Device\DeviceParserAbstract as DeviceParser;
+ use DeviceDetector\Parser\OperatingSystem;
++use Mautic\CampaignBundle\Model\CampaignModel;
+ use Mautic\CategoryBundle\Model\CategoryModel;
+ use Mautic\CoreBundle\Form\EventListener\CleanFormSubscriber;
+ use Mautic\CoreBundle\Form\EventListener\FormExitSubscriber;
+@@ -42,6 +43,7 @@ class ListType extends AbstractType
+     private $countryChoices      = [];
+     private $regionChoices       = [];
+     private $listChoices         = [];
++    private $campaignChoices     = [];
+     private $emailChoices        = [];
+     private $deviceTypesChoices  = [];
+     private $deviceBrandsChoices = [];
+@@ -62,8 +64,9 @@ class ListType extends AbstractType
+      * @param StageModel          $stageModel
+      * @param CategoryModel       $categoryModel
+      * @param UserHelper          $userHelper
++     * @param CampaignModel       $campaignModel
+      */
+-    public function __construct(TranslatorInterface $translator, ListModel $listModel, EmailModel $emailModel, CorePermissions $security, LeadModel $leadModel, StageModel $stageModel, CategoryModel $categoryModel, UserHelper $userHelper)
++    public function __construct(TranslatorInterface $translator, ListModel $listModel, EmailModel $emailModel, CorePermissions $security, LeadModel $leadModel, StageModel $stageModel, CategoryModel $categoryModel, UserHelper $userHelper, CampaignModel $campaignModel)
+     {
+         $this->translator = $translator;
+ 
+@@ -81,6 +84,12 @@ public function __construct(TranslatorInterface $translator, ListModel $listMode
+             $this->listChoices[$list['id']] = $list['name'];
+         }
+ 
++        // Campaigns
++        $campaigns = $campaignModel->getPublishedCampaigns(true);
++        foreach ($campaigns as $campaign) {
++            $this->campaignChoices[$campaign['id']] = $campaign['name'];
++        }
++
+         $viewOther   = $security->isGranted('email:emails:viewother');
+         $currentUser = $userHelper->getUser();
+         $emailRepo   = $emailModel->getRepository();
+@@ -183,6 +192,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+                         'regions'        => $this->regionChoices,
+                         'fields'         => $this->fieldChoices,
+                         'lists'          => $this->listChoices,
++                        'campaign'       => $this->campaignChoices,
+                         'emails'         => $this->emailChoices,
+                         'deviceTypes'    => $this->deviceTypesChoices,
+                         'deviceBrands'   => $this->deviceBrandsChoices,
+@@ -230,6 +240,7 @@ public function buildView(FormView $view, FormInterface $form, array $options)
+         $view->vars['regions']        = $this->regionChoices;
+         $view->vars['timezones']      = $this->timezoneChoices;
+         $view->vars['lists']          = $this->listChoices;
++        $view->vars['campaign']       = $this->campaignChoices;
+         $view->vars['emails']         = $this->emailChoices;
+         $view->vars['deviceTypes']    = $this->deviceTypesChoices;
+         $view->vars['deviceBrands']   = $this->deviceBrandsChoices;
+diff --git a/app/bundles/LeadBundle/Model/ListModel.php b/app/bundles/LeadBundle/Model/ListModel.php
+index e4549bc7c4..e34f627bcc 100644
+--- a/app/bundles/LeadBundle/Model/ListModel.php
++++ b/app/bundles/LeadBundle/Model/ListModel.php
+@@ -300,6 +300,14 @@ public function getChoiceFields()
+                 'operators' => $this->getOperatorsForFieldType('multiselect'),
+                 'object'    => 'lead',
+             ],
++            'campaign' => [
++                'label'      => $this->translator->trans('mautic.lead.list.filter.campaign'),
++                'properties' => [
++                    'type' => 'campaign',
++                ],
++                'operators' => $this->getOperatorsForFieldType('multiselect'),
++                'object'    => 'lead',
++            ],
+             'lead_email_received' => [
+                 'label'      => $this->translator->trans('mautic.lead.list.filter.lead_email_received'),
+                 'properties' => [
+diff --git a/app/bundles/LeadBundle/Services/ContactSegmentFilterDictionary.php b/app/bundles/LeadBundle/Services/ContactSegmentFilterDictionary.php
+index cb374f9eba..e4c7cb6258 100644
+--- a/app/bundles/LeadBundle/Services/ContactSegmentFilterDictionary.php
++++ b/app/bundles/LeadBundle/Services/ContactSegmentFilterDictionary.php
+@@ -218,6 +218,12 @@ public function __construct()
+             'foreign_table' => 'lead_utmtags',
+         ];
+ 
++        $this->translations['campaign'] = [
++            'type'          => ForeignValueFilterQueryBuilder::getServiceId(),
++            'foreign_table' => 'campaign_leads',
++            'field'         => 'campaign_id',
++        ];
++
+         parent::__construct($this->translations);
+     }
+ }
+diff --git a/app/bundles/LeadBundle/Translations/en_US/messages.ini b/app/bundles/LeadBundle/Translations/en_US/messages.ini
+index 7c7292e23e..ec91b9025e 100755
+--- a/app/bundles/LeadBundle/Translations/en_US/messages.ini
++++ b/app/bundles/LeadBundle/Translations/en_US/messages.ini
+@@ -371,6 +371,7 @@ mautic.lead.list.filter.dnc_bounced="Bounced - Email"
+ mautic.lead.list.filter.dnc_unsubscribed="Unsubscribed - Email"
+ mautic.lead.list.filter.last_active="Date Last Active"
+ mautic.lead.list.filter.date_modified="Modified date"
++mautic.lead.list.filter.campaign="Campaign Membership"
+ mautic.lead.list.filter.lists="Segment Membership"
+ mautic.lead.list.filter.lead_email_received="Email Read"
+ mautic.lead.list.filter.lead_email_sent="Email Sent"
+diff --git a/app/bundles/LeadBundle/Views/List/form.html.php b/app/bundles/LeadBundle/Views/List/form.html.php
+index e4f9b5642e..d56ae3ed06 100644
+--- a/app/bundles/LeadBundle/Views/List/form.html.php
++++ b/app/bundles/LeadBundle/Views/List/form.html.php
+@@ -28,6 +28,7 @@
+     'timezones'      => 'timezone-template',
+     'select'         => 'select-template',
+     'lists'          => 'leadlist-template',
++    'campaign'       => 'campaign-template',
+     'deviceTypes'    => 'device_type-template',
+     'deviceBrands'   => 'device_brand-template',
+     'deviceOs'       => 'device_os-template',
