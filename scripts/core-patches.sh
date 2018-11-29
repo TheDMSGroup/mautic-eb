@@ -16,7 +16,7 @@ cd ./mautic
 echo "----------------------------------------------------"
 echo "[Enhancement] Allow filtering contacts by Campaign Membership for segments. #5911"
 echo "https://github.com/mautic/mautic/pull/5911"
-curl -L "https://github.com/mautic/mautic/pull/5911.diff" | git apply -v
+cat "../scripts/patches/5911.diff" | git apply -v
 
 # Needs refactoring before acceptance.
 echo "----------------------------------------------------"
@@ -47,7 +47,7 @@ cat "../scripts/patches/6187.diff" | git apply -v
 echo "----------------------------------------------------"
 echo "Campaign summary statistics (performance boost and date range specificity) #6651"
 echo "https://github.com/mautic/mautic/pull/6651"
-curl -L "https://github.com/mautic/mautic/pull/6651.diff" | git apply -v
+cat "../scripts/patches/6651.diff" | git apply -v
 
 # Should go into 2.15.0 but is not merged yet.
 echo "----------------------------------------------------"
