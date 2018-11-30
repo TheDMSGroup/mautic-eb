@@ -8584,12 +8584,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "637d7c75f71579d3a08bec68ac2e58e4866c3551"
+                "reference": "a188f6d3644689a98d6f8e44b26f4b14564dee4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/637d7c75f71579d3a08bec68ac2e58e4866c3551",
-                "reference": "637d7c75f71579d3a08bec68ac2e58e4866c3551",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/a188f6d3644689a98d6f8e44b26f4b14564dee4c",
+                "reference": "a188f6d3644689a98d6f8e44b26f4b14564dee4c",
                 "shasum": ""
             },
             "require": {
@@ -8619,7 +8619,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-18T16:42:24+00:00"
+            "time": "2018-11-30T06:22:44+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8627,12 +8627,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "1feb9321ad507ad2701e7e1874290f6f933cd907"
+                "reference": "9cb902c306998e9e06b79e24a53196708e0439f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/1feb9321ad507ad2701e7e1874290f6f933cd907",
-                "reference": "1feb9321ad507ad2701e7e1874290f6f933cd907",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/9cb902c306998e9e06b79e24a53196708e0439f3",
+                "reference": "9cb902c306998e9e06b79e24a53196708e0439f3",
                 "shasum": ""
             },
             "require": {
@@ -8656,7 +8656,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-30T04:44:41+00:00"
+            "time": "2018-11-27T18:54:06+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-source-bundle",
@@ -8664,12 +8664,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "5d98d63070ddcd2ae55bd8610eb24407971729f8"
+                "reference": "e5ad03d52fcd15a4d252f2407b3f52c01dbf1246"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/5d98d63070ddcd2ae55bd8610eb24407971729f8",
-                "reference": "5d98d63070ddcd2ae55bd8610eb24407971729f8",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/e5ad03d52fcd15a4d252f2407b3f52c01dbf1246",
+                "reference": "e5ad03d52fcd15a4d252f2407b3f52c01dbf1246",
                 "shasum": ""
             },
             "require": {
@@ -8693,7 +8693,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T19:33:08+00:00"
+            "time": "2018-11-29T18:06:01+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
@@ -8701,12 +8701,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
-                "reference": "39876a88a158e62916f716cfa49ed8663293752e"
+                "reference": "75e0558192f478127d4080099042eff1e0297557"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/39876a88a158e62916f716cfa49ed8663293752e",
-                "reference": "39876a88a158e62916f716cfa49ed8663293752e",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/75e0558192f478127d4080099042eff1e0297557",
+                "reference": "75e0558192f478127d4080099042eff1e0297557",
                 "shasum": ""
             },
             "require": {
@@ -8730,7 +8730,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-31T13:00:33+00:00"
+            "time": "2018-11-27T17:35:44+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -8738,13 +8738,13 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
-                "reference": "538863d68f3f434a03644300bcab7526a2abc53f"
+                "reference": "master"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-07-03T17:04:35+00:00"
+            "time": "2018-10-26T18:40:57+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
@@ -8752,12 +8752,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "6053414b659e93fabb7a9c8659a3ea45bb789081"
+                "reference": "144391007de0af2fb679f064e97f76d74283b649"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/6053414b659e93fabb7a9c8659a3ea45bb789081",
-                "reference": "6053414b659e93fabb7a9c8659a3ea45bb789081",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/144391007de0af2fb679f064e97f76d74283b649",
+                "reference": "144391007de0af2fb679f064e97f76d74283b649",
                 "shasum": ""
             },
             "require": {
@@ -8791,7 +8791,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T15:45:52+00:00"
+            "time": "2018-11-14T14:12:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -8799,12 +8799,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "34a365cd67da2f4578c060863b6f8d877b79d074"
+                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/34a365cd67da2f4578c060863b6f8d877b79d074",
-                "reference": "34a365cd67da2f4578c060863b6f8d877b79d074",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
+                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
                 "shasum": ""
             },
             "require": {
@@ -8836,7 +8836,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-09T18:49:57+00:00"
+            "time": "2018-11-28T14:59:34+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -8881,12 +8881,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
-                "reference": "edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3"
+                "reference": "11246df27e8440cb030f9ff9ba1e0bc35b4f21b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3",
-                "reference": "edd0566aa54c3ebdb7db916236bb4cf6dffbd5b3",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/11246df27e8440cb030f9ff9ba1e0bc35b4f21b6",
+                "reference": "11246df27e8440cb030f9ff9ba1e0bc35b4f21b6",
                 "shasum": ""
             },
             "require": {
@@ -8910,7 +8910,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-10-29T17:34:16+00:00"
+            "time": "2018-11-12T14:19:41+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
