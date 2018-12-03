@@ -150,6 +150,17 @@ else
     cd -
 fi
 
+if [ ! -d "./plugins/MauticMediaBundle/.git" ]
+then
+    rm -rf ./plugins/MauticMediaBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-media.git ./plugins/MauticMediaBundle
+else
+    cd ./plugins/MauticMediaBundle
+    git checkout master
+    git pull
+    cd -
+fi
+
 if [ ! -d "./mautic_custom/.git" ]
 then
     rm -rf ./mautic_custom
