@@ -11,7 +11,8 @@
       "thedmsgroup/mautic-api-services-bundle": "dev-master",
       "thedmsgroup/mautic-campaign-watch-bundle": "dev-master",
       "thedmsgroup/mautic-dashboard-warm-bundle": "dev-master",
-      "thedmsgroup/mautic-segment-extras-bundle": "dev-master"
+      "thedmsgroup/mautic-segment-extras-bundle": "dev-master",
+      "thedmsgroup/mautic-media-bundle": "dev-master"
     },
     "config": {
         "preferred-install": {
