@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "ce40c5e79c01b2ce0de8cc61bbe624f8",
@@ -2889,16 +2889,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.47",
+            "version": "1.0.49",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "a11e4a75f256bdacf99d20780ce42d3b8272975c"
+                "reference": "a63cc83d8a931b271be45148fa39ba7156782ffd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a11e4a75f256bdacf99d20780ce42d3b8272975c",
-                "reference": "a11e4a75f256bdacf99d20780ce42d3b8272975c",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a63cc83d8a931b271be45148fa39ba7156782ffd",
+                "reference": "a63cc83d8a931b271be45148fa39ba7156782ffd",
                 "shasum": ""
             },
             "require": {
@@ -2969,7 +2969,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2018-09-14T15:30:29+00:00"
+            "time": "2018-11-23T23:41:29+00:00"
         },
         {
             "name": "league/flysystem-aws-s3-v2",
@@ -8505,451 +8505,6 @@
             "time": "2018-01-03T07:36:31+00:00"
         },
         {
-            "name": "thedmsgroup/mautic-api-services-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-api-services.git",
-                "reference": "7cebb2338946c353386841d5e96d0f499998b297"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-api-services/zipball/7cebb2338946c353386841d5e96d0f499998b297",
-                "reference": "7cebb2338946c353386841d5e96d0f499998b297",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Scott Shipman",
-                    "email": "scottshipmang@gmail.com"
-                }
-            ],
-            "description": "Extends Mautic API for configurable service calls.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-08-14T12:58:15+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-campaign-watch-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-campaign-watch.git",
-                "reference": "8b2e47ee7f50031ff30809baba59e72df5cbf8be"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-campaign-watch/zipball/8b2e47ee7f50031ff30809baba59e72df5cbf8be",
-                "reference": "8b2e47ee7f50031ff30809baba59e72df5cbf8be",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Visual improvements for campaigns.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-10-11T15:39:19+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-contact-client-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "a188f6d3644689a98d6f8e44b26f4b14564dee4c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/a188f6d3644689a98d6f8e44b26f4b14564dee4c",
-                "reference": "a188f6d3644689a98d6f8e44b26f4b14564dee4c",
-                "shasum": ""
-            },
-            "require": {
-                "league/flysystem": "^1.0",
-                "league/flysystem-aws-s3-v2": "^1.0",
-                "league/flysystem-dropbox": "^1.0",
-                "league/flysystem-sftp": "^1.0",
-                "mautic/composer-plugin": "^1.0",
-                "mustache/mustache": "^2.12",
-                "namshi/cuzzle": "^2.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Create custom integrations without writing code.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-30T06:22:44+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-contact-ledger-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
-                "reference": "9cb902c306998e9e06b79e24a53196708e0439f3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/9cb902c306998e9e06b79e24a53196708e0439f3",
-                "reference": "9cb902c306998e9e06b79e24a53196708e0439f3",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Nicholai Bush",
-                    "email": "nicholaibush@yahoo.com"
-                }
-            ],
-            "description": "Historical accounting for contacts",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-27T18:54:06+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-contact-source-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "e5ad03d52fcd15a4d252f2407b3f52c01dbf1246"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/e5ad03d52fcd15a4d252f2407b3f52c01dbf1246",
-                "reference": "e5ad03d52fcd15a4d252f2407b3f52c01dbf1246",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Creates API endpoints for receiving contacts from external sources.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-29T18:06:01+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-dashboard-warm-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
-                "reference": "75e0558192f478127d4080099042eff1e0297557"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/75e0558192f478127d4080099042eff1e0297557",
-                "reference": "75e0558192f478127d4080099042eff1e0297557",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Improves the performance of the dashboard by sharing/extending/warming caches.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-27T17:35:44+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-eb-custom",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
-                "reference": "master"
-            },
-            "require": {
-                "mnsami/composer-custom-directory-installer": "1.1.*"
-            },
-            "type": "library",
-            "time": "2018-10-26T18:40:57+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-enhancer-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "144391007de0af2fb679f064e97f76d74283b649"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/144391007de0af2fb679f064e97f76d74283b649",
-                "reference": "144391007de0af2fb679f064e97f76d74283b649",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-dom": "*",
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "league/flysystem": "^1.0",
-                "league/flysystem-sftp": "^1.0",
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Nicholai Bush",
-                    "email": "nicholaibush@yahoo.com"
-                },
-                {
-                    "name": "Scott Shipman",
-                    "email": "K.scott.shipman@gmail.com"
-                }
-            ],
-            "description": "Various contact enhancer integrations for Mautic.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-14T14:12:16+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-extended-field-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
-                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                },
-                {
-                    "name": "Nicholai Bush",
-                    "email": "nicholaibush@yahoo.com"
-                },
-                {
-                    "name": "Scott Shipman",
-                    "email": "K.scott.shipman@gmail.com"
-                }
-            ],
-            "description": "Extends custom fields for scalability and HIPAA/PCI compliance.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-28T14:59:34+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-health-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-health.git",
-                "reference": "b5a861427dfd89262d1078e348212c286e417596"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/b5a861427dfd89262d1078e348212c286e417596",
-                "reference": "b5a861427dfd89262d1078e348212c286e417596",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Checks the health of the Mautic instance.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-10-04T19:14:14+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-segment-extras-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
-                "reference": "11246df27e8440cb030f9ff9ba1e0bc35b4f21b6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/11246df27e8440cb030f9ff9ba1e0bc35b4f21b6",
-                "reference": "11246df27e8440cb030f9ff9ba1e0bc35b4f21b6",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Scott Shipman",
-                    "email": "scottshipmang@gmail.com"
-                }
-            ],
-            "description": "Extends Mautic Lead Bundle's Lead List (Segment) functionality.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-11-12T14:19:41+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-usstate-normalizer.git",
-                "reference": "fe46346ed597146ac9aadb86dfadbe115bbef2d6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-usstate-normalizer/zipball/fe46346ed597146ac9aadb86dfadbe115bbef2d6",
-                "reference": "fe46346ed597146ac9aadb86dfadbe115bbef2d6",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Nicholai Bush",
-                    "email": "nicholaibush@yahoo.com"
-                }
-            ],
-            "description": "Normalize US States to their abbreviations",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-07-26T19:02:53+00:00"
-        },
-        {
             "name": "twig/twig",
             "version": "v1.35.0",
             "source": {
@@ -11427,6 +10982,451 @@
             "time": "2018-01-07T17:01:19+00:00"
         },
         {
+            "name": "thedmsgroup/mautic-api-services-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-api-services.git",
+                "reference": "7cebb2338946c353386841d5e96d0f499998b297"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-api-services/zipball/7cebb2338946c353386841d5e96d0f499998b297",
+                "reference": "7cebb2338946c353386841d5e96d0f499998b297",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Scott Shipman",
+                    "email": "scottshipmang@gmail.com"
+                }
+            ],
+            "description": "Extends Mautic API for configurable service calls.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-08-14T12:58:15+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-campaign-watch-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-campaign-watch.git",
+                "reference": "8b2e47ee7f50031ff30809baba59e72df5cbf8be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-campaign-watch/zipball/8b2e47ee7f50031ff30809baba59e72df5cbf8be",
+                "reference": "8b2e47ee7f50031ff30809baba59e72df5cbf8be",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Visual improvements for campaigns.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-10-11T15:39:19+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-contact-client-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
+                "reference": "a188f6d3644689a98d6f8e44b26f4b14564dee4c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/a188f6d3644689a98d6f8e44b26f4b14564dee4c",
+                "reference": "a188f6d3644689a98d6f8e44b26f4b14564dee4c",
+                "shasum": ""
+            },
+            "require": {
+                "league/flysystem": "^1.0",
+                "league/flysystem-aws-s3-v2": "^1.0",
+                "league/flysystem-dropbox": "^1.0",
+                "league/flysystem-sftp": "^1.0",
+                "mautic/composer-plugin": "^1.0",
+                "mustache/mustache": "^2.12",
+                "namshi/cuzzle": "^2.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Create custom integrations without writing code.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-30T06:22:44+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-contact-ledger-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-contact-ledger.git",
+                "reference": "9cb902c306998e9e06b79e24a53196708e0439f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-ledger/zipball/9cb902c306998e9e06b79e24a53196708e0439f3",
+                "reference": "9cb902c306998e9e06b79e24a53196708e0439f3",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Nicholai Bush",
+                    "email": "nicholaibush@yahoo.com"
+                }
+            ],
+            "description": "Historical accounting for contacts",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-27T18:54:06+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-contact-source-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
+                "reference": "e5ad03d52fcd15a4d252f2407b3f52c01dbf1246"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/e5ad03d52fcd15a4d252f2407b3f52c01dbf1246",
+                "reference": "e5ad03d52fcd15a4d252f2407b3f52c01dbf1246",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Creates API endpoints for receiving contacts from external sources.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-29T18:06:01+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-dashboard-warm-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-dashboard-warm.git",
+                "reference": "75e0558192f478127d4080099042eff1e0297557"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dashboard-warm/zipball/75e0558192f478127d4080099042eff1e0297557",
+                "reference": "75e0558192f478127d4080099042eff1e0297557",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Improves the performance of the dashboard by sharing/extending/warming caches.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-27T17:35:44+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-eb-custom",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
+                "reference": "master"
+            },
+            "require": {
+                "mnsami/composer-custom-directory-installer": "1.1.*"
+            },
+            "type": "library",
+            "time": "2018-11-26T17:16:29+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-enhancer-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
+                "reference": "144391007de0af2fb679f064e97f76d74283b649"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/144391007de0af2fb679f064e97f76d74283b649",
+                "reference": "144391007de0af2fb679f064e97f76d74283b649",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-dom": "*",
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "league/flysystem": "^1.0",
+                "league/flysystem-sftp": "^1.0",
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Nicholai Bush",
+                    "email": "nicholaibush@yahoo.com"
+                },
+                {
+                    "name": "Scott Shipman",
+                    "email": "K.scott.shipman@gmail.com"
+                }
+            ],
+            "description": "Various contact enhancer integrations for Mautic.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-14T14:12:16+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-extended-field-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
+                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
+                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                },
+                {
+                    "name": "Nicholai Bush",
+                    "email": "nicholaibush@yahoo.com"
+                },
+                {
+                    "name": "Scott Shipman",
+                    "email": "K.scott.shipman@gmail.com"
+                }
+            ],
+            "description": "Extends custom fields for scalability and HIPAA/PCI compliance.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-28T14:59:34+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-health-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-health.git",
+                "reference": "b5a861427dfd89262d1078e348212c286e417596"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-health/zipball/b5a861427dfd89262d1078e348212c286e417596",
+                "reference": "b5a861427dfd89262d1078e348212c286e417596",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Heath Dutton",
+                    "email": "heathdutton@gmail.com"
+                }
+            ],
+            "description": "Checks the health of the Mautic instance.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-10-04T19:14:14+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-segment-extras-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
+                "reference": "11246df27e8440cb030f9ff9ba1e0bc35b4f21b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/11246df27e8440cb030f9ff9ba1e0bc35b4f21b6",
+                "reference": "11246df27e8440cb030f9ff9ba1e0bc35b4f21b6",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Scott Shipman",
+                    "email": "scottshipmang@gmail.com"
+                }
+            ],
+            "description": "Extends Mautic Lead Bundle's Lead List (Segment) functionality.",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-11-12T14:19:41+00:00"
+        },
+        {
+            "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-usstate-normalizer.git",
+                "reference": "fe46346ed597146ac9aadb86dfadbe115bbef2d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-usstate-normalizer/zipball/fe46346ed597146ac9aadb86dfadbe115bbef2d6",
+                "reference": "fe46346ed597146ac9aadb86dfadbe115bbef2d6",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Nicholai Bush",
+                    "email": "nicholaibush@yahoo.com"
+                }
+            ],
+            "description": "Normalize US States to their abbreviations",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2018-07-26T19:02:53+00:00"
+        },
+        {
             "name": "webfactory/exceptions-bundle",
             "version": "4.3.0",
             "source": {
@@ -11529,19 +11529,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "mautic/core": 20,
-        "willdurand/oauth-server-bundle": 20,
-        "thedmsgroup/mautic-eb-custom": 20,
-        "thedmsgroup/mautic-extended-field-bundle": 20,
-        "thedmsgroup/mautic-contact-client-bundle": 20,
-        "thedmsgroup/mautic-contact-ledger-bundle": 20,
-        "thedmsgroup/mautic-contact-source-bundle": 20,
-        "thedmsgroup/mautic-enhancer-bundle": 20,
-        "thedmsgroup/mautic-usstate-normalizer-bundle": 20,
-        "thedmsgroup/mautic-health-bundle": 20,
-        "thedmsgroup/mautic-api-services-bundle": 20,
-        "thedmsgroup/mautic-campaign-watch-bundle": 20,
-        "thedmsgroup/mautic-dashboard-warm-bundle": 20,
-        "thedmsgroup/mautic-segment-extras-bundle": 20
+        "willdurand/oauth-server-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
