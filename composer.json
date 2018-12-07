@@ -4,7 +4,8 @@
   "description": "Mautic Open Source Distribution - Modified for scalability",
   "license": "GPL-3.0-only",
   "require": {
-    "mautic/core": "dev-master#d27414a2044fed72ecbb39d88ed6a8d80b4fe9eb"
+    "mautic/core": "dev-master#87877de3dd6fdcfdf9e5a82a30c819da34d9c855",
+    "aws/aws-sdk-php": "3.36"
   },
   "repositories": [
     {
