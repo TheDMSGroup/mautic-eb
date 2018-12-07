@@ -110,3 +110,9 @@ echo "----------------------------------------------------"
 echo "Add a \"Created By\" column to the Imports list. #6929"
 echo "https://github.com/mautic/mautic/pull/6929"
 cat "../scripts/patches/6929.diff" | git apply -v
+
+# Import Enhancements
+echo "----------------------------------------------------"
+echo "Lead Import Enhancements"
+echo "https://github.com/mautic/mautic/pull/6962"
+cat "../scripts/patches/6962.diff" | git apply -v
