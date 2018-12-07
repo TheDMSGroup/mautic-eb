@@ -8,11 +8,8 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
-if [ "upgrade" != "$1" ]
-then
-    echo ; echo "Pulling mautic-eb"
-    git pull
-fi
+echo ; echo "Pulling mautic-eb"
+git pull
 
 echo ; echo "Cleaning up the build space."
 rm -rf ./mautic ./bin ./vendor ./plugins ./mautic_custom
@@ -20,12 +17,7 @@ mkdir -p ./plugins
 touch ./plugins/.gitkeep
 
 echo ; echo "Setting composer.lock and composer.custom files from the dist copies."
-if [ "upgrade" = "$1" ]
-then
-    cp composer.lock composer.lock.dev
-else
-    cp composer.lock.dev composer.lock
-fi
+cp composer.lock.dev composer.lock
 cp composer.custom.dev composer.custom
 
 echo ; echo "Custom build."
