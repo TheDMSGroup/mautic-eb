@@ -357,7 +357,7 @@ index 9e71510324..62c9d6ae9c
 diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 old mode 100644
 new mode 100755
-index 54cd3b2196..1e1dafb737
+index 54cd3b2196..ead4e3800b
 --- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 @@ -12,6 +12,7 @@
@@ -436,7 +436,7 @@ index 54cd3b2196..1e1dafb737
 +     */
 +    public function getOldestTriggeredDate()
 +    {
-+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection()->createQueryBuilder();
 +        $qb->select('log.date_triggered')
 +            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
 +            ->orderBy('log.date_triggered', 'ASC')
@@ -450,6 +450,15 @@ index 54cd3b2196..1e1dafb737
      /**
       * @param int $contactId
       * @param int $campaignId
+@@ -534,7 +578,7 @@ public function getDatesExecuted($eventId, array $contactIds)
+      */
+     public function hasBeenInCampaignRotation($contactId, $campaignId, $rotation)
+     {
+-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection()->createQueryBuilder();
+         $qb->select('log.rotation')
+             ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
+             ->where(
 diff --git a/app/bundles/CampaignBundle/Entity/Summary.php b/app/bundles/CampaignBundle/Entity/Summary.php
 new file mode 100644
 index 0000000000..a508f5a75d
