@@ -645,16 +645,3 @@ index 417c4892fa..507f59fbf2 100755
  mautic.config.tab.leadconfig="Contact Settings"
  mautic.config.tab.importconfig="Import Settings"
  mautic.lead.import.database.exception="There was a database error: %message%. The import was set to delayed state and will be imported later."
-diff --git a/app/config/config_prod.php b/app/config/config_prod.php
-index b651e891d4..da23325b2f 100644
---- a/app/config/config_prod.php
-+++ b/app/config/config_prod.php
-@@ -62,7 +62,7 @@
- 
- //Twig Configuration
- $container->loadFromExtension('twig', [
--    'cache'       => '%mautic.tmp_path%/%kernel.environment%/twig',
-+    'cache'       => '%mautic.cache_path%/%kernel.environment%/twig',
-     'auto_reload' => true,
- ]);
- 
