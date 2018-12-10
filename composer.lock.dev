@@ -9125,12 +9125,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f"
+                "reference": "a4ba4a84ca0c5fdbcbfeb7daec29dbc559d1de50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
-                "reference": "e8d1c7d090bc0b3c051f5ae062813053f2a4fd6f",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/a4ba4a84ca0c5fdbcbfeb7daec29dbc559d1de50",
+                "reference": "a4ba4a84ca0c5fdbcbfeb7daec29dbc559d1de50",
                 "shasum": ""
             },
             "require": {
@@ -9162,7 +9162,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-11-28T14:59:34+00:00"
+            "time": "2018-12-10T16:12:59+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -11958,7 +11958,11 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.19 <7.3"
+        "php": ">=5.6.19 <7.3",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*"
     },
     "platform-dev": []
 }
