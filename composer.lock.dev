@@ -9128,12 +9128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "84e8bcb13028aff08ca7a42c05bae1d0a8b3f586"
+                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/84e8bcb13028aff08ca7a42c05bae1d0a8b3f586",
-                "reference": "84e8bcb13028aff08ca7a42c05bae1d0a8b3f586",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
+                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
                 "shasum": ""
             },
             "require": {
@@ -9165,7 +9165,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T14:34:34+00:00"
+            "time": "2018-12-11T20:41:41+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -9210,12 +9210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "fae8b9c2fb8d271eb685a0a86768ff0c54250c9d"
+                "reference": "8ba36673769cb5823ff2ac24682ba84dd5ee18d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/fae8b9c2fb8d271eb685a0a86768ff0c54250c9d",
-                "reference": "fae8b9c2fb8d271eb685a0a86768ff0c54250c9d",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/8ba36673769cb5823ff2ac24682ba84dd5ee18d1",
+                "reference": "8ba36673769cb5823ff2ac24682ba84dd5ee18d1",
                 "shasum": ""
             },
             "require": {
@@ -9239,7 +9239,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T17:50:03+00:00"
+            "time": "2018-12-11T19:26:44+00:00"
         },
         {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
@@ -11961,7 +11961,11 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.19 <7.3"
+        "php": ">=5.6.19 <7.3",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*"
     },
     "platform-dev": []
 }
