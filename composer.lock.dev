@@ -9210,12 +9210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "8ba36673769cb5823ff2ac24682ba84dd5ee18d1"
+                "reference": "f10a41dc3db7552f8f90371f0edd74abf0bef7a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/8ba36673769cb5823ff2ac24682ba84dd5ee18d1",
-                "reference": "8ba36673769cb5823ff2ac24682ba84dd5ee18d1",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/f10a41dc3db7552f8f90371f0edd74abf0bef7a3",
+                "reference": "f10a41dc3db7552f8f90371f0edd74abf0bef7a3",
                 "shasum": ""
             },
             "require": {
@@ -9239,7 +9239,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T19:26:44+00:00"
+            "time": "2018-12-11T20:53:40+00:00"
         },
         {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
