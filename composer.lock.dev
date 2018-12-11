@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2aca77a16e5bebf6c45f3d642ed835f1",
+    "content-hash": "7e7b2413b9cdb3e1f5f03e60f995ddd7",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2152,20 +2152,23 @@
         },
         {
             "name": "jbroadway/urlify",
-            "version": "1.1.1-stable",
+            "version": "1.1.2-stable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jbroadway/urlify.git",
-                "reference": "e8d6950edc484c29f1a499ca6710e928e219ea43"
+                "reference": "78118277ba31189fef18323bb78e9c1b89254dcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jbroadway/urlify/zipball/e8d6950edc484c29f1a499ca6710e928e219ea43",
-                "reference": "e8d6950edc484c29f1a499ca6710e928e219ea43",
+                "url": "https://api.github.com/repos/jbroadway/urlify/zipball/78118277ba31189fef18323bb78e9c1b89254dcc",
+                "reference": "78118277ba31189fef18323bb78e9c1b89254dcc",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.36 || ^5.7 || ^6.5"
             },
             "type": "library",
             "extra": {
@@ -2202,7 +2205,7 @@
                 "url",
                 "urlify"
             ],
-            "time": "2018-08-28T14:21:56+00:00"
+            "time": "2018-12-08T15:51:20+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -3408,14 +3411,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "87877de3dd6fdcfdf9e5a82a30c819da34d9c855"
+                "reference": "f6aa213482047108968ed9766a2eda7c8e94d615"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-12-05T16:20:08+00:00"
+            "time": "2018-12-05T12:56:48+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -5609,16 +5612,16 @@
         },
         {
             "name": "sensiolabs/security-checker",
-            "version": "v5.0.1",
+            "version": "v5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/security-checker.git",
-                "reference": "9ea927417c949039a9cfb0d92af76fd1c538d9e9"
+                "reference": "728f9fb0fe815003b3bcfd331d33106c0d8a6b1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/9ea927417c949039a9cfb0d92af76fd1c538d9e9",
-                "reference": "9ea927417c949039a9cfb0d92af76fd1c538d9e9",
+                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/728f9fb0fe815003b3bcfd331d33106c0d8a6b1e",
+                "reference": "728f9fb0fe815003b3bcfd331d33106c0d8a6b1e",
                 "shasum": ""
             },
             "require": {
@@ -5651,7 +5654,7 @@
                 }
             ],
             "description": "A security checker for your composer.lock",
-            "time": "2018-10-16T10:30:44+00:00"
+            "time": "2018-12-10T06:08:43+00:00"
         },
         {
             "name": "simshaun/recurr",
@@ -9207,12 +9210,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "e84f30665fc70f2a4fe606dfdb9137f599308d17"
+                "reference": "fae8b9c2fb8d271eb685a0a86768ff0c54250c9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/e84f30665fc70f2a4fe606dfdb9137f599308d17",
-                "reference": "e84f30665fc70f2a4fe606dfdb9137f599308d17",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/fae8b9c2fb8d271eb685a0a86768ff0c54250c9d",
+                "reference": "fae8b9c2fb8d271eb685a0a86768ff0c54250c9d",
                 "shasum": ""
             },
             "require": {
@@ -9236,7 +9239,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-07T17:49:19+00:00"
+            "time": "2018-12-11T17:50:03+00:00"
         },
         {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
@@ -11958,11 +11961,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.19 <7.3",
-        "ext-curl": "*",
-        "ext-dom": "*",
-        "ext-json": "*",
-        "ext-simplexml": "*"
+        "php": ">=5.6.19 <7.3"
     },
     "platform-dev": []
 }
