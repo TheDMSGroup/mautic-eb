@@ -127,10 +127,10 @@ index 0000000000..90d643486d
 +    }
 +}
 diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
-index 2b8b0bf4f8..382d502c9b 100644
+index b8edbfb440..7590f2f00f 100644
 --- a/app/bundles/CampaignBundle/Config/config.php
 +++ b/app/bundles/CampaignBundle/Config/config.php
-@@ -270,6 +270,9 @@
+@@ -275,6 +275,9 @@
                      'mautic.helper.ip_lookup',
                  ],
              ],
@@ -140,7 +140,7 @@ index 2b8b0bf4f8..382d502c9b 100644
          ],
          'repositories' => [
              'mautic.campaign.repository.campaign' => [
-@@ -300,6 +303,13 @@
+@@ -305,6 +308,13 @@
                      \Mautic\CampaignBundle\Entity\LeadEventLog::class,
                  ],
              ],
@@ -154,7 +154,7 @@ index 2b8b0bf4f8..382d502c9b 100644
          ],
          'execution'    => [
              'mautic.campaign.contact_finder.kickoff'  => [
-@@ -356,6 +366,7 @@
+@@ -361,6 +371,7 @@
                      'mautic.tracker.contact',
                      'mautic.campaign.repository.lead_event_log',
                      'mautic.campaign.repository.lead',
@@ -162,7 +162,7 @@ index 2b8b0bf4f8..382d502c9b 100644
                  ],
              ],
              'mautic.campaign.event_collector' => [
-@@ -591,9 +602,20 @@
+@@ -598,9 +609,20 @@
                  ],
                  'tag' => 'console.command',
              ],
@@ -186,7 +186,7 @@ index 2b8b0bf4f8..382d502c9b 100644
 diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
 old mode 100644
 new mode 100755
-index 0c9fc82a63..9777c5eb66
+index f3e2ddd730..3aedde4f96
 --- a/app/bundles/CampaignBundle/Controller/CampaignController.php
 +++ b/app/bundles/CampaignBundle/Controller/CampaignController.php
 @@ -14,6 +14,7 @@
@@ -234,7 +234,7 @@ index 0c9fc82a63..9777c5eb66
          );
      }
  
-@@ -652,12 +665,25 @@ protected function getViewArguments(array $args, $action)
+@@ -654,12 +667,25 @@ protected function getViewArguments(array $args, $action)
                  $dateRangeValues = $this->request->get('daterange', []);
                  $action          = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
                  $dateRangeForm   = $this->get('form.factory')->create('daterange', $dateRangeValues, ['action' => $action]);
@@ -266,7 +266,7 @@ index 0c9fc82a63..9777c5eb66
                  $sortedEvents      = [
                      'decision'  => [],
                      'action'    => [],
-@@ -716,6 +742,9 @@ protected function getViewArguments(array $args, $action)
+@@ -718,6 +744,9 @@ protected function getViewArguments(array $args, $action)
                                  'objectId'   => $entity->getId(),
                                  'page'       => $this->get('session')->get('mautic.campaign.contact.page', 1),
                                  'ignoreAjax' => true,
@@ -279,7 +279,7 @@ index 0c9fc82a63..9777c5eb66
 diff --git a/app/bundles/CampaignBundle/Entity/CampaignRepository.php b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 old mode 100644
 new mode 100755
-index 589253a618..18988afc45
+index 9e71510324..62c9d6ae9c
 --- a/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 @@ -11,6 +11,7 @@
@@ -290,7 +290,7 @@ index 589253a618..18988afc45
  use Doctrine\DBAL\Types\Type;
  use Mautic\CampaignBundle\Entity\Result\CountResult;
  use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
-@@ -441,13 +442,17 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
+@@ -452,13 +453,17 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
      /**
       * Get a count of leads that belong to the campaign.
       *
@@ -310,9 +310,9 @@ index 589253a618..18988afc45
 -    public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [])
 +    public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], \DateTime $dateFrom = null, \DateTime $dateTo = null)
      {
-         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
+         $q = $this->getSlaveConnection()->createQueryBuilder();
  
-@@ -467,6 +472,12 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
+@@ -478,6 +483,12 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
              );
          }
  
@@ -323,9 +323,9 @@ index 589253a618..18988afc45
 +        }
 +
          if (count($pendingEvents) > 0) {
-             $sq = $this->getEntityManager()->getConnection()->createQueryBuilder();
+             $sq = $this->getSlaveConnection()->createQueryBuilder();
              $sq->select('null')
-@@ -478,12 +489,27 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
+@@ -489,12 +500,27 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
                      )
                  );
  
@@ -357,7 +357,7 @@ index 589253a618..18988afc45
 diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 old mode 100644
 new mode 100755
-index c9282494b1..b8ca565906
+index 54cd3b2196..ead4e3800b
 --- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 @@ -12,6 +12,7 @@
@@ -368,7 +368,7 @@ index c9282494b1..b8ca565906
  use Doctrine\DBAL\Types\Type;
  use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
  use Mautic\CoreBundle\Entity\CommonRepository;
-@@ -212,12 +213,17 @@ public function getUpcomingEvents(array $options = null)
+@@ -213,12 +214,17 @@ public function getUpcomingEvents(array $options = null)
      }
  
      /**
@@ -387,9 +387,9 @@ index c9282494b1..b8ca565906
 -    public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true)
 +    public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $excludeNegative = true, \DateTime $dateFrom = null, \DateTime $dateTo = null)
      {
-         $q = $this->_em->getConnection()->createQueryBuilder()
+         $q = $this->getSlaveConnection()->createQueryBuilder()
                         ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'o')
-@@ -259,6 +265,11 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
+@@ -260,6 +266,11 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
              ->where(
                  $failedSq->expr()->eq('fe.log_id', 'o.id')
              );
@@ -401,7 +401,7 @@ index c9282494b1..b8ca565906
          $expr->add(
              sprintf('NOT EXISTS (%s)', $failedSq->getSQL())
          );
-@@ -267,7 +278,22 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
+@@ -268,7 +279,22 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
            ->setParameter('false', false, 'boolean')
            ->groupBy($groupBy);
  
@@ -425,7 +425,7 @@ index c9282494b1..b8ca565906
  
          $return = [];
  
-@@ -507,6 +533,24 @@ public function getDatesExecuted($eventId, array $contactIds)
+@@ -525,6 +551,24 @@ public function getDatesExecuted($eventId, array $contactIds)
          return $dates;
      }
  
@@ -436,7 +436,7 @@ index c9282494b1..b8ca565906
 +     */
 +    public function getOldestTriggeredDate()
 +    {
-+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection()->createQueryBuilder();
 +        $qb->select('log.date_triggered')
 +            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
 +            ->orderBy('log.date_triggered', 'ASC')
@@ -450,6 +450,15 @@ index c9282494b1..b8ca565906
      /**
       * @param int $contactId
       * @param int $campaignId
+@@ -534,7 +578,7 @@ public function getDatesExecuted($eventId, array $contactIds)
+      */
+     public function hasBeenInCampaignRotation($contactId, $campaignId, $rotation)
+     {
+-        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb = $this->getSlaveConnection()->createQueryBuilder();
+         $qb->select('log.rotation')
+             ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
+             ->where(
 diff --git a/app/bundles/CampaignBundle/Entity/Summary.php b/app/bundles/CampaignBundle/Entity/Summary.php
 new file mode 100644
 index 0000000000..a508f5a75d
@@ -1223,10 +1232,10 @@ index cf3a415f78..260093f9a2 100644
      }
  }
 diff --git a/app/bundles/CampaignBundle/Translations/en_US/messages.ini b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
-index adcf2a7ac0..c9763a337a 100644
+index 88324607b2..6a36c8b715 100644
 --- a/app/bundles/CampaignBundle/Translations/en_US/messages.ini
 +++ b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
-@@ -106,6 +106,7 @@ mautic.campaign.rebuild.not_found="Campaign #%id% does not exist"
+@@ -110,6 +110,7 @@ mautic.campaign.rebuild.not_found="Campaign #%id% does not exist"
  mautic.campaign.rebuild.to_be_added="%leads% total contact(s) to be added in batches of %batch%"
  mautic.campaign.rebuild.to_be_removed="%leads% total contact(s) to be removed in batches of %batch%"
  mautic.campaign.scheduled="Campaign event scheduled"
@@ -1234,7 +1243,7 @@ index adcf2a7ac0..c9763a337a 100644
  mautic.campaign.trigger.event_count="%events% total events(s) to be processed in batches of %batch% contacts"
  mautic.campaign.trigger.events_executed="{0} 0 total events were executed|{1} 1 total event was executed|[2,Inf] %events% total events were executed"
  mautic.campaign.trigger.events_scheduled="{0} 0 total events were scheduled|{1} 1 total event was scheduled|[2,Inf] %events% total events were scheduled"
-@@ -125,6 +126,10 @@ mautic.campaign.triggered.events="Triggered Events"
+@@ -129,6 +130,10 @@ mautic.campaign.triggered.events="Triggered Events"
  mautic.config.tab.campaignconfig="Campaign Settings"
  mautic.campaignconfig.campaign_time_wait_on_event_false="Wait time before retrying a failed action"
  mautic.campaignconfig.campaign_time_wait_on_event_false_tooltip="If an action fails to execute, wait this long before trying again."
