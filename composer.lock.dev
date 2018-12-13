@@ -8913,12 +8913,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "5c2e6f18fb56409bf0e0e5e3cddbe72e34126a6a"
+                "reference": "21d58df2f4c099a2c4c1d4bb2d86b8b4e2b22194"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/5c2e6f18fb56409bf0e0e5e3cddbe72e34126a6a",
-                "reference": "5c2e6f18fb56409bf0e0e5e3cddbe72e34126a6a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/21d58df2f4c099a2c4c1d4bb2d86b8b4e2b22194",
+                "reference": "21d58df2f4c099a2c4c1d4bb2d86b8b4e2b22194",
                 "shasum": ""
             },
             "require": {
@@ -8948,7 +8948,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-10T15:50:24+00:00"
+            "time": "2018-12-12T21:29:49+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -9203,43 +9203,6 @@
                 "plugin"
             ],
             "time": "2018-10-04T19:14:14+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-media-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "f10a41dc3db7552f8f90371f0edd74abf0bef7a3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/f10a41dc3db7552f8f90371f0edd74abf0bef7a3",
-                "reference": "f10a41dc3db7552f8f90371f0edd74abf0bef7a3",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Pulls cost data from media advertising services.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-12-11T20:53:40+00:00"
         },
         {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
@@ -11955,8 +11918,7 @@
         "thedmsgroup/mautic-api-services-bundle": 20,
         "thedmsgroup/mautic-campaign-watch-bundle": 20,
         "thedmsgroup/mautic-dashboard-warm-bundle": 20,
-        "thedmsgroup/mautic-segment-extras-bundle": 20,
-        "thedmsgroup/mautic-media-bundle": 20
+        "thedmsgroup/mautic-segment-extras-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
