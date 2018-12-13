@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e7b2413b9cdb3e1f5f03e60f995ddd7",
+    "content-hash": "fa883a7664279dd8418b406a95552df2",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -5231,16 +5231,16 @@
         },
         {
             "name": "sonata-project/exporter",
-            "version": "1.9.1",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/exporter.git",
-                "reference": "6dbea3379447f672f46fccd7e29210cc1246aea9"
+                "reference": "ae56d1157c3722a438b2ea26dc19a267068a5fca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/6dbea3379447f672f46fccd7e29210cc1246aea9",
-                "reference": "6dbea3379447f672f46fccd7e29210cc1246aea9",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/ae56d1157c3722a438b2ea26dc19a267068a5fca",
+                "reference": "ae56d1157c3722a438b2ea26dc19a267068a5fca",
                 "shasum": ""
             },
             "require": {
@@ -5297,7 +5297,7 @@
                 "export",
                 "xls"
             ],
-            "time": "2018-07-04T16:52:00+00:00"
+            "time": "2018-12-11T21:05:21+00:00"
         },
         {
             "name": "sparkpost/sparkpost",
@@ -8353,32 +8353,30 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.5.0",
+            "version": "v1.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323"
+                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/6a5f676b77a90823c2d4eaf76137b771adf31323",
-                "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/daa657073e55b0a78cce8fdd22682fddecc6385f",
+                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0",
-                "symfony/polyfill-ctype": "^1.8",
-                "symfony/polyfill-mbstring": "~1.0"
+                "php": ">=5.3.3"
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "^2.7",
-                "symfony/phpunit-bridge": "^3.3"
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~3.3@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "1.35-dev"
                 }
             },
             "autoload": {
@@ -8407,16 +8405,16 @@
                 },
                 {
                     "name": "Twig Team",
-                    "homepage": "https://twig.symfony.com/contributors",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
                     "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
-            "homepage": "https://twig.symfony.com",
+            "homepage": "http://twig.sensiolabs.org",
             "keywords": [
                 "templating"
             ],
-            "time": "2018-07-13T07:18:09+00:00"
+            "time": "2017-09-27T18:06:46+00:00"
         },
         {
             "name": "twilio/sdk",
@@ -11444,12 +11442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "5c2e6f18fb56409bf0e0e5e3cddbe72e34126a6a"
+                "reference": "250f7bc3c317a3cf14f63779994c260cadeeb8d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/5c2e6f18fb56409bf0e0e5e3cddbe72e34126a6a",
-                "reference": "5c2e6f18fb56409bf0e0e5e3cddbe72e34126a6a",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/250f7bc3c317a3cf14f63779994c260cadeeb8d2",
+                "reference": "250f7bc3c317a3cf14f63779994c260cadeeb8d2",
                 "shasum": ""
             },
             "require": {
@@ -11479,7 +11477,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-10T15:50:24+00:00"
+            "time": "2018-12-13T17:08:48+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -11645,12 +11643,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "84e8bcb13028aff08ca7a42c05bae1d0a8b3f586"
+                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/84e8bcb13028aff08ca7a42c05bae1d0a8b3f586",
-                "reference": "84e8bcb13028aff08ca7a42c05bae1d0a8b3f586",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
+                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
                 "shasum": ""
             },
             "require": {
@@ -11682,7 +11680,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T14:34:34+00:00"
+            "time": "2018-12-11T20:41:41+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -11720,43 +11718,6 @@
                 "plugin"
             ],
             "time": "2018-10-04T19:14:14+00:00"
-        },
-        {
-            "name": "thedmsgroup/mautic-media-bundle",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "fae8b9c2fb8d271eb685a0a86768ff0c54250c9d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/fae8b9c2fb8d271eb685a0a86768ff0c54250c9d",
-                "reference": "fae8b9c2fb8d271eb685a0a86768ff0c54250c9d",
-                "shasum": ""
-            },
-            "require": {
-                "mautic/composer-plugin": "^1.0"
-            },
-            "type": "mautic-plugin",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Heath Dutton",
-                    "email": "heathdutton@gmail.com"
-                }
-            ],
-            "description": "Pulls cost data from media advertising services.",
-            "keywords": [
-                "Marketing Automation",
-                "Mautic",
-                "marketing",
-                "plugin"
-            ],
-            "time": "2018-12-11T17:50:03+00:00"
         },
         {
             "name": "thedmsgroup/mautic-segment-extras-bundle",

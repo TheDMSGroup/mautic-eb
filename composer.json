@@ -5,7 +5,8 @@
   "license": "GPL-3.0-only",
   "require": {
     "mautic/core": "dev-master#f6aa213482047108968ed9766a2eda7c8e94d615",
-    "aws/aws-sdk-php": "3.36"
+    "aws/aws-sdk-php": "3.36",
+    "twig/twig": "v1.35.0"
   },
   "repositories": [
     {
