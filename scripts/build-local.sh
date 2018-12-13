@@ -7,6 +7,12 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
+if [ -f "./mautic/app/config/local.php" ]
+then
+    echo ; echo "Backup local.php"
+    cp ./mautic/app/config/local.php /tmp/mautic_local.php
+fi
+
 echo ; echo "Pulling mautic-eb"
 git pull
 
@@ -150,6 +156,17 @@ else
     cd -
 fi
 
+if [ ! -d "./plugins/MauticMediaBundle/.git" ]
+then
+    rm -rf ./plugins/MauticMediaBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-media.git ./plugins/MauticMediaBundle
+else
+    cd ./plugins/MauticMediaBundle
+    git checkout master
+    git pull
+    cd -
+fi
+
 if [ ! -d "./mautic_custom/.git" ]
 then
     rm -rf ./mautic_custom
@@ -169,3 +186,11 @@ composer assets --no-interaction
 cp composer.lock composer.lock.dev
 git checkout composer.lock
 rm -f composer.custom
+
+if [ -f "/tmp/mautic_local.php" ]
+then
+    echo ; echo "Restoring local.php"
+    cp /tmp/mautic_local.php ./mautic/app/config/local.php
+    rm - ./mautic/app/config/parameters_local.php
+    rm -rf /tmp/mautic_local.php
+fi

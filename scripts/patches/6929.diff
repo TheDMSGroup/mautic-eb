@@ -1,0 +1,30 @@
+diff --git a/app/bundles/LeadBundle/Views/Import/list.html.php b/app/bundles/LeadBundle/Views/Import/list.html.php
+index 50578004c2..7ebe585bf2 100644
+--- a/app/bundles/LeadBundle/Views/Import/list.html.php
++++ b/app/bundles/LeadBundle/Views/Import/list.html.php
+@@ -71,6 +71,13 @@
+                     'class'      => 'col-ignored-count',
+                 ]);
+ 
++                echo $view->render('MauticCoreBundle:Helper:tableheader.html.php', [
++                    'sessionVar' => $sessionVar,
++                    'orderBy'    => $tablePrefix.'.createdByUser',
++                    'text'       => 'mautic.core.create.by.past.tense',
++                    'class'      => 'col-created visible-md visible-lg',
++                ]);
++
+                 echo $view->render('MauticCoreBundle:Helper:tableheader.html.php', [
+                     'sessionVar' => $sessionVar,
+                     'orderBy'    => $tablePrefix.'.dateAdded',
+diff --git a/app/bundles/LeadBundle/Views/Import/list_rows.html.php b/app/bundles/LeadBundle/Views/Import/list_rows.html.php
+index ef4a28c1f6..71b24d89be 100644
+--- a/app/bundles/LeadBundle/Views/Import/list_rows.html.php
++++ b/app/bundles/LeadBundle/Views/Import/list_rows.html.php
+@@ -44,6 +44,7 @@
+         <td class="visible-md visible-lg"><?php echo $item->getInsertedCount(); ?></td>
+         <td class="visible-md visible-lg"><?php echo $item->getUpdatedCount(); ?></td>
+         <td class="visible-md visible-lg"><?php echo $item->getIgnoredCount(); ?></td>
++        <td class="visible-md visible-lg"><?php echo $item->getCreatedByUser(); ?></td>
+         <td class="visible-md visible-lg">
+             <abbr title="<?php echo $view['date']->toFull($item->getDateAdded()); ?>">
+                 <?php echo $view['date']->toText($item->getDateAdded()); ?>
