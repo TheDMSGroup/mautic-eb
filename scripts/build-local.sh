@@ -7,6 +7,12 @@ BASEDIR=$(dirname "$BASH_SOURCE")
 cd $BASEDIR/../
 BASEDIR=$( pwd )
 
+if [ -f "./mautic/app/config/local.php" ]
+then
+    echo ; echo "Backup local.php"
+    cp ./mautic/app/config/local.php /tmp/mautic_local.php
+fi
+
 echo ; echo "Pulling mautic-eb"
 git pull
 
@@ -180,3 +186,11 @@ composer assets --no-interaction
 cp composer.lock composer.lock.dev
 git checkout composer.lock
 rm -f composer.custom
+
+if [ -f "/tmp/mautic_local.php" ]
+then
+    echo ; echo "Restoring local.php"
+    cp /tmp/mautic_local.php ./mautic/app/config/local.php
+    rm - ./mautic/app/config/parameters_local.php
+    rm -rf /tmp/mautic_local.php
+fi
