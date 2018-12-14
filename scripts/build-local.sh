@@ -191,6 +191,6 @@ if [ -f "/tmp/mautic_local.php" ]
 then
     echo ; echo "Restoring local.php"
     cp /tmp/mautic_local.php ./mautic/app/config/local.php
-    rm - ./mautic/app/config/parameters_local.php
+    rm -rf ./mautic/app/config/parameters_local.php
     rm -rf /tmp/mautic_local.php
 fi
