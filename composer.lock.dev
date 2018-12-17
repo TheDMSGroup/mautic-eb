@@ -8993,12 +8993,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "773699b8aa4db95e584764db05f773dd483cca2d"
+                "reference": "af31af4d5467057ec8a98847aa228f617df8d231"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/773699b8aa4db95e584764db05f773dd483cca2d",
-                "reference": "773699b8aa4db95e584764db05f773dd483cca2d",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/af31af4d5467057ec8a98847aa228f617df8d231",
+                "reference": "af31af4d5467057ec8a98847aa228f617df8d231",
                 "shasum": ""
             },
             "require": {
@@ -9022,7 +9022,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-17T17:41:11+00:00"
+            "time": "2018-12-17T21:02:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
@@ -9128,12 +9128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5"
+                "reference": "a595be22b25b991871f9cf589cb13e609ce72a18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
-                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/a595be22b25b991871f9cf589cb13e609ce72a18",
+                "reference": "a595be22b25b991871f9cf589cb13e609ce72a18",
                 "shasum": ""
             },
             "require": {
@@ -9165,7 +9165,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T20:41:41+00:00"
+            "time": "2018-12-17T19:56:53+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -11921,7 +11921,11 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.19 <7.3"
+        "php": ">=5.6.19 <7.3",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*"
     },
     "platform-dev": []
 }
