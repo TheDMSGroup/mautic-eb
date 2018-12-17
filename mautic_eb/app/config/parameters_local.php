@@ -16,9 +16,10 @@ $parameters = [
     'mailer_from_email'   => getenv('MAILER_FROM_EMAIL') ?: $parameters['mailer_from_email'] ?? 'web@developer.com',
     'secret_key'          => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
     'site_url'            => getenv('APP_URL') ?: 'http://mautic.loc',
-    'tmp_path'            => '/tmp',
-    // Support local/ondeck/current/link
-    'cache_path'          => str_replace('/mautic_eb/', '/mautic/', __DIR__) . '/../cache',
+    // Supported by PR #6962
+    'import_path'         => '/tmp/imports',
+    'tmp_path'            => '%kernel.root_dir%/cache',
+    'cache_path'          => '%kernel.root_dir%/cache',
 ];
 /**
  * Multisite environment variable overrides based on the inbound domain.
