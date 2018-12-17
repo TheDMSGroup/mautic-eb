@@ -17,12 +17,8 @@ $parameters = [
     'secret_key'          => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
     'site_url'            => getenv('APP_URL') ?: 'http://mautic.loc',
     'tmp_path'            => '/tmp',
-    // Support the cache path for "ondeck" during deployment, switching to "current" when there.
-    'cache_path'          => str_replace(
-        ['/mautic_eb/app/config', '/app/config'],
-        ['/mautic/app/cache', '/app/cache'],
-        __DIR__
-    ),
+    // Support local/ondeck/current/link
+    'cache_path'          => str_replace('/mautic_eb/', '/mautic/', __DIR__) . '/../cache',
 ];
 /**
  * Multisite environment variable overrides based on the inbound domain.
