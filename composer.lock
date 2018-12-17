@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa883a7664279dd8418b406a95552df2",
+    "content-hash": "a468ec6716765f2b9fbe4e857c7f7949",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3117,14 +3117,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "f6aa213482047108968ed9766a2eda7c8e94d615"
+                "reference": "23a0b3acb779b3e33b2e6ac65c629fd5c36caa0c"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-12-05T12:56:48+00:00"
+            "time": "2018-12-17T13:30:29+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -5023,16 +5023,16 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v5.0.23",
+            "version": "v5.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "088b116a0e27faa0e1a7384dd4f3f6a9d5a8a3b6"
+                "reference": "59eac70f15f97ee945924948a6f5e2f6f86b7a4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/088b116a0e27faa0e1a7384dd4f3f6a9d5a8a3b6",
-                "reference": "088b116a0e27faa0e1a7384dd4f3f6a9d5a8a3b6",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/59eac70f15f97ee945924948a6f5e2f6f86b7a4b",
+                "reference": "59eac70f15f97ee945924948a6f5e2f6f86b7a4b",
                 "shasum": ""
             },
             "require": {
@@ -5071,7 +5071,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2018-10-25T15:26:23+00:00"
+            "time": "2018-12-14T17:36:15+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -9855,16 +9855,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.12",
+            "version": "2.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "8814dc7841db159daed0b32c2b08fb7e03c6afe7"
+                "reference": "42603ce3f42a27f7e14e54feab95db7b680ad473"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/8814dc7841db159daed0b32c2b08fb7e03c6afe7",
-                "reference": "8814dc7841db159daed0b32c2b08fb7e03c6afe7",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/42603ce3f42a27f7e14e54feab95db7b680ad473",
+                "reference": "42603ce3f42a27f7e14e54feab95db7b680ad473",
                 "shasum": ""
             },
             "require": {
@@ -9943,7 +9943,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2018-11-04T05:45:48+00:00"
+            "time": "2018-12-16T17:45:25+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -11442,12 +11442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "250f7bc3c317a3cf14f63779994c260cadeeb8d2"
+                "reference": "929abfa3695c5290680d1115f4de65dde6486e24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/250f7bc3c317a3cf14f63779994c260cadeeb8d2",
-                "reference": "250f7bc3c317a3cf14f63779994c260cadeeb8d2",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/929abfa3695c5290680d1115f4de65dde6486e24",
+                "reference": "929abfa3695c5290680d1115f4de65dde6486e24",
                 "shasum": ""
             },
             "require": {
@@ -11477,7 +11477,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-13T17:08:48+00:00"
+            "time": "2018-12-14T21:26:30+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -11522,12 +11522,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "0d38f9e66cc4fad03336cc8adcf9b518a9fc07b9"
+                "reference": "773699b8aa4db95e584764db05f773dd483cca2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/0d38f9e66cc4fad03336cc8adcf9b518a9fc07b9",
-                "reference": "0d38f9e66cc4fad03336cc8adcf9b518a9fc07b9",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/773699b8aa4db95e584764db05f773dd483cca2d",
+                "reference": "773699b8aa4db95e584764db05f773dd483cca2d",
                 "shasum": ""
             },
             "require": {
@@ -11551,7 +11551,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-14T13:56:24+00:00"
+            "time": "2018-12-17T17:41:11+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
