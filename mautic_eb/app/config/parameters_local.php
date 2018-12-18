@@ -3,6 +3,7 @@
  * Global default environment variable overrides for Mautic EB
  * To override for your instance use parameters_local.php
  */
+$cachePath = str_replace('/mautic_eb/', '/mautic/', __DIR__) . '/../cache';
 $parameters = [
     'db_driver'           => 'pdo_mysql',
     'db_table_prefix'     => null,
@@ -16,13 +17,11 @@ $parameters = [
     'mailer_from_email'   => getenv('MAILER_FROM_EMAIL') ?: $parameters['mailer_from_email'] ?? 'web@developer.com',
     'secret_key'          => getenv('SECRET_KEY') ?: '3e29c87bddfbfc8e59d004581da4fa9f5c9fe0a9f1f90a244a38e2e5600c2800',
     'site_url'            => getenv('APP_URL') ?: 'http://mautic.loc',
-    'tmp_path'            => '/tmp',
-    // Support the cache path for "ondeck" during deployment, switching to "current" when there.
-    'cache_path'          => str_replace(
-        ['/mautic_eb/app/config', '/app/config'],
-        ['/mautic/app/cache', '/app/cache'],
-        __DIR__
-    ),
+    // Support local/ondeck/current/link
+    'tmp_path'            => $cachePath,
+    'cache_path'          => $cachePath,
+    // Supported by PR #6962
+    'import_path'         => '/tmp/imports',
 ];
 /**
  * Multisite environment variable overrides based on the inbound domain.

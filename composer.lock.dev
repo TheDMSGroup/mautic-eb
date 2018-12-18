@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e7b2413b9cdb3e1f5f03e60f995ddd7",
+    "content-hash": "a468ec6716765f2b9fbe4e857c7f7949",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3411,14 +3411,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mautic/mautic.git",
-                "reference": "f6aa213482047108968ed9766a2eda7c8e94d615"
+                "reference": "23a0b3acb779b3e33b2e6ac65c629fd5c36caa0c"
             },
             "require": {
                 "mnsami/composer-custom-directory-installer": "1.1.*",
                 "wikimedia/composer-merge-plugin": "dev-master"
             },
             "type": "library",
-            "time": "2018-12-05T12:56:48+00:00"
+            "time": "2018-12-17T13:30:29+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -4846,16 +4846,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.12",
+            "version": "2.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "8814dc7841db159daed0b32c2b08fb7e03c6afe7"
+                "reference": "42603ce3f42a27f7e14e54feab95db7b680ad473"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/8814dc7841db159daed0b32c2b08fb7e03c6afe7",
-                "reference": "8814dc7841db159daed0b32c2b08fb7e03c6afe7",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/42603ce3f42a27f7e14e54feab95db7b680ad473",
+                "reference": "42603ce3f42a27f7e14e54feab95db7b680ad473",
                 "shasum": ""
             },
             "require": {
@@ -4934,7 +4934,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2018-11-04T05:45:48+00:00"
+            "time": "2018-12-16T17:45:25+00:00"
         },
         {
             "name": "piwik/device-detector",
@@ -5505,16 +5505,16 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v5.0.23",
+            "version": "v5.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "088b116a0e27faa0e1a7384dd4f3f6a9d5a8a3b6"
+                "reference": "59eac70f15f97ee945924948a6f5e2f6f86b7a4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/088b116a0e27faa0e1a7384dd4f3f6a9d5a8a3b6",
-                "reference": "088b116a0e27faa0e1a7384dd4f3f6a9d5a8a3b6",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/59eac70f15f97ee945924948a6f5e2f6f86b7a4b",
+                "reference": "59eac70f15f97ee945924948a6f5e2f6f86b7a4b",
                 "shasum": ""
             },
             "require": {
@@ -5553,7 +5553,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2018-10-25T15:26:23+00:00"
+            "time": "2018-12-14T17:36:15+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -5713,16 +5713,16 @@
         },
         {
             "name": "sonata-project/exporter",
-            "version": "1.9.1",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/exporter.git",
-                "reference": "6dbea3379447f672f46fccd7e29210cc1246aea9"
+                "reference": "ae56d1157c3722a438b2ea26dc19a267068a5fca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/6dbea3379447f672f46fccd7e29210cc1246aea9",
-                "reference": "6dbea3379447f672f46fccd7e29210cc1246aea9",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/ae56d1157c3722a438b2ea26dc19a267068a5fca",
+                "reference": "ae56d1157c3722a438b2ea26dc19a267068a5fca",
                 "shasum": ""
             },
             "require": {
@@ -5779,7 +5779,7 @@
                 "export",
                 "xls"
             ],
-            "time": "2018-07-04T16:52:00+00:00"
+            "time": "2018-12-11T21:05:21+00:00"
         },
         {
             "name": "sparkpost/sparkpost",
@@ -8913,12 +8913,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "21d58df2f4c099a2c4c1d4bb2d86b8b4e2b22194"
+                "reference": "929abfa3695c5290680d1115f4de65dde6486e24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/21d58df2f4c099a2c4c1d4bb2d86b8b4e2b22194",
-                "reference": "21d58df2f4c099a2c4c1d4bb2d86b8b4e2b22194",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/929abfa3695c5290680d1115f4de65dde6486e24",
+                "reference": "929abfa3695c5290680d1115f4de65dde6486e24",
                 "shasum": ""
             },
             "require": {
@@ -8948,7 +8948,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-12T21:29:49+00:00"
+            "time": "2018-12-14T21:26:30+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -8993,12 +8993,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "4b423137f9591fabbf122c43a4ae4977c1d61a95"
+                "reference": "af31af4d5467057ec8a98847aa228f617df8d231"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/4b423137f9591fabbf122c43a4ae4977c1d61a95",
-                "reference": "4b423137f9591fabbf122c43a4ae4977c1d61a95",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/af31af4d5467057ec8a98847aa228f617df8d231",
+                "reference": "af31af4d5467057ec8a98847aa228f617df8d231",
                 "shasum": ""
             },
             "require": {
@@ -9022,7 +9022,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T15:51:55+00:00"
+            "time": "2018-12-17T21:02:16+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
@@ -9128,12 +9128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5"
+                "reference": "a595be22b25b991871f9cf589cb13e609ce72a18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
-                "reference": "3e5ea91f9ff5244542901b06ffb142ee58fa26b5",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/a595be22b25b991871f9cf589cb13e609ce72a18",
+                "reference": "a595be22b25b991871f9cf589cb13e609ce72a18",
                 "shasum": ""
             },
             "require": {
@@ -9165,7 +9165,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2018-12-11T20:41:41+00:00"
+            "time": "2018-12-17T19:56:53+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -9280,32 +9280,30 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.5.0",
+            "version": "v1.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323"
+                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/6a5f676b77a90823c2d4eaf76137b771adf31323",
-                "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/daa657073e55b0a78cce8fdd22682fddecc6385f",
+                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0",
-                "symfony/polyfill-ctype": "^1.8",
-                "symfony/polyfill-mbstring": "~1.0"
+                "php": ">=5.3.3"
             },
             "require-dev": {
                 "psr/container": "^1.0",
-                "symfony/debug": "^2.7",
-                "symfony/phpunit-bridge": "^3.3"
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~3.3@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "1.35-dev"
                 }
             },
             "autoload": {
@@ -9334,16 +9332,16 @@
                 },
                 {
                     "name": "Twig Team",
-                    "homepage": "https://twig.symfony.com/contributors",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
                     "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
-            "homepage": "https://twig.symfony.com",
+            "homepage": "http://twig.sensiolabs.org",
             "keywords": [
                 "templating"
             ],
-            "time": "2018-07-13T07:18:09+00:00"
+            "time": "2017-09-27T18:06:46+00:00"
         },
         {
             "name": "twilio/sdk",
