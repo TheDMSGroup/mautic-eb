@@ -3,7 +3,7 @@
  * Global default environment variable overrides for Mautic EB
  * To override for your instance use parameters_local.php
  */
-$cachePath = realpath(str_replace('/mautic_eb/', '/mautic/', __DIR__) . '/../cache');
+$cachePath = str_replace('/mautic_eb/', '/mautic/', __DIR__) . '/../cache';
 $parameters = [
     'db_driver'           => 'pdo_mysql',
     'db_table_prefix'     => null,
