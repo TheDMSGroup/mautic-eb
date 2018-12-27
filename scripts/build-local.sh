@@ -10,7 +10,7 @@ BASEDIR=$( pwd )
 if [ -f "./mautic/app/config/local.php" ]
 then
     echo ; echo "Backup local.php"
-    cp ./mautic/app/config/local.php /tmp/mautic_local.php
+    cat ./mautic/app/config/local.php > /tmp/mautic_local.php
 fi
 
 echo ; echo "Pulling mautic-eb"
