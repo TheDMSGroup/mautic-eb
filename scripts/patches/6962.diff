@@ -485,9 +485,7 @@ index 075d7d17cb..859917722d 100644
 +     */
 +    public function getImportMaxRuntimeStatus($default = 4)
 +    {
-+        $status = 'mautic.lead.import.status.';
-+
-+        return $status.$this->config->getParameter('import_max_runtime_status', $default);
++        return $this->config->getParameter('import_max_runtime_status', $default);
 +    }
 +
 +    /**
