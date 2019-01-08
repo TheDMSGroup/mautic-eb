@@ -11,7 +11,7 @@ index bca4b79707..0865141a4f 100644
          'theme_import_allowed_extensions' => ['json', 'twig', 'css', 'js', 'htm', 'html', 'txt', 'jpg', 'jpeg', 'png', 'gif'],
          'db_driver'                       => 'pdo_mysql',
 diff --git a/app/bundles/CoreBundle/Form/Type/ConfigType.php b/app/bundles/CoreBundle/Form/Type/ConfigType.php
-index 636738f895..59aa26d1be 100644
+index 636738f895..c4d29e31ba 100644
 --- a/app/bundles/CoreBundle/Form/Type/ConfigType.php
 +++ b/app/bundles/CoreBundle/Form/Type/ConfigType.php
 @@ -17,7 +17,14 @@
@@ -56,7 +56,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.cache.path',
                  'label_attr' => ['class' => 'control-label'],
-@@ -158,9 +165,22 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -158,9 +165,29 @@ public function buildForm(FormBuilderInterface $builder, array $options)
              ]
          );
  
@@ -70,6 +70,13 @@ index 636738f895..59aa26d1be 100644
 +                    'class'   => 'form-control',
 +                    'tooltip' => 'mautic.core.config.form.import.path.tooltip',
 +                ],
++                'constraints' => [
++                    new NotBlank(
++                        [
++                            'message' => 'mautic.core.value.required',
++                        ]
++                    ),
++                ],
 +            ]
 +        );
 +
@@ -80,7 +87,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.log.path',
                  'label_attr' => ['class' => 'control-label'],
-@@ -180,7 +200,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -180,7 +207,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'image_path',
@@ -89,7 +96,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.image.path',
                  'label_attr' => ['class' => 'control-label'],
-@@ -213,7 +233,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -213,7 +240,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'locale',
@@ -98,7 +105,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'choices'  => $langChoices,
                  'label'    => 'mautic.core.config.form.locale',
-@@ -230,7 +250,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -230,7 +257,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
          $builder->add(
              $builder->create(
                  'trusted_hosts',
@@ -107,7 +114,7 @@ index 636738f895..59aa26d1be 100644
                  [
                      'label'      => 'mautic.core.config.form.trusted.hosts',
                      'label_attr' => ['class' => 'control-label'],
-@@ -246,7 +266,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -246,7 +273,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
          $builder->add(
              $builder->create(
                  'trusted_proxies',
@@ -116,7 +123,7 @@ index 636738f895..59aa26d1be 100644
                  [
                      'label'      => 'mautic.core.config.form.trusted.proxies',
                      'label_attr' => ['class' => 'control-label'],
-@@ -263,7 +283,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -263,7 +290,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
          $builder->add(
              $builder->create(
                  'do_not_track_ips',
@@ -125,7 +132,7 @@ index 636738f895..59aa26d1be 100644
                  [
                      'label'      => 'mautic.core.config.form.do_not_track_ips',
                      'label_attr' => ['class' => 'control-label'],
-@@ -280,7 +300,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -280,7 +307,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
          $builder->add(
              $builder->create(
                  'do_not_track_bots',
@@ -134,7 +141,7 @@ index 636738f895..59aa26d1be 100644
                  [
                      'label'      => 'mautic.core.config.form.do_not_track_bots',
                      'label_attr' => ['class' => 'control-label'],
-@@ -296,7 +316,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -296,7 +323,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'default_pagelimit',
@@ -143,7 +150,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'choices' => [
                      5   => 'mautic.core.pagination.5',
-@@ -323,7 +343,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -323,7 +350,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'default_timezone',
@@ -152,7 +159,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.default.timezone',
                  'label_attr' => ['class' => 'control-label'],
-@@ -339,7 +359,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -339,7 +366,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'cached_data_timeout',
@@ -161,7 +168,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.cached.data.timeout',
                  'label_attr' => ['class' => 'control-label'],
-@@ -361,7 +381,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -361,7 +388,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'date_format_full',
@@ -170,7 +177,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.date.format.full',
                  'label_attr' => ['class' => 'control-label'],
-@@ -381,7 +401,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -381,7 +408,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'date_format_short',
@@ -179,7 +186,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.date.format.short',
                  'label_attr' => ['class' => 'control-label'],
-@@ -401,7 +421,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -401,7 +428,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'date_format_dateonly',
@@ -188,7 +195,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.date.format.dateonly',
                  'label_attr' => ['class' => 'control-label'],
-@@ -421,7 +441,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -421,7 +448,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'date_format_timeonly',
@@ -197,7 +204,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.date.format.timeonly',
                  'label_attr' => ['class' => 'control-label'],
-@@ -441,7 +461,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -441,7 +468,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'default_daterange_filter',
@@ -206,7 +213,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'choices' => [
                      'midnight'  => 'mautic.core.daterange.0days',
-@@ -470,7 +490,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -470,7 +497,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'ip_lookup_service',
@@ -215,7 +222,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'choices'    => $this->ipLookupChoices,
                  'label'      => 'mautic.core.config.form.ip.lookup.service',
-@@ -488,7 +508,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
+@@ -488,7 +515,7 @@ public function buildForm(FormBuilderInterface $builder, array $options)
  
          $builder->add(
              'ip_lookup_auth',
@@ -224,7 +231,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.ip.lookup.auth',
                  'label_attr' => ['class' => 'control-label'],
-@@ -536,7 +556,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -536,7 +563,7 @@ function (FormEvent $event) use ($formModifier) {
  
          $builder->add(
              'transifex_username',
@@ -233,7 +240,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.transifex.username',
                  'label_attr' => ['class' => 'control-label'],
-@@ -551,7 +571,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -551,7 +578,7 @@ function (FormEvent $event) use ($formModifier) {
  
          $builder->add(
              'transifex_password',
@@ -242,7 +249,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.transifex.password',
                  'label_attr' => ['class' => 'control-label'],
-@@ -568,7 +588,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -568,7 +595,7 @@ function (FormEvent $event) use ($formModifier) {
  
          $builder->add(
              'update_stability',
@@ -251,7 +258,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'choices' => [
                      'alpha'  => 'mautic.core.config.update_stability.alpha',
-@@ -588,7 +608,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -588,7 +615,7 @@ function (FormEvent $event) use ($formModifier) {
  
          $builder->add(
              'link_shortener_url',
@@ -260,7 +267,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.link.shortener',
                  'label_attr' => ['class' => 'control-label'],
-@@ -602,7 +622,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -602,7 +629,7 @@ function (FormEvent $event) use ($formModifier) {
  
          $builder->add(
              'max_entity_lock_time',
@@ -269,7 +276,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label'      => 'mautic.core.config.form.link.max_entity_lock_time',
                  'label_attr' => ['class' => 'control-label'],
-@@ -616,7 +636,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -616,7 +643,7 @@ function (FormEvent $event) use ($formModifier) {
  
          $builder->add(
              'cors_restrict_domains',
@@ -278,7 +285,7 @@ index 636738f895..59aa26d1be 100644
              [
                  'label' => 'mautic.core.config.cors.restrict.domains',
                  'data'  => (array_key_exists('cors_restrict_domains', $options['data']) && !empty($options['data']['cors_restrict_domains'])),
-@@ -631,7 +651,7 @@ function (FormEvent $event) use ($formModifier) {
+@@ -631,7 +658,7 @@ function (FormEvent $event) use ($formModifier) {
          $builder->add(
              $builder->create(
                  'cors_valid_domains',
@@ -396,19 +403,21 @@ index cfb04e2ad3..beecd8a737 100644
      ],
  ];
 diff --git a/app/bundles/LeadBundle/Form/Type/ConfigType.php b/app/bundles/LeadBundle/Form/Type/ConfigType.php
-index 442a9f5570..815d3df45e 100644
+index 442a9f5570..3e0b5dcf85 100644
 --- a/app/bundles/LeadBundle/Form/Type/ConfigType.php
 +++ b/app/bundles/LeadBundle/Form/Type/ConfigType.php
-@@ -12,6 +12,8 @@
+@@ -11,7 +11,10 @@
+ 
  namespace Mautic\LeadBundle\Form\Type;
  
++use Mautic\LeadBundle\Entity\Import;
  use Symfony\Component\Form\AbstractType;
 +use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 +use Symfony\Component\Form\Extension\Core\Type\NumberType;
  use Symfony\Component\Form\FormBuilderInterface;
  
  /**
-@@ -25,14 +27,49 @@ class ConfigType extends AbstractType
+@@ -25,14 +28,49 @@ class ConfigType extends AbstractType
       */
      public function buildForm(FormBuilderInterface $builder, array $options)
      {
@@ -447,7 +456,7 @@ index 442a9f5570..815d3df45e 100644
 +        );
 +
 +        $statusChoices = [];
-+        foreach ([7, 4, 5] as $validStatus) {
++        foreach ([Import::DELAYED, Import::FAILED, Import::STOPPED] as $validStatus) {
 +            $statusChoices[$validStatus] = 'mautic.lead.import.status.'.$validStatus;
 +        }
 +        $builder->add(
@@ -467,10 +476,10 @@ index 442a9f5570..815d3df45e 100644
  
      /**
 diff --git a/app/bundles/LeadBundle/Model/ImportModel.php b/app/bundles/LeadBundle/Model/ImportModel.php
-index 075d7d17cb..859917722d 100644
+index 075d7d17cb..68ef27bccb 100644
 --- a/app/bundles/LeadBundle/Model/ImportModel.php
 +++ b/app/bundles/LeadBundle/Model/ImportModel.php
-@@ -150,22 +150,47 @@ public function generateLink(Import $import)
+@@ -150,22 +150,45 @@ public function generateLink(Import $import)
      }
  
      /**
@@ -482,21 +491,21 @@ index 075d7d17cb..859917722d 100644
 +     * @param int $default
 +     *
 +     * @return int
-+     */
+      */
+-    public function setGhostImportsAsFailed()
 +    public function getImportMaxRuntimeStatus($default = 4)
-+    {
+     {
+-        $ghostDelay = 2;
+-        $imports    = $this->getRepository()->getGhostImports($ghostDelay, 5);
 +        return $this->config->getParameter('import_max_runtime_status', $default);
 +    }
 +
 +    /**
 +     * Check if there are some IN_PROGRESS imports which have exceded maximum runtime.
 +     * Set those to ghost import status.
-      */
--    public function setGhostImportsAsFailed()
++     */
 +    public function setMaxImportsRuntimeStatus()
-     {
--        $ghostDelay = 2;
--        $imports    = $this->getRepository()->getGhostImports($ghostDelay, 5);
++    {
 +        $maxImportRuntime = $this->config->getParameter('import_max_runtime', 2);
 +        $imports          = $this->getRepository()->getGhostImports($maxImportRuntime, 5);
  
@@ -524,7 +533,7 @@ index 075d7d17cb..859917722d 100644
  
              if ($import->getCreatedBy()) {
                  $this->notificationModel->addNotification(
-@@ -175,7 +200,7 @@ public function setGhostImportsAsFailed()
+@@ -175,7 +198,7 @@ public function setGhostImportsAsFailed()
                      ),
                      'info',
                      false,
@@ -533,7 +542,7 @@ index 075d7d17cb..859917722d 100644
                      'fa-download',
                      null,
                      $this->em->getReference('MauticUserBundle:User', $import->getCreatedBy())
-@@ -222,7 +247,7 @@ public function startImport(Import $import, Progress $progress, $limit = 0)
+@@ -222,7 +245,7 @@ public function startImport(Import $import, Progress $progress, $limit = 0)
       */
      public function beginImport(Import $import, Progress $progress, $limit = 0)
      {
@@ -542,7 +551,7 @@ index 075d7d17cb..859917722d 100644
  
          if (!$import) {
              $msg = 'import is empty, closing the import process';
-@@ -289,7 +314,8 @@ public function beginImport(Import $import, Progress $progress, $limit = 0)
+@@ -289,7 +312,8 @@ public function beginImport(Import $import, Progress $progress, $limit = 0)
          // Save the end changes so the user could see it
          $this->saveEntity($import);
  
@@ -552,7 +561,7 @@ index 075d7d17cb..859917722d 100644
              $this->notificationModel->addNotification(
                  $this->translator->trans(
                      'mautic.lead.import.result.info',
-@@ -651,9 +677,7 @@ public function getUniqueFileName()
+@@ -651,9 +675,7 @@ public function getUniqueFileName()
       */
      public function getImportDir()
      {
