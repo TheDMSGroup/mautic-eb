@@ -402,6 +402,48 @@ index cfb04e2ad3..beecd8a737 100644
 +        'import_max_runtime_status'            => 4,
      ],
  ];
+diff --git a/app/bundles/LeadBundle/Entity/ImportRepository.php b/app/bundles/LeadBundle/Entity/ImportRepository.php
+index 11b09aa3ec..6552205b6b 100644
+--- a/app/bundles/LeadBundle/Entity/ImportRepository.php
++++ b/app/bundles/LeadBundle/Entity/ImportRepository.php
+@@ -28,10 +28,36 @@ class ImportRepository extends CommonRepository
+      */
+     public function getGhostImports($ghostDelay = 2, $limit = null)
+     {
++        $dt = new \DateTime();
++
++        list($hours, $partial) = explode('.', sprintf('%01.4f', $ghostDelay));
++
++        if ($hours) {
++            $dt->modify("-$hours hours");
++        }
++
++        if ($partial) {
++            $partialDelay            = 60.0 * ($ghostDelay - $hours);
++            list($minutes, $partial) = explode('.', sprintf('%01.4f', $partialDelay));
++
++            if ($minutes) {
++                $dt->modify("-$minutes minutes");
++            }
++
++            if ($partial) {
++                $partialDelay            = 60.0 * ($partialDelay - $minutes);
++                list($seconds, $partial) = explode('.', sprintf('%01.3f', $partialDelay));
++
++                if ($seconds) {
++                    $dt->modify("-$seconds seconds");
++                }
++            }
++        }
++
+         $q = $this->getQueryForStatuses([Import::IN_PROGRESS]);
+         $q->select($this->getTableAlias())
+             ->andWhere($q->expr()->lt($this->getTableAlias().'.dateModified', ':delay'))
+-            ->setParameter('delay', (new \DateTime())->modify('-'.$ghostDelay.' hours'));
++            ->setParameter('delay', $dt);
+ 
+         if ($limit !== null) {
+             $q->setFirstResult(0)
 diff --git a/app/bundles/LeadBundle/Form/Type/ConfigType.php b/app/bundles/LeadBundle/Form/Type/ConfigType.php
 index 442a9f5570..3e0b5dcf85 100644
 --- a/app/bundles/LeadBundle/Form/Type/ConfigType.php
