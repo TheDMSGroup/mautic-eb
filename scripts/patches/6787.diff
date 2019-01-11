@@ -11,10 +11,10 @@ index 9d0a59286e..c259392925 100644
              ->addIndex(['lead_id', 'campaign_id', 'rotation'], 'campaign_leads')
              ->addIndex(['channel', 'channel_id', 'lead_id'], 'campaign_log_channel')
 diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
-index c9282494b1..846aeab864 100644
+index 54cd3b2196..21bf0bbd1c 100644
 --- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
-@@ -602,4 +602,77 @@ public function removeScheduledEvents($campaignId, $leadId)
+@@ -620,4 +620,103 @@ public function removeScheduledEvents($campaignId, $leadId)
              'is_scheduled' => 1,
          ]);
      }
@@ -49,13 +49,14 @@ index c9282494b1..846aeab864 100644
 +    }
 +
 +    /**
-+     * @param array          $eventIds2 ) private funded
++     * @param                $eventIds
 +     * @param \DateTime      $date
 +     * @param ContactLimiter $limiter
++     * @param bool           $withCounts
 +     *
 +     * @return array
 +     */
-+    public function getScheduledEvents($eventIds, \DateTime $date, ContactLimiter $limiter)
++    public function getScheduledEvents($eventIds, \DateTime $date, ContactLimiter $limiter, $withCounts = true)
 +    {
 +        if (!$eventIds) {
 +            return [];
@@ -63,37 +64,62 @@ index c9282494b1..846aeab864 100644
 +
 +        $now = clone $date;
 +        $now->setTimezone(new \DateTimeZone('UTC'));
-+        
-+        $q = $this->getSlaveConnection($limiter)->createQueryBuilder();
-+        $expr = $q->expr()->andX(
-+            $q->expr()->in('l.event_id', ':ids'),
-+            $q->expr()->lte('l.trigger_date', ':now'),
-+            $q->expr()->eq('l.is_scheduled', ':true')
-+        );
-+
-+        $this->updateQueryFromContactLimiter('l', $q, $limiter, true);
-+
-+        $results = $q->select('COUNT(*) as event_count, l.event_id')
-+            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
-+            ->where($expr)
-+            ->setParameter('ids', $eventIds, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
-+            ->setParameter('true', true)
-+            ->setParameter('now', $now->format('Y-m-d H:i:s'))
-+            ->groupBy('l.event_id')
-+            ->execute()
-+            ->fetchAll();
-+
 +        $events = [];
 +
-+        foreach ($results as $result) {
-+            $events[$result['event_id']] = $result['event_count'];
++        if ($withCounts) {
++            // Traditional grouping for counts of work to be done.
++            $q    = $this->getSlaveConnection($limiter)->createQueryBuilder();
++            $expr = $q->expr()->andX(
++                $q->expr()->in('l.event_id', ':ids'),
++                $q->expr()->lte('l.trigger_date', ':now'),
++                $q->expr()->eq('l.is_scheduled', ':true')
++            );
++            $this->updateQueryFromContactLimiter('l', $q, $limiter, true);
++            $results = $q->select('COUNT(*) as event_count, l.event_id')
++                ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
++                ->where($expr)
++                ->setParameter('ids', $eventIds, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
++                ->setParameter('true', true)
++                ->setParameter('now', $now->format('Y-m-d H:i:s'))
++                ->groupBy('l.event_id')
++                ->execute()
++                ->fetchAll();
++
++            foreach ($results as $result) {
++                $events[$result['event_id']] = $result['event_count'];
++            }
++        } else {
++            // Counts are not needed, only a validation that there is work to be done.
++            // This results in many queries but is much faster at high scale.
++            foreach ($eventIds as $eventId) {
++                $q    = $this->getSlaveConnection($limiter)->createQueryBuilder();
++                $expr = $q->expr()->andX(
++                    $q->expr()->eq('l.event_id', (int) $eventId),
++                    $q->expr()->lte('l.trigger_date', ':now'),
++                    $q->expr()->eq('l.is_scheduled', ':true')
++                );
++                $this->updateQueryFromContactLimiter('l', $q, $limiter);
++                $results = $q->select('1 as event_count, l.event_id')
++                    ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
++                    ->where($expr)
++                    ->setParameter('true', true)
++                    ->setParameter('now', $now->format('Y-m-d H:i:s'))
++                    ->setMaxResults(1)
++                    ->execute()
++                    ->fetchAll();
++
++                if ($results) {
++                    $result                      = reset($results);
++                    $events[$result['event_id']] = $result['event_count'];
++                }
++            }
 +        }
 +
 +        return $events;
 +    }
  }
 diff --git a/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php b/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
-index 67017ed444..15155c6e4f 100644
+index 67017ed444..9d9f20aa28 100644
 --- a/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
 +++ b/app/bundles/CampaignBundle/Executioner/ScheduledExecutioner.php
 @@ -144,7 +144,6 @@ public function execute(Campaign $campaign, ContactLimiter $limiter, OutputInter
@@ -127,7 +153,7 @@ index 67017ed444..15155c6e4f 100644
 -        );
 +        // replaces call to getScheduledCounts
 +        $eventIds        = $this->repo->getPublishedEventIds($this->campaign->getId());
-+        $scheduledEvents = $this->repo->getScheduledEvents($eventIds, $this->now, $this->limiter);
++        $scheduledEvents = $this->repo->getScheduledEvents($eventIds, $this->now, $this->limiter, $withCounts);
  
 +        $totalScheduledCount   = $scheduledEvents ? array_sum($scheduledEvents) : 0;
 +        $this->scheduledEvents = $scheduledEvents ? array_keys($scheduledEvents) : [];

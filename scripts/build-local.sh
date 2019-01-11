@@ -10,7 +10,7 @@ BASEDIR=$( pwd )
 if [ -f "./mautic/app/config/local.php" ]
 then
     echo ; echo "Backup local.php"
-    cp ./mautic/app/config/local.php /tmp/mautic_local.php
+    cat ./mautic/app/config/local.php > /tmp/mautic_local.php
 fi
 
 echo ; echo "Pulling mautic-eb"
@@ -193,4 +193,8 @@ then
     cp /tmp/mautic_local.php ./mautic/app/config/local.php
     rm -rf ./mautic/app/config/parameters_local.php
     rm -rf /tmp/mautic_local.php
+    echo ; echo "Flushing cache"
+    rm -rf ./mautic/app/cache/*
+    echo ; echo "Warming cache"
+    php ./mautic/app/console cache:warm --no-optional-warmers --quiet
 fi
