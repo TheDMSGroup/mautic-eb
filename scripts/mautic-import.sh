@@ -20,7 +20,7 @@ then
   exit 1
 fi
 
-command="sudo nohup console mautic:import --limit=300 --quiet >/dev/null 2>&1"
+command="sudo nohup console mautic:import --limit=600 --quiet >/dev/null 2>&1"
 count=$( ps aux --no-headers 2>&1 | grep -c "$command" 2>&1 )
 while [ "$count" -lt "2" ]
 do
