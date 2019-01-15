@@ -1,0 +1,12 @@
+diff --git a/app/bundles/PluginBundle/EventListener/CampaignSubscriber.php b/app/bundles/PluginBundle/EventListener/CampaignSubscriber.php
+index f69c88ff4b..996b455f98 100644
+--- a/app/bundles/PluginBundle/EventListener/CampaignSubscriber.php
++++ b/app/bundles/PluginBundle/EventListener/CampaignSubscriber.php
+@@ -58,6 +58,7 @@ public function onCampaignTriggerAction(CampaignExecutionEvent $event)
+     {
+         $config                  = $event->getConfig();
+         $config['campaignEvent'] = $event->getEvent();
++        $config['leadEventLog']  = $event->getLogEntry();
+         $lead                    = $event->getLead();
+         $errors                  = [];
+         $success                 = $this->pushToIntegration($config, $lead, $errors);
