@@ -84,3 +84,10 @@ echo "Fix error: Got a packet bigger than 'max_allowed_packet' bytes #6973"
 echo "https://github.com/mautic/mautic/pull/6973"
 git apply -v "../scripts/patches/6973.diff"
 git add . ; git commit --author="6973 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/6973"
+
+# Not essential
+echo "----------------------------------------------------"
+echo "If present, give NewRelic transactional awareness for console commands. #7145"
+echo "https://github.com/mautic/mautic/pull/7145"
+git apply -v "../scripts/patches/7145.diff"
+git add . ; git commit --author="7145 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7145"

@@ -41,6 +41,7 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     MAUTIC_WORKERS_SCHEDULED - Number of concurrent campaign trigger workers running scheduled actions only. Overrides MAUTIC_WORKERS when present.
     MAUTIC_WORKERS_INACTIVE  - Number of concurrent campaign trigger workers running inactive actions only. Overrides MAUTIC_WORKERS when present.
     NR_APPNAME               - Newrelic application name.
+    NR_APPID                 - Newrelic application ID number for deployment notifications.
     NR_APM_INSTALL_KEY       - NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY       - NewRelic install key for Infrastructure.
     NR_API_KEY               - NewRelic API key (optional, for Health plugin).
