@@ -70,3 +70,10 @@ echo "Import configuration enhancements #6962"
 echo "https://github.com/mautic/mautic/pull/6962"
 git apply -v "../scripts/patches/6962.diff"
 git add . ; git commit --author="6962 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/6962"
+
+# Pass LeadEventLog into event config so it persists to all pushLead integrations
+echo "----------------------------------------------------"
+echo "Pass LeadEventLog into event config so it persists to all pushLead integrations #7131"
+echo "https://github.com/mautic/mautic/pull/7131"
+git apply -v "../scripts/patches/7131.diff"
+git add . ; git commit --author="7131 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7131"
