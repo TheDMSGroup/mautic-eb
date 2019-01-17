@@ -1407,64 +1407,6 @@
             "time": "2017-02-27T21:30:37+00:00"
         },
         {
-            "name": "facebook/graph-sdk",
-            "version": "5.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/facebook/php-graph-sdk.git",
-                "reference": "2d8250638b33d73e7a87add65f47fabf91f8ad9b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/2d8250638b33d73e7a87add65f47fabf91f8ad9b",
-                "reference": "2d8250638b33d73e7a87add65f47fabf91f8ad9b",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.4|^7.0"
-            },
-            "require-dev": {
-                "guzzlehttp/guzzle": "~5.0",
-                "mockery/mockery": "~0.8",
-                "phpunit/phpunit": "~4.0"
-            },
-            "suggest": {
-                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client",
-                "paragonie/random_compat": "Provides a better CSPRNG option in PHP 5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Facebook\\": "src/Facebook/"
-                },
-                "files": [
-                    "src/Facebook/polyfills.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Facebook Platform"
-            ],
-            "authors": [
-                {
-                    "name": "Facebook",
-                    "homepage": "https://github.com/facebook/php-graph-sdk/contributors"
-                }
-            ],
-            "description": "Facebook SDK for PHP",
-            "homepage": "https://github.com/facebook/php-graph-sdk",
-            "keywords": [
-                "facebook",
-                "sdk"
-            ],
-            "time": "2018-12-11T22:56:31+00:00"
-        },
-        {
             "name": "facebook/php-business-sdk",
             "version": "3.2.5",
             "source": {
@@ -9395,12 +9337,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-campaign-watch.git",
-                "reference": "6e369d7e54245ebb242c069ea16b5c50b74b7910"
+                "reference": "ce4281de3d19acc61b2fc1ae1e02ca5890636a6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-campaign-watch/zipball/6e369d7e54245ebb242c069ea16b5c50b74b7910",
-                "reference": "6e369d7e54245ebb242c069ea16b5c50b74b7910",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-campaign-watch/zipball/ce4281de3d19acc61b2fc1ae1e02ca5890636a6f",
+                "reference": "ce4281de3d19acc61b2fc1ae1e02ca5890636a6f",
                 "shasum": ""
             },
             "require": {
@@ -9424,7 +9366,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-01-11T05:41:42+00:00"
+            "time": "2019-01-11T18:31:38+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-client-bundle",
@@ -9432,12 +9374,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "9d57add797fa4a98a29f330695a9b114b07c614b"
+                "reference": "34da166eec33d84c28dbf16a566d5e5cad0401f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/9d57add797fa4a98a29f330695a9b114b07c614b",
-                "reference": "9d57add797fa4a98a29f330695a9b114b07c614b",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/34da166eec33d84c28dbf16a566d5e5cad0401f0",
+                "reference": "34da166eec33d84c28dbf16a566d5e5cad0401f0",
                 "shasum": ""
             },
             "require": {
@@ -9467,7 +9409,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-01-11T05:44:26+00:00"
+            "time": "2019-01-17T18:35:48+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -9729,12 +9671,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "2573ba56f78cebbb93c9bf53c5c33dde18411013"
+                "reference": "51d4471ff831b77c3dfe1a22c28f253f757ff7a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/2573ba56f78cebbb93c9bf53c5c33dde18411013",
-                "reference": "2573ba56f78cebbb93c9bf53c5c33dde18411013",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/51d4471ff831b77c3dfe1a22c28f253f757ff7a6",
+                "reference": "51d4471ff831b77c3dfe1a22c28f253f757ff7a6",
                 "shasum": ""
             },
             "require": {
@@ -9761,7 +9703,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-01-11T06:28:39+00:00"
+            "time": "2019-01-16T14:34:56+00:00"
         },
         {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
@@ -10570,6 +10512,64 @@
                 "performance"
             ],
             "time": "2018-11-29T10:59:02+00:00"
+        },
+        {
+            "name": "facebook/graph-sdk",
+            "version": "5.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/php-graph-sdk.git",
+                "reference": "2d8250638b33d73e7a87add65f47fabf91f8ad9b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/2d8250638b33d73e7a87add65f47fabf91f8ad9b",
+                "reference": "2d8250638b33d73e7a87add65f47fabf91f8ad9b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4|^7.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "~5.0",
+                "mockery/mockery": "~0.8",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client",
+                "paragonie/random_compat": "Provides a better CSPRNG option in PHP 5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Facebook\\": "src/Facebook/"
+                },
+                "files": [
+                    "src/Facebook/polyfills.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Facebook Platform"
+            ],
+            "authors": [
+                {
+                    "name": "Facebook",
+                    "homepage": "https://github.com/facebook/php-graph-sdk/contributors"
+                }
+            ],
+            "description": "Facebook SDK for PHP",
+            "homepage": "https://github.com/facebook/php-graph-sdk",
+            "keywords": [
+                "facebook",
+                "sdk"
+            ],
+            "time": "2018-12-11T22:56:31+00:00"
         },
         {
             "name": "facebook/webdriver",
