@@ -1,0 +1,13 @@
+diff --git a/app/bundles/CampaignBundle/Entity/LeadRepository.php b/app/bundles/CampaignBundle/Entity/LeadRepository.php
+index 4dfa57b713..08d8340d07 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadRepository.php
+@@ -506,7 +506,7 @@ public function getOrphanedContacts($campaignId, ContactLimiter $limiter)
+                 )
+             );
+ 
+-        $this->updateQueryFromContactLimiter('cl', $qb, $limiter, true);
++        $this->updateQueryFromContactLimiter('cl', $qb, $limiter, false);
+         $this->updateQueryWithSegmentMembershipExclusion($segments, $qb);
+ 
+         $results = $qb->execute()->fetchAll();
