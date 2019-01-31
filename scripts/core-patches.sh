@@ -91,3 +91,10 @@ echo "If present, give NewRelic transactional awareness for console commands. #7
 echo "https://github.com/mautic/mautic/pull/7145"
 git apply -v "../scripts/patches/7145.diff"
 git add . ; git commit --author="7145 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7145"
+
+# Slave Connection for Reports
+echo "----------------------------------------------------"
+echo "Set connection to Slave for report generator and report graph if available. #7201"
+echo "https://github.com/mautic/mautic/pull/7201"
+git apply -v "../scripts/patches/7201.diff"
+git add . ; git commit --author="7201 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7201"

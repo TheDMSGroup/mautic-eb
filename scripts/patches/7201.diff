@@ -1,0 +1,52 @@
+diff --git a/app/bundles/ReportBundle/Event/ReportGeneratorEvent.php b/app/bundles/ReportBundle/Event/ReportGeneratorEvent.php
+index 1ef75179ee..fc76057f84 100644
+--- a/app/bundles/ReportBundle/Event/ReportGeneratorEvent.php
++++ b/app/bundles/ReportBundle/Event/ReportGeneratorEvent.php
+@@ -11,6 +11,7 @@
+
+ namespace Mautic\ReportBundle\Event;
+
++use Doctrine\DBAL\Connections\MasterSlaveConnection;
+ use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
+ use Doctrine\DBAL\Query\QueryBuilder;
+ use Mautic\ChannelBundle\Helper\ChannelListHelper;
+@@ -71,6 +72,13 @@ public function __construct(Report $report, array $options, QueryBuilder $qb, Ch
+         $this->options           = $options;
+         $this->queryBuilder      = $qb;
+         $this->channelListHelper = $channelListHelper;
++
++        // Prefer a slave connection if available.
++        $connection = $this->queryBuilder->getConnection();
++        if ($connection instanceof MasterSlaveConnection) {
++            $connection->connect('slave');
++            $this->queryBuilder = new QueryBuilder($connection);
++        }
+     }
+
+     /**
+diff --git a/app/bundles/ReportBundle/Event/ReportGraphEvent.php b/app/bundles/ReportBundle/Event/ReportGraphEvent.php
+index 549336da57..bd9d62f379 100644
+--- a/app/bundles/ReportBundle/Event/ReportGraphEvent.php
++++ b/app/bundles/ReportBundle/Event/ReportGraphEvent.php
+@@ -11,6 +11,7 @@
+
+ namespace Mautic\ReportBundle\Event;
+
++use Doctrine\DBAL\Connections\MasterSlaveConnection;
+ use Doctrine\DBAL\Query\QueryBuilder;
+ use Mautic\ReportBundle\Entity\Report;
+
+@@ -41,6 +42,13 @@ public function __construct(Report $report, array $graphs, QueryBuilder $queryBu
+         $this->context         = $report->getSource();
+         $this->requestedGraphs = $graphs;
+         $this->queryBuilder    = $queryBuilder;
++
++        // Prefer a slave connection if available.
++        $connection = $this->queryBuilder->getConnection();
++        if ($connection instanceof MasterSlaveConnection) {
++            $connection->connect('slave');
++            $this->queryBuilder = new QueryBuilder($connection);
++        }
+     }
+
+     /**
