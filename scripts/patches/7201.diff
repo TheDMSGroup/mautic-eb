@@ -1,0 +1,38 @@
+diff --git a/app/bundles/ReportBundle/Model/ReportModel.php b/app/bundles/ReportBundle/Model/ReportModel.php
+index d33e84391c..4097ad0f09 100644
+--- a/app/bundles/ReportBundle/Model/ReportModel.php
++++ b/app/bundles/ReportBundle/Model/ReportModel.php
+@@ -11,6 +11,7 @@
+
+ namespace Mautic\ReportBundle\Model;
+
++use Doctrine\DBAL\Connections\MasterSlaveConnection;
+ use Doctrine\DBAL\Query\QueryBuilder;
+ use Mautic\ChannelBundle\Helper\ChannelListHelper;
+ use Mautic\CoreBundle\Helper\Chart\ChartQuery;
+@@ -546,7 +547,7 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
+         $paginate        = !empty($options['paginate']);
+         $reportPage      = isset($options['reportPage']) ? $options['reportPage'] : 1;
+         $data            = $graphs            = [];
+-        $reportGenerator = new ReportGenerator($this->dispatcher, $this->em->getConnection(), $entity, $this->channelListHelper, $formFactory);
++        $reportGenerator = new ReportGenerator($this->dispatcher, $this->getConnection(), $entity, $this->channelListHelper, $formFactory);
+
+         $selectedColumns = $entity->getColumns();
+         $totalResults    = $limit    = 0;
+@@ -772,4 +773,16 @@ private function getTotalCount(QueryBuilder $qb, array &$debugData)
+
+         return (int) $countQb->execute()->fetchColumn();
+     }
++
++    /**
++     * @return \Doctrine\DBAL\Connection
++     */
++    private function getConnection()
++    {
++        if ($this->em->getConnection() instanceof MasterSlaveConnection) {
++            $this->em->getConnection()->connect('slave');
++        }
++
++        return $this->em->getConnection();
++    }
+ }
