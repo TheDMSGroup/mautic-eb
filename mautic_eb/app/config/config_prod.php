@@ -34,7 +34,7 @@ $container->setParameter('mautic.parallel_import_limit', 3);
 $container->setParameter('mautic.framework.csrf_protection', (bool) getenv('CSRF') ?: true);
 
 // Check for APC/APCuBC.
-if (function_exists('apc_fetch')) {
+if (function_exists('apcu_fetch')) {
     /*
      * disablling APC for validation because of core bug
      * https://github.com/mautic/mautic/issues/6259
@@ -42,15 +42,15 @@ if (function_exists('apc_fetch')) {
 
     // $container->loadFromExtension('framework', array(
     //     'validation' => array(
-    //         'cache' => 'apc'
+    //         'cache' => 'apcu'
     //     )
     // ));
 
     $container->loadFromExtension('doctrine', [
         'orm' => [
-            'metadata_cache_driver' => 'apc',
-            // 'result_cache_driver'   => 'apc',
-            'query_cache_driver'    => 'apc',
+            'metadata_cache_driver' => 'apcu',
+            'query_cache_driver'    => 'apcu',
+            'result_cache_driver'   => 'array',
         ],
     ]);
 }
