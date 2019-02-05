@@ -86,15 +86,6 @@ diff --git a/composer.lock b/composer.lock
 index 1f0abb2bb3..8b7ce35e16 100644
 --- a/composer.lock
 +++ b/composer.lock
-@@ -4,7 +4,7 @@
-         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-         "This file is @generated automatically"
-     ],
--    "content-hash": "d865a55c8f4f76edea7f41ffb0d5223f",
-+    "content-hash": "1fdc0bae9333238a30a8e72be1a15bcf",
-     "packages": [
-         {
-             "name": "aws/aws-sdk-php",
 @@ -322,33 +322,33 @@
          },
          {
