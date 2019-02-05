@@ -33,10 +33,10 @@ $container->setParameter('mautic.parallel_import_limit', 3);
 // Just set the environment variable CSRF to 0.
 $container->setParameter('mautic.framework.csrf_protection', (bool) getenv('CSRF') ?: true);
 
-// Check for APC/APCuBC.
-if (function_exists('apcu_fetch')) {
+// Check for APCu
+if (function_exists('apcu_fetch') && class_exists('\Doctrine\Common\Cache\ApcuCache')) {
     /*
-     * disablling APC for validation because of core bug
+     * Disabling APC for validation because of core bug
      * https://github.com/mautic/mautic/issues/6259
      */
 
@@ -46,6 +46,10 @@ if (function_exists('apcu_fetch')) {
     //     )
     // ));
 
+    /*
+     * Note this requires a patch for Apcu compatibility.
+     * https://github.com/mautic/mautic/pull/7215
+     */
     $container->loadFromExtension('doctrine', [
         'orm' => [
             'metadata_cache_driver' => 'apcu',

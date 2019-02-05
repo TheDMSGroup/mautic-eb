@@ -24,6 +24,7 @@ echo ; echo "Custom build."
 composer install --no-interaction
 
 bash ./scripts/core-patches.sh
+composer install --no-interaction
 
 echo ; echo "Forcing updates to distribution plugins"
 # rm -rf ./mautic_custom
