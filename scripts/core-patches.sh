@@ -98,3 +98,10 @@ echo "Set connection to Slave for report generator and report graph if available
 echo "https://github.com/mautic/mautic/pull/7201"
 git apply -v "../scripts/patches/7201.diff"
 git add . ; git commit --author="7201 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7201"
+
+# Brings back APC level caching to mautic-eb.
+echo "----------------------------------------------------"
+echo "Improve APCu support #7215"
+echo "https://github.com/mautic/mautic/pull/7215"
+git apply -v "../scripts/patches/7215.diff"
+git add . ; git commit --author="7215 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7215"
