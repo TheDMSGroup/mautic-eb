@@ -1,0 +1,295 @@
+diff --git a/app/bundles/CoreBundle/Security/Permissions/AbstractPermissions.php b/app/bundles/CoreBundle/Security/Permissions/AbstractPermissions.php
+index 4070a45d28..26276050cd 100644
+--- a/app/bundles/CoreBundle/Security/Permissions/AbstractPermissions.php
++++ b/app/bundles/CoreBundle/Security/Permissions/AbstractPermissions.php
+@@ -214,7 +214,7 @@ public function isGranted($userPermissions, $name, $level)
+         if (!isset($userPermissions[$name])) {
+             //the user doesn't have implicit access
+             return false;
+-        } elseif ($this->permissions[$name]['full'] & $userPermissions[$name]) {
++        } elseif (isset($this->permissions[$name]['full']) && $this->permissions[$name]['full'] & $userPermissions[$name]) {
+             return true;
+         } else {
+             //otherwise test for specific level
+@@ -292,11 +292,10 @@ public function getPermissionRatio(array $data)
+         foreach ($this->permissions as $level => $perms) {
+             $perms = array_keys($perms);
+             $totalAvailable += count($perms);
+-
+             if (in_array('full', $perms)) {
+                 if (count($perms) === 1) {
+                     //full is the only permission so count as 1
+-                    if (!empty($data[$level]) && in_array('full', $data[$level])) {
++                    if (!empty($data[$level]) && !in_array('full', $data[$level])) {
+                         ++$totalGranted;
+                     }
+                 } else {
+@@ -429,6 +428,38 @@ protected function addManageFormFields($bundle, $level, &$builder, $data)
+         ]);
+     }
+ 
++    /**
++     * Add custom permissions.
++     *
++     * @param $level
++     * @param $permissions
++     */
++    protected function addCustomPermission($level, $permissions)
++    {
++        $this->permissions[$level] = $permissions;
++    }
++
++    /**
++     * Adds a custom permission to the form builder, i.e. config only bundles.
++     *
++     * @param string               $bundle
++     * @param                      $level
++     * @param FormBuilderInterface $builder
++     * @param                      $label
++     * @param                      $choices
++     * @param array                $data
++     */
++    protected function addCustomFormFields($bundle, $level, &$builder, $label, $choices, $data)
++    {
++        $builder->add("$bundle:$level", 'permissionlist', [
++            'choices' => $choices,
++            'label'   => $label,
++            'data'    => (!empty($data[$level]) ? $data[$level] : []),
++            'bundle'  => $bundle,
++            'level'   => $level,
++        ]);
++    }
++
+     /**
+      * Adds the standard permission set of viewown, viewother, editown, editother, create, deleteown, deleteother,
+      * publishown, publishother and full.
+diff --git a/app/bundles/CoreBundle/Translations/en_US/messages.ini b/app/bundles/CoreBundle/Translations/en_US/messages.ini
+index 32cbf6b5de..3e4d59e1f1 100644
+--- a/app/bundles/CoreBundle/Translations/en_US/messages.ini
++++ b/app/bundles/CoreBundle/Translations/en_US/messages.ini
+@@ -310,6 +310,8 @@ mautic.core.permissions.publishown="Publish Own"
+ mautic.core.permissions.view="View"
+ mautic.core.permissions.viewother="View Others"
+ mautic.core.permissions.viewown="View Own"
++mautic.core.permissions.export="Export access"
++mautic.core.permissions.disable="Disable"
+ mautic.core.popupblocked="It seems the browser is blocking popups. Please enable popups for this site and try again."
+ mautic.core.position="Position"
+ mautic.core.preview="Preview"
+diff --git a/app/bundles/FormBundle/Controller/ResultController.php b/app/bundles/FormBundle/Controller/ResultController.php
+index 98395a2858..3260e633bd 100644
+--- a/app/bundles/FormBundle/Controller/ResultController.php
++++ b/app/bundles/FormBundle/Controller/ResultController.php
+@@ -172,6 +172,7 @@ public function indexAction($objectId, $page = 1)
+                         'form:forms:editother',
+                         $form->getCreatedBy()
+                     ),
++                    'disableExportPermission'=> !$this->get('mautic.security')->isAdmin() && $this->get('mautic.security')->isGranted('form:export:disable', 'MATCH_ALL'),
+                 ],
+                 'contentTemplate' => 'MauticFormBundle:Result:list.html.php',
+                 'passthroughVars' => [
+@@ -257,6 +258,10 @@ public function exportAction($objectId, $format = 'csv')
+         $formPage  = $session->get('mautic.form.page', 1);
+         $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
+ 
++        if (!$this->get('mautic.security')->isAdmin() && $this->get('mautic.security')->isGranted('form:export:disable', 'MATCH_ONE')) {
++            return $this->accessDenied();
++        }
++
+         if ($form === null) {
+             //redirect back to form list
+             return $this->postActionRedirect(
+diff --git a/app/bundles/FormBundle/Security/Permissions/FormPermissions.php b/app/bundles/FormBundle/Security/Permissions/FormPermissions.php
+index bcf9348fa3..45d2291dc2 100644
+--- a/app/bundles/FormBundle/Security/Permissions/FormPermissions.php
++++ b/app/bundles/FormBundle/Security/Permissions/FormPermissions.php
+@@ -25,6 +25,7 @@ class FormPermissions extends AbstractPermissions
+     public function __construct($params)
+     {
+         parent::__construct($params);
++        $this->addCustomPermission('export', ['disable' => 1024]);
+         $this->addExtendedPermissions('forms');
+         $this->addStandardPermissions('categories');
+     }
+@@ -42,7 +43,8 @@ public function getName()
+      */
+     public function buildForm(FormBuilderInterface &$builder, array $options, array $data)
+     {
+-        $this->addStandardFormFields('form', 'categories', $builder, $data);
+-        $this->addExtendedFormFields('form', 'forms', $builder, $data);
++        $this->addStandardFormFields($this->getName(), 'categories', $builder, $data);
++        $this->addExtendedFormFields($this->getName(), 'forms', $builder, $data);
++        $this->addCustomFormFields($this->getName(), 'export', $builder, 'mautic.core.permissions.export', ['disable' => 'mautic.core.permissions.disable'], $data);
+     }
+ }
+diff --git a/app/bundles/FormBundle/Views/Result/index.html.php b/app/bundles/FormBundle/Views/Result/index.html.php
+index eeea0eef78..0a9230a12e 100644
+--- a/app/bundles/FormBundle/Views/Result/index.html.php
++++ b/app/bundles/FormBundle/Views/Result/index.html.php
+@@ -52,6 +52,11 @@
+     ];
+ }
+ 
++// Remove buttons if disable export permission exists
++if (!empty($disableExportPermission)) {
++    $buttons = [];
++}
++
+ $buttons[] =
+     [
+         'attr' => [
+diff --git a/app/bundles/LeadBundle/Config/config.php b/app/bundles/LeadBundle/Config/config.php
+index 30b1e0f942..f4d0e5c529 100644
+--- a/app/bundles/LeadBundle/Config/config.php
++++ b/app/bundles/LeadBundle/Config/config.php
+@@ -469,7 +469,10 @@
+                 ],
+             ],
+             'mautic.lead.button.subscriber' => [
+-                'class' => \Mautic\LeadBundle\EventListener\ButtonSubscriber::class,
++                'class'     => \Mautic\LeadBundle\EventListener\ButtonSubscriber::class,
++                'arguments' => [
++                    'mautic.security',
++                ],
+             ],
+             'mautic.lead.import.subscriber' => [
+                 'class'     => Mautic\LeadBundle\EventListener\ImportSubscriber::class,
+diff --git a/app/bundles/LeadBundle/Controller/LeadController.php b/app/bundles/LeadBundle/Controller/LeadController.php
+index 2bdc6132e3..fbcfaf8960 100644
+--- a/app/bundles/LeadBundle/Controller/LeadController.php
++++ b/app/bundles/LeadBundle/Controller/LeadController.php
+@@ -1885,7 +1885,9 @@ public function batchExportAction()
+             'RETURN_ARRAY'
+         );
+ 
+-        if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
++        if ((!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother'])) {
++            return $this->accessDenied();
++        } elseif (!$this->get('mautic.security')->isAdmin() && $this->get('mautic.security')->isGranted('lead:export:disable', 'MATCH_ONE')) {
+             return $this->accessDenied();
+         }
+ 
+diff --git a/app/bundles/LeadBundle/EventListener/ButtonSubscriber.php b/app/bundles/LeadBundle/EventListener/ButtonSubscriber.php
+index 480c15dd05..589c186892 100644
+--- a/app/bundles/LeadBundle/EventListener/ButtonSubscriber.php
++++ b/app/bundles/LeadBundle/EventListener/ButtonSubscriber.php
+@@ -14,10 +14,24 @@
+ use Mautic\CoreBundle\CoreEvents;
+ use Mautic\CoreBundle\Event\CustomButtonEvent;
+ use Mautic\CoreBundle\EventListener\CommonSubscriber;
++use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+ use Mautic\CoreBundle\Templating\Helper\ButtonHelper;
+ 
+ class ButtonSubscriber extends CommonSubscriber
+ {
++    /** @var CorePermissions */
++    protected $security;
++
++    /**
++     * ButtonSubscriber constructor.
++     *
++     * @param CorePermissions $security
++     */
++    public function __construct(CorePermissions $security)
++    {
++        $this->security = $security;
++    }
++
+     public static function getSubscribedEvents()
+     {
+         return [
+@@ -30,7 +44,7 @@ public static function getSubscribedEvents()
+      */
+     public function injectViewButtons(CustomButtonEvent $event)
+     {
+-        if (0 === strpos($event->getRoute(), 'mautic_contact_index')) {
++        if (0 === strpos($event->getRoute(), 'mautic_contact_index') && ($this->security->isAdmin() || !$this->security->isGranted('lead:export:disable', 'MATCH_ONE'))) {
+             $exportRoute = $this->router->generate(
+                 'mautic_contact_action',
+                 ['objectAction' => 'batchExport']
+diff --git a/app/bundles/LeadBundle/Security/Permissions/LeadPermissions.php b/app/bundles/LeadBundle/Security/Permissions/LeadPermissions.php
+index 05635e08fe..4b08b431fc 100644
+--- a/app/bundles/LeadBundle/Security/Permissions/LeadPermissions.php
++++ b/app/bundles/LeadBundle/Security/Permissions/LeadPermissions.php
+@@ -36,6 +36,7 @@ public function __construct($params)
+         ];
+         $this->addExtendedPermissions('leads', false);
+         $this->addStandardPermissions('imports');
++        $this->addCustomPermission('export', ['disable' => 1024]);
+     }
+ 
+     /**
+@@ -57,7 +58,7 @@ public function getName()
+      */
+     public function buildForm(FormBuilderInterface &$builder, array $options, array $data)
+     {
+-        $this->addExtendedFormFields('lead', 'leads', $builder, $data, false);
++        $this->addExtendedFormFields($this->getName(), 'leads', $builder, $data, false);
+ 
+         $builder->add('lead:lists', 'permissionlist', [
+             'choices' => [
+@@ -82,6 +83,7 @@ public function buildForm(FormBuilderInterface &$builder, array $options, array
+             'level'  => 'fields',
+         ]);
+ 
++        $this->addCustomFormFields($this->getName(), 'export', $builder, 'mautic.core.permissions.export', ['disable' => 'mautic.core.permissions.disable'], $data);
+         $this->addStandardFormFields($this->getName(), 'imports', $builder, $data);
+     }
+ 
+diff --git a/app/bundles/ReportBundle/Controller/ReportController.php b/app/bundles/ReportBundle/Controller/ReportController.php
+index c20d6eef12..959a053a80 100644
+--- a/app/bundles/ReportBundle/Controller/ReportController.php
++++ b/app/bundles/ReportBundle/Controller/ReportController.php
+@@ -691,8 +691,9 @@ public function viewAction($objectId, $reportPage = 1)
+                         ],
+                         'RETURN_ARRAY'
+                     ),
+-                    'dateRangeForm'     => $dateRangeForm->createView(),
+-                    'dynamicFilterForm' => $dynamicFilterForm->createView(),
++                    'dateRangeForm'          => $dateRangeForm->createView(),
++                    'dynamicFilterForm'      => $dynamicFilterForm->createView(),
++                    'disableExportPermission'=> !$this->get('mautic.security')->isAdmin() && $this->get('mautic.security')->isGranted('report:export:disable', 'MATCH_ALL'),
+                 ],
+                 'contentTemplate' => $reportData['contentTemplate'],
+                 'passthroughVars' => [
+@@ -786,6 +787,8 @@ public function exportAction($objectId, $format = 'csv')
+             );
+         } elseif (!$security->hasEntityAccess('report:reports:viewown', 'report:reports:viewother', $entity->getCreatedBy())) {
+             return $this->accessDenied();
++        } elseif (!$this->get('mautic.security')->isAdmin() && $this->get('mautic.security')->isGranted('report:export:disable', 'MATCH_ONE')) {
++            return $this->accessDenied();
+         }
+ 
+         $session  = $this->get('session');
+diff --git a/app/bundles/ReportBundle/Security/Permissions/ReportPermissions.php b/app/bundles/ReportBundle/Security/Permissions/ReportPermissions.php
+index 6dc8be3599..1f398f40d3 100644
+--- a/app/bundles/ReportBundle/Security/Permissions/ReportPermissions.php
++++ b/app/bundles/ReportBundle/Security/Permissions/ReportPermissions.php
+@@ -26,6 +26,7 @@ public function __construct($params)
+     {
+         parent::__construct($params);
+         $this->addExtendedPermissions('reports');
++        $this->addCustomPermission('export', ['disable' => 1024]);
+     }
+ 
+     /**
+@@ -42,5 +43,6 @@ public function getName()
+     public function buildForm(FormBuilderInterface &$builder, array $options, array $data)
+     {
+         $this->addExtendedFormFields('report', 'reports', $builder, $data);
++        $this->addCustomFormFields($this->getName(), 'export', $builder, 'mautic.core.permissions.export', ['disable' => 'mautic.core.permissions.disable'], $data);
+     }
+ }
+diff --git a/app/bundles/ReportBundle/Views/Report/details.html.php b/app/bundles/ReportBundle/Views/Report/details.html.php
+index d5475b2081..2c06e90595 100644
+--- a/app/bundles/ReportBundle/Views/Report/details.html.php
++++ b/app/bundles/ReportBundle/Views/Report/details.html.php
+@@ -23,7 +23,7 @@
+     $view['slots']->set('headerTitle', $header);
+ 
+     $buttons = [];
+-    if (!empty($data) || !empty($graphs)) {
++    if ((!empty($data) || !empty($graphs)) && empty($disableExportPermission)) {
+         $buttons[] = [
+             'attr' => [
+                 'target'      => '_new',
