@@ -105,3 +105,10 @@ echo "Improve APCu support #7215"
 echo "https://github.com/mautic/mautic/pull/7215"
 git apply -v "../scripts/patches/7215.diff"
 git add . ; git commit --author="7215 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7215"
+
+# UTM tag import support moved from ExtendedFields to Core.
+echo "----------------------------------------------------"
+echo "UTM tag import support moved from ExtendedFields to Core"
+echo "https://github.com/mautic/mautic/pull/7245"
+git apply -v "../scripts/patches/7245.diff"
+git add . ; git commit --author="7245 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7245"
