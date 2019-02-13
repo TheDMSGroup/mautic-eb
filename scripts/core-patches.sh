@@ -105,3 +105,11 @@ echo "Improve APCu support #7215"
 echo "https://github.com/mautic/mautic/pull/7215"
 git apply -v "../scripts/patches/7215.diff"
 git add . ; git commit --author="7215 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7215"
+
+# Add existing Export permission PR
+#echo "----------------------------------------------------"
+#echo "[Feature] Role export access in Leads, Forms, Reports #5995"
+#echo "https://github.com/mautic/mautic/pull/5995"
+curl -L "https://github.com/mautic/mautic/pull/5995.diff" | git apply -v
+git add . ; git commit -nm "PATCH https://github.com/mautic/mautic/pull/5995"
+
