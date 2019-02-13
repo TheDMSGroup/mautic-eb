@@ -112,3 +112,10 @@ echo "UTM tag import support moved from ExtendedFields to Core"
 echo "https://github.com/mautic/mautic/pull/7245"
 git apply -v "../scripts/patches/7245.diff"
 git add . ; git commit --author="7245 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7245"
+
+# Add existing Export permission PR
+#echo "----------------------------------------------------"
+#echo "[Feature] Role export access in Leads, Forms, Reports #5995"
+#echo "https://github.com/mautic/mautic/pull/5995"
+git apply -v "../scripts/patches/5995.diff"
+git add . ; git commit --author="5995 <zdeno@kuzmany.biz>" -nm "https://github.com/mautic/mautic/pull/5995"
