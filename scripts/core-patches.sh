@@ -110,6 +110,6 @@ git add . ; git commit --author="7215 <info@thedmsgrp.com>" -nm "https://github.
 #echo "----------------------------------------------------"
 #echo "[Feature] Role export access in Leads, Forms, Reports #5995"
 #echo "https://github.com/mautic/mautic/pull/5995"
-git apply -v "./patches/5995.diff"
+git apply -v "../scripts/patches/5995.diff"
 git add . ; git commit -nm "PATCH https://github.com/mautic/mautic/pull/5995"
 
