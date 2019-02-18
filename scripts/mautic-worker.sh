@@ -56,39 +56,38 @@ then
     inactiveworkers=$MAUTIC_WORKERS_INACTIVE
 fi
 
-# Start global event workers
 if [ $globalworkers -gt 0 ]
 then
+    # Start global event workers
     for (( i = 1; i <= $globalworkers; i++ ))
     do
-        cronloop mautic:campaign:trigger --thread-id $i --max-threads $globalworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
+        cronloop mautic:campaign:trigger --thread-id $i --max-threads $globalworkers --batch-limit 250 --campaign-limit 1500 --quiet --force &
     done
-fi
+else
+    # Start kickoff event workers.
+    if [ $kickoffworkers -gt 0 ]
+    then
+        for (( i = 1; i <= $kickoffworkers; i++ ))
+        do
+            cronloop mautic:campaign:trigger --thread-id $i --kickoff-only --max-threads $kickoffworkers --batch-limit 250 --campaign-limit 1500 --quiet --force &
+        done
+    fi
 
-# Start kickoff event workers.
-if [ $kickoffworkers -gt 0 ]
-then
-    for (( i = 1; i <= $kickoffworkers; i++ ))
-    do
-        cronloop mautic:campaign:trigger --thread-id $i --kickoff-only --max-threads $scheduledworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
-    done
-fi
+    # Start scheduled event workers.
+    if [ $scheduledworkers -gt 0 ]
+    then
+        for (( i = 1; i <= $scheduledworkers; i++ ))
+        do
+            cronloop mautic:campaign:trigger --thread-id $i --scheduled-only --max-threads $scheduledworkers --batch-limit 250 --campaign-limit 1500 --quiet --force &
+        done
+    fi
 
-# Start scheduled event workers.
-if [ $scheduledworkers -gt 0 ]
-then
-    for (( i = 1; i <= $scheduledworkers; i++ ))
-    do
-        cronloop mautic:campaign:trigger --thread-id $i --scheduled-only --max-threads $scheduledworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
-    done
+    # Start inactive event workers.
+    if [ $inactiveworkers -gt 0 ]
+    then
+        for (( i = 1; i <= $inactiveworkers; i++ ))
+        do
+            cronloop mautic:campaign:trigger --thread-id $i --inactive-only --max-threads $inactiveworkers --batch-limit 250 --campaign-limit 1500 --quiet --force &
+        done
+    fi
 fi
-
-# Start inactive event workers.
-if [ $inactiveworkers -gt 0 ]
-then
-    for (( i = 1; i <= $inactiveworkers; i++ ))
-    do
-        cronloop mautic:campaign:trigger --thread-id $i --inactive-only --max-threads $inactiveworkers --batch-limit 250 --campaign-limit 2000 --quiet --force &
-    done
-fi
-
