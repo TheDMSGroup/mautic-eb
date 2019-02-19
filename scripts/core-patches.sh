@@ -119,3 +119,10 @@ git add . ; git commit --author="7245 <info@thedmsgrp.com>" -nm "https://github.
 #echo "https://github.com/mautic/mautic/pull/5995"
 git apply -v "../scripts/patches/5995.diff"
 git add . ; git commit --author="5995 <zdeno@kuzmany.biz>" -nm "https://github.com/mautic/mautic/pull/5995"
+
+# Support Aggregator columns on subscribed/emailed reports.
+echo "----------------------------------------------------"
+echo "Support Aggregator columns on subscribed/emailed reports"
+echo "https://github.com/mautic/mautic/pull/7266"
+git apply -v "../scripts/patches/7266.diff"
+git add . ; git commit --author="7266 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7266"
