@@ -26,8 +26,8 @@ if ('prod' == $container->getParameter('kernel.environment')) {
 // We'll drop that down to 50ms.
 $container->setParameter('mautic.batch_sleep_time', .050);
 
-// Allow up to 3 parallel file imports.
-$container->setParameter('mautic.parallel_import_limit', 3);
+// Allow more parallel file imports.
+// $container->setParameter('mautic.parallel_import_limit', 12);
 
 // Optionally allow CSRF to be disabled. Useful if all users are behind a firewall and you have multiple nodes.
 // Just set the environment variable CSRF to 0.
