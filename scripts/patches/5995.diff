@@ -63,8 +63,29 @@ index 4070a45d28..26276050cd 100644
      /**
       * Adds the standard permission set of viewown, viewother, editown, editother, create, deleteown, deleteother,
       * publishown, publishother and full.
+diff --git a/app/bundles/CoreBundle/Templating/Helper/SecurityHelper.php b/app/bundles/CoreBundle/Templating/Helper/SecurityHelper.php
+index ad7d63a9fe..a744263b8a 100644
+--- a/app/bundles/CoreBundle/Templating/Helper/SecurityHelper.php
++++ b/app/bundles/CoreBundle/Templating/Helper/SecurityHelper.php
+@@ -73,6 +73,16 @@ public function getName()
+         return 'security';
+     }
+ 
++    /**
++     * Helper function to check if user is an Admin.
++     *
++     * @return bool
++     */
++    public function isAdmin()
++    {
++        return $this->security->isAdmin();
++    }
++
+     /**
+      * Helper function to check if the logged in user has access to an entity.
+      *
 diff --git a/app/bundles/CoreBundle/Translations/en_US/messages.ini b/app/bundles/CoreBundle/Translations/en_US/messages.ini
-index 32cbf6b5de..3e4d59e1f1 100644
+index 09c866b903..1ba1ec8ff8 100644
 --- a/app/bundles/CoreBundle/Translations/en_US/messages.ini
 +++ b/app/bundles/CoreBundle/Translations/en_US/messages.ini
 @@ -310,6 +310,8 @@ mautic.core.permissions.publishown="Publish Own"
@@ -139,7 +160,7 @@ index eeea0eef78..0a9230a12e 100644
      [
          'attr' => [
 diff --git a/app/bundles/LeadBundle/Config/config.php b/app/bundles/LeadBundle/Config/config.php
-index 30b1e0f942..f4d0e5c529 100644
+index 351fc90a4f..fadae94945 100644
 --- a/app/bundles/LeadBundle/Config/config.php
 +++ b/app/bundles/LeadBundle/Config/config.php
 @@ -469,7 +469,10 @@
@@ -155,10 +176,10 @@ index 30b1e0f942..f4d0e5c529 100644
              'mautic.lead.import.subscriber' => [
                  'class'     => Mautic\LeadBundle\EventListener\ImportSubscriber::class,
 diff --git a/app/bundles/LeadBundle/Controller/LeadController.php b/app/bundles/LeadBundle/Controller/LeadController.php
-index 2bdc6132e3..fbcfaf8960 100644
+index ed93651730..3d7d3593e3 100644
 --- a/app/bundles/LeadBundle/Controller/LeadController.php
 +++ b/app/bundles/LeadBundle/Controller/LeadController.php
-@@ -1885,7 +1885,9 @@ public function batchExportAction()
+@@ -1886,7 +1886,9 @@ public function batchExportAction()
              'RETURN_ARRAY'
          );
  
