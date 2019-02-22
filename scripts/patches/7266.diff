@@ -1,0 +1,87 @@
+diff --git a/app/bundles/ReportBundle/Crate/ReportDataResult.php b/app/bundles/ReportBundle/Crate/ReportDataResult.php
+index 76d3f02d4c..9b612caa93 100644
+--- a/app/bundles/ReportBundle/Crate/ReportDataResult.php
++++ b/app/bundles/ReportBundle/Crate/ReportDataResult.php
+@@ -95,8 +95,7 @@ private function buildHeader($data)
+
+         $row = $this->data[0];
+         foreach ($row as $k => $v) {
+-            $dataColumn = $data['dataColumns'][$k];
+-
++            $dataColumn      = $data['dataColumns'][$k];
+             $this->headers[] = $data['columns'][$dataColumn]['label'];
+         }
+     }
+@@ -112,9 +111,12 @@ private function buildTypes($data)
+
+         $row = $this->data[0];
+         foreach ($row as $k => $v) {
+-            $dataColumn = $data['dataColumns'][$k];
+-
+-            $this->types[$k] = $data['columns'][$dataColumn]['type'];
++            if (array_key_exists($k, $data['aggregatorColumns'])) {
++                $this->types[$k] = 'int';
++            } else {
++                $dataColumn      = $data['dataColumns'][$k];
++                $this->types[$k] = $data['columns'][$dataColumn]['type'];
++            }
+         }
+     }
+ }
+diff --git a/app/bundles/ReportBundle/Model/ReportModel.php b/app/bundles/ReportBundle/Model/ReportModel.php
+index d33e84391c..448d7febcb 100644
+--- a/app/bundles/ReportBundle/Model/ReportModel.php
++++ b/app/bundles/ReportBundle/Model/ReportModel.php
+@@ -552,17 +552,19 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
+         $totalResults    = $limit    = 0;
+
+         // Prepare the query builder
+-        $tableDetails = $this->getTableData($entity->getSource());
+-
++        $tableDetails      = $this->getTableData($entity->getSource());
++        $dataColumns       = $dataAggregatorColumns = [];
+         $aggregatorColumns = ($aggregators = $entity->getAggregators()) ? $aggregators : [];
+
+         foreach ($aggregatorColumns as $aggregatorColumn) {
+             $selectedColumns[] = $aggregatorColumn['column'];
+         }
+         // Build a reference for column to data column (without table prefix)
+-        $dataColumns = [];
+         foreach ($tableDetails['columns'] as $dbColumn => &$columnData) {
+             $dataColumns[$columnData['alias']] = $dbColumn;
++            // add aggregator columns to dataColumns also
++            $dataColumns[$aggregatorColumn['function'].' '.$aggregatorColumn['column']]           = $aggregatorColumn['column'];
++            $dataAggregatorColumns[$aggregatorColumn['function'].' '.$aggregatorColumn['column']] = $aggregatorColumn['column'];
+         }
+
+         $orderBy    = $this->session->get('mautic.report.'.$entity->getId().'.orderby', '');
+@@ -699,17 +701,18 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
+         }
+
+         return [
+-            'totalResults'    => $totalResults,
+-            'data'            => $data,
+-            'dataColumns'     => $dataColumns,
+-            'graphs'          => $graphs,
+-            'contentTemplate' => $contentTemplate,
+-            'columns'         => $tableDetails['columns'],
+-            'limit'           => ($paginate) ? $limit : 0,
+-            'page'            => ($paginate) ? $reportPage : 1,
+-            'dateFrom'        => $dataOptions['dateFrom'],
+-            'dateTo'          => $dataOptions['dateTo'],
+-            'debug'           => $debugData,
++            'totalResults'      => $totalResults,
++            'data'              => $data,
++            'dataColumns'       => $dataColumns,
++            'graphs'            => $graphs,
++            'contentTemplate'   => $contentTemplate,
++            'columns'           => $tableDetails['columns'],
++            'limit'             => ($paginate) ? $limit : 0,
++            'page'              => ($paginate) ? $reportPage : 1,
++            'dateFrom'          => $dataOptions['dateFrom'],
++            'dateTo'            => $dataOptions['dateTo'],
++            'debug'             => $debugData,
++            'aggregatorColumns' => $dataAggregatorColumns,
+         ];
+     }
+
