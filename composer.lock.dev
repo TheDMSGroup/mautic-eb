@@ -9537,7 +9537,7 @@
                 "mnsami/composer-custom-directory-installer": "1.1.*"
             },
             "type": "library",
-            "time": "2018-10-26T18:40:57+00:00"
+            "time": "2019-02-28T19:49:31+00:00"
         },
         {
             "name": "thedmsgroup/mautic-enhancer-bundle",
