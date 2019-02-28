@@ -9457,12 +9457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "278432ffedac1cb0eee860cab62b4dfb8ed2db43"
+                "reference": "7ee43cd494afd1072d0814a7b09dadd71a7cf62a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/278432ffedac1cb0eee860cab62b4dfb8ed2db43",
-                "reference": "278432ffedac1cb0eee860cab62b4dfb8ed2db43",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/7ee43cd494afd1072d0814a7b09dadd71a7cf62a",
+                "reference": "7ee43cd494afd1072d0814a7b09dadd71a7cf62a",
                 "shasum": ""
             },
             "require": {
@@ -9486,7 +9486,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-02-28T16:32:33+00:00"
+            "time": "2019-02-28T18:41:23+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
