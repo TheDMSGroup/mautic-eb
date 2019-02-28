@@ -30,7 +30,7 @@
           "source": {
             "type": "git",
             "url": "https://github.com/thedmsgroup/mautic-eb-custom.git",
-            "reference": "master"
+            "reference": "2.15.0"
           },
           "require": {
             "mnsami/composer-custom-directory-installer": "1.1.*"
