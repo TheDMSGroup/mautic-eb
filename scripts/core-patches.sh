@@ -126,3 +126,10 @@ echo "Support Aggregator columns on subscribed/emailed reports"
 echo "https://github.com/mautic/mautic/pull/7266"
 git apply -v "../scripts/patches/7266.diff"
 git add . ; git commit --author="7266 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7266"
+
+# Not yet approved, but essential for DNC project at this time.
+echo "----------------------------------------------------"
+echo "Allow 3rd party Do Not Contact entries to be appended to exiting DNC entities, list, and count at run time"
+echo "https://github.com/mautic/mautic/pull/7288"
+git apply -v "../scripts/patches/7288.diff"
+git add . ; git commit --author="7288 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7288"
