@@ -167,6 +167,17 @@ else
     cd -
 fi
 
+if [ ! -d "./plugins/MauticDoNotContactExtrasBundle/.git" ]
+then
+    rm -rf ./plugins/MauticDoNotContactExtrasBundle
+    git clone -b master https://github.com/TheDMSGroup/mautic-dnc-extras.git ./plugins/MauticDoNotContactExtrasBundle
+else
+    cd ./plugins/MauticDoNotContactExtrasBundle
+    git checkout master
+    git pull
+    cd -
+fi
+
 if [ ! -d "./mautic_custom/.git" ]
 then
     rm -rf ./mautic_custom
