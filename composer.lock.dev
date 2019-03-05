@@ -9526,17 +9526,17 @@
             "time": "2019-02-05T17:34:33+00:00"
         },
         {
-            "name": "thedmsgroup/mautic-dnc-extras-bundle",
+            "name": "thedmsgroup/mautic-do-not-contact-extras-bundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-dnc-extras.git",
-                "reference": "968607870124b4fccd83c020be399d645dd45da8"
+                "reference": "560678f3a19b081df54cd3292347cbd9631ca9fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dnc-extras/zipball/968607870124b4fccd83c020be399d645dd45da8",
-                "reference": "968607870124b4fccd83c020be399d645dd45da8",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dnc-extras/zipball/560678f3a19b081df54cd3292347cbd9631ca9fa",
+                "reference": "560678f3a19b081df54cd3292347cbd9631ca9fa",
                 "shasum": ""
             },
             "require": {
@@ -9560,7 +9560,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-02-25T16:29:07+00:00"
+            "time": "2019-03-05T15:03:10+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
@@ -12310,7 +12310,7 @@
         "thedmsgroup/mautic-dashboard-warm-bundle": 20,
         "thedmsgroup/mautic-segment-extras-bundle": 20,
         "thedmsgroup/mautic-media-bundle": 20,
-        "thedmsgroup/mautic-dnc-extras-bundle": 20
+        "thedmsgroup/mautic-do-not-contact-extras-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
