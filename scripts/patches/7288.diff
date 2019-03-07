@@ -1,0 +1,1201 @@
+diff --git a/app/bundles/EmailBundle/Model/EmailModel.php b/app/bundles/EmailBundle/Model/EmailModel.php
+index dd3e69139f..0c1a668591 100644
+--- a/app/bundles/EmailBundle/Model/EmailModel.php
++++ b/app/bundles/EmailBundle/Model/EmailModel.php
+@@ -735,6 +735,7 @@ public function getEmailListStats($email, $includeVariants = false, \DateTime $d
+ 
+             /** @var \Mautic\LeadBundle\Entity\DoNotContactRepository $dncRepo */
+             $dncRepo = $this->em->getRepository('MauticLeadBundle:DoNotContact');
++            $dncRepo->setDispatcher($this->dispatcher);
+ 
+             /** @var \Mautic\PageBundle\Entity\TrackableRepository $trackableRepo */
+             $trackableRepo = $this->em->getRepository('MauticPageBundle:Trackable');
+diff --git a/app/bundles/LeadBundle/Controller/AjaxController.php b/app/bundles/LeadBundle/Controller/AjaxController.php
+index 594f5128e0..4b7db1908a 100644
+--- a/app/bundles/LeadBundle/Controller/AjaxController.php
++++ b/app/bundles/LeadBundle/Controller/AjaxController.php
+@@ -81,7 +81,10 @@ protected function getLeadIdsByFieldValueAction(Request $request)
+                     $name = $this->translator->trans('mautic.lead.lead.anonymous');
+                 }
+ 
+-                $leadLink = $this->generateUrl('mautic_contact_action', ['objectAction' => 'view', 'objectId' => $lead->getId()]);
++                $leadLink = $this->generateUrl(
++                    'mautic_contact_action',
++                    ['objectAction' => 'view', 'objectId' => $lead->getId()]
++                );
+ 
+                 $dataArray['items'][] = [
+                     'name' => $name,
+@@ -154,7 +157,11 @@ protected function updateSocialProfileAction(Request $request)
+             $model = $this->getModel('lead.lead');
+             $lead  = $model->getEntity($leadId);
+ 
+-            if ($lead !== null && $this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editown', $lead->getPermissionUser())) {
++            if ($lead !== null && $this->get('mautic.security')->hasEntityAccess(
++                    'lead:leads:editown',
++                    'lead:leads:editown',
++                    $lead->getPermissionUser()
++                )) {
+                 $leadFields = $lead->getFields();
+                 /** @var IntegrationHelper $integrationHelper */
+                 $integrationHelper = $this->factory->getHelper('integration');
+@@ -171,7 +178,7 @@ protected function updateSocialProfileAction(Request $request)
+                             'socialProfileUrls' => $socialProfileUrls,
+                         ]
+                     );
+-                    $dataArray['socialCount'] = $socialCount;
++                    $dataArray['socialCount']     = $socialCount;
+                 } else {
+                     foreach ($socialProfiles as $name => $details) {
+                         if ($integrationObject = $integrationHelper->getIntegrationObject($name)) {
+@@ -216,7 +223,11 @@ protected function clearSocialProfileAction(Request $request)
+             $model = $this->getModel('lead.lead');
+             $lead  = $model->getEntity($leadId);
+ 
+-            if ($lead !== null && $this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editown', $lead->getPermissionUser())) {
++            if ($lead !== null && $this->get('mautic.security')->hasEntityAccess(
++                    'lead:leads:editown',
++                    'lead:leads:editown',
++                    $lead->getPermissionUser()
++                )) {
+                 $dataArray['success'] = 1;
+                 /** @var \Mautic\PluginBundle\Helper\IntegrationHelper $helper */
+                 $helper         = $this->factory->getHelper('integration');
+@@ -428,7 +439,9 @@ protected function getImportProgressAction(Request $request)
+         if ($this->get('mautic.security')->isGranted('lead:leads:create')) {
+             $session               = $this->get('session');
+             $dataArray['progress'] = $session->get('mautic.lead.import.progress', [0, 0]);
+-            $dataArray['percent']  = ($dataArray['progress'][1]) ? ceil(($dataArray['progress'][0] / $dataArray['progress'][1]) * 100) : 100;
++            $dataArray['percent']  = ($dataArray['progress'][1]) ? ceil(
++                ($dataArray['progress'][0] / $dataArray['progress'][1]) * 100
++            ) : 100;
+         }
+ 
+         return $this->sendJsonResponse($dataArray);
+@@ -448,7 +461,10 @@ protected function removeBounceStatusAction(Request $request)
+             /** @var \Mautic\LeadBundle\Model\LeadModel $model */
+             $model = $this->getModel('lead');
+             /** @var \Mautic\LeadBundle\Entity\DoNotContact $dnc */
+-            $dnc = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact')->findOneBy(
++            $dncRepo = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact');
++            $dncRepo->setDispatcher($this->dispatcher);
++
++            $dnc = $dncRepo->findOneBy(
+                 [
+                     'id' => $dncId,
+                 ]
+@@ -535,7 +551,7 @@ protected function getNewLeadsAction(Request $request)
+                     'withTotalCount' => true,
+                 ]
+             );
+-            $count = $results['count'];
++            $count   = $results['count'];
+ 
+             if (!empty($count)) {
+                 // Get the max ID of the latest lead added
+@@ -543,10 +559,10 @@ protected function getNewLeadsAction(Request $request)
+ 
+                 // We need the EmailRepository to check if a lead is flagged as do not contact
+                 /** @var \Mautic\EmailBundle\Entity\EmailRepository $emailRepo */
+-                $emailRepo          = $this->getModel('email')->getRepository();
+-                $indexMode          = $this->request->get('view', $session->get('mautic.lead.indexmode', 'list'));
+-                $template           = ($indexMode == 'list') ? 'list_rows' : 'grid_cards';
+-                $dataArray['leads'] = $this->factory->getTemplating()->render(
++                $emailRepo              = $this->getModel('email')->getRepository();
++                $indexMode              = $this->request->get('view', $session->get('mautic.lead.indexmode', 'list'));
++                $template               = ($indexMode == 'list') ? 'list_rows' : 'grid_cards';
++                $dataArray['leads']     = $this->factory->getTemplating()->render(
+                     "MauticLeadBundle:Lead:{$template}.html.php",
+                     [
+                         'items'         => $results['results'],
+@@ -612,7 +628,11 @@ protected function updateLeadTagsAction(Request $request)
+         $updatedTags = (!empty($post['tags']) && is_array($post['tags'])) ? $post['tags'] : [];
+         $data        = ['success' => 0];
+ 
+-        if ($lead !== null && $this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
++        if ($lead !== null && $this->get('mautic.security')->hasEntityAccess(
++                'lead:leads:editown',
++                'lead:leads:editother',
++                $lead->getPermissionUser()
++            )) {
+             $leadModel->setTags($lead, $updatedTags, true);
+ 
+             /** @var \Doctrine\ORM\PersistentCollection $leadTags */
+@@ -624,7 +644,7 @@ protected function updateLeadTagsAction(Request $request)
+             $tagOptions = '';
+ 
+             foreach ($tags as $tag) {
+-                $selected = (in_array($tag['label'], $leadTagKeys)) ? ' selected="selected"' : '';
++                $selected   = (in_array($tag['label'], $leadTagKeys)) ? ' selected="selected"' : '';
+                 $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
+             }
+ 
+@@ -664,7 +684,10 @@ protected function addLeadTagsAction(Request $request)
+             $tagOptions = '';
+ 
+             foreach ($allTags as $tag) {
+-                $selected = (in_array($tag['value'], $tags) || in_array($tag['label'], $tags)) ? ' selected="selected"' : '';
++                $selected   = (in_array($tag['value'], $tags) || in_array(
++                        $tag['label'],
++                        $tags
++                    )) ? ' selected="selected"' : '';
+                 $tagOptions .= '<option'.$selected.' value="'.$tag['value'].'">'.$tag['label'].'</option>';
+             }
+ 
+@@ -711,7 +734,10 @@ protected function addLeadUtmTagsAction(Request $request)
+             $utmTagOptions = '';
+ 
+             foreach ($allUtmTags as $utmTag) {
+-                $selected = (in_array($utmTag['value'], $utmTags) || in_array($utmTag['label'], $utmTags)) ? ' selected="selected"' : '';
++                $selected      = (in_array($utmTag['value'], $utmTags) || in_array(
++                        $utmTag['label'],
++                        $utmTags
++                    )) ? ' selected="selected"' : '';
+                 $utmTagOptions .= '<option'.$selected.' value="'.$utmTag['value'].'">'.$utmTag['label'].'</option>';
+             }
+ 
+diff --git a/app/bundles/LeadBundle/Controller/EntityContactsTrait.php b/app/bundles/LeadBundle/Controller/EntityContactsTrait.php
+index 123ca3e967..d85fbc64f9 100644
+--- a/app/bundles/LeadBundle/Controller/EntityContactsTrait.php
++++ b/app/bundles/LeadBundle/Controller/EntityContactsTrait.php
+@@ -62,7 +64,10 @@ protected function generateContactsGrid(
+             $this->setListFilters($sessionVar.'.contact');
+         }
+ 
+-        $search = $this->request->get('search', $this->get('session')->get('mautic.'.$sessionVar.'.contact.filter', ''));
++        $search = $this->request->get(
++            'search',
++            $this->get('session')->get('mautic.'.$sessionVar.'.contact.filter', '')
++        );
+         $this->get('session')->set('mautic.'.$sessionVar.'.contact.filter', $search);
+ 
+         $filter     = ['string' => $search, 'force' => []];
+@@ -104,7 +109,10 @@ protected function generateContactsGrid(
+             //the number of entities are now less then the current page so redirect to the last page
+             $lastPage = ($count === 1) ? 1 : (ceil($count / $limit)) ?: 1;
+             $this->get('session')->set('mautic.'.$sessionVar.'.contact.page', $lastPage);
+-            $returnUrl = $this->generateUrl($route, array_merge(['objectId' => $entityId, 'page' => $lastPage], $routeParameters));
++            $returnUrl = $this->generateUrl(
++                $route,
++                array_merge(['objectId' => $entityId, 'page' => $lastPage], $routeParameters)
++            );
+ 
+             return $this->postActionRedirect(
+                 [
+@@ -121,7 +129,9 @@ protected function generateContactsGrid(
+         // Get DNC for the contact
+         $dnc = [];
+         if ($dncChannel) {
+-            $dnc = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact')->getChannelList(
++            $dncRepo = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact');
++            $dncRepo->setDispatcher($this->dispatcher);
++            $dnc = $dncRepo->getChannelList(
+                 $dncChannel,
+                 array_keys($contacts['results'])
+             );
+@@ -129,7 +139,7 @@ protected function generateContactsGrid(
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'page'            => $page,
+                     'items'           => $contacts['results'],
+                     'totalItems'      => $contacts['count'],
+diff --git a/app/bundles/LeadBundle/Controller/LeadController.php b/app/bundles/LeadBundle/Controller/LeadController.php
+index 2bdc6132e3..413cba13cc 100644
+--- a/app/bundles/LeadBundle/Controller/LeadController.php
++++ b/app/bundles/LeadBundle/Controller/LeadController.php
+@@ -62,7 +62,10 @@ public function indexAction($page = 1)
+         $model   = $this->getModel('lead');
+         $session = $this->get('session');
+         //set limits
+-        $limit = $session->get('mautic.lead.limit', $this->get('mautic.helper.core_parameters')->getParameter('default_pagelimit'));
++        $limit = $session->get(
++            'mautic.lead.limit',
++            $this->get('mautic.helper.core_parameters')->getParameter('default_pagelimit')
++        );
+         $start = ($page === 1) ? 0 : (($page - 1) * $limit);
+         if ($start < 0) {
+             $start = 0;
+@@ -96,14 +99,16 @@ public function indexAction($page = 1)
+             $filter['force'] .= " $mine";
+         }
+ 
+-        $results = $model->getEntities([
+-            'start'          => $start,
+-            'limit'          => $limit,
+-            'filter'         => $filter,
+-            'orderBy'        => $orderBy,
+-            'orderByDir'     => $orderByDir,
+-            'withTotalCount' => true,
+-        ]);
++        $results = $model->getEntities(
++            [
++                'start'          => $start,
++                'limit'          => $limit,
++                'filter'         => $filter,
++                'orderBy'        => $orderBy,
++                'orderByDir'     => $orderByDir,
++                'withTotalCount' => true,
++            ]
++        );
+ 
+         $count = $results['count'];
+         unset($results['count']);
+@@ -172,7 +177,7 @@ public function indexAction($page = 1)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'searchValue'      => $search,
+                     'items'            => $leads,
+                     'page'             => $page,
+@@ -212,7 +217,7 @@ public function quickAddAction()
+ 
+         $fields = $this->getModel('lead.field')->getEntities(
+             [
+-                'filter' => [
++                'filter'         => [
+                     'force' => [
+                         [
+                             'column' => 'f.isPublished',
+@@ -235,7 +240,12 @@ public function quickAddAction()
+             ]
+         );
+ 
+-        $quickForm = $model->createForm($model->getEntity(), $this->get('form.factory'), $action, ['fields' => $fields, 'isShortForm' => true]);
++        $quickForm = $model->createForm(
++            $model->getEntity(),
++            $this->get('form.factory'),
++            $action,
++            ['fields' => $fields, 'isShortForm' => true]
++        );
+ 
+         //set the default owner to the currently logged in user
+         $currentUser = $this->get('security.context')->getToken()->getUser();
+@@ -243,7 +253,7 @@ public function quickAddAction()
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'quickForm' => $quickForm->createView(),
+                 ],
+                 'contentTemplate' => 'MauticLeadBundle:Lead:quickadd.html.php',
+@@ -301,7 +311,7 @@ public function viewAction($objectId)
+                         'activeLink'    => '#mautic_contact_index',
+                         'mauticContent' => 'contact',
+                     ],
+-                    'flashes' => [
++                    'flashes'         => [
+                         [
+                             'type'    => 'error',
+                             'msg'     => 'mautic.lead.lead.error.notfound',
+@@ -348,12 +358,16 @@ public function viewAction($objectId)
+         }
+ 
+         // We need the DoNotContact repository to check if a lead is flagged as do not contact
+-        $dnc             = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact')->getEntriesByLeadAndChannel($lead, 'email');
+-        $integrationRepo = $this->get('doctrine.orm.entity_manager')->getRepository('MauticPluginBundle:IntegrationEntity');
++        $dncRepo = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact');
++        $dncRepo->setDispatcher($this->dispatcher);
++        $dnc             = $dncRepo->getEntriesByLeadAndChannel($lead, 'email');
++        $integrationRepo = $this->get('doctrine.orm.entity_manager')->getRepository(
++            'MauticPluginBundle:IntegrationEntity'
++        );
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'lead'              => $lead,
+                     'avatarPanelState'  => $this->request->cookies->get('mautic_lead_avatar_panel', 'expanded'),
+                     'fields'            => $fields,
+@@ -440,12 +454,14 @@ public function newAction()
+                     $model->setFieldValues($lead, $data, true);
+ 
+                     //form is valid so process the data
+-                    $lead->setManipulator(new LeadManipulator(
+-                        'lead',
+-                        'lead',
+-                        null,
+-                        $this->get('mautic.helper.user')->getUser()->getName()
+-                    ));
++                    $lead->setManipulator(
++                        new LeadManipulator(
++                            'lead',
++                            'lead',
++                            null,
++                            $this->get('mautic.helper.user')->getUser()->getName()
++                        )
++                    );
+                     $model->saveEntity($lead);
+ 
+                     if (!empty($companies)) {
+@@ -490,8 +506,8 @@ public function newAction()
+                             'objectAction' => 'view',
+                             'objectId'     => $lead->getId(),
+                         ];
+-                        $returnUrl = $this->generateUrl('mautic_contact_action', $viewParameters);
+-                        $template  = 'MauticLeadBundle:Lead:view';
++                        $returnUrl      = $this->generateUrl('mautic_contact_action', $viewParameters);
++                        $template       = 'MauticLeadBundle:Lead:view';
+                     } else {
+                         return $this->editAction($lead->getId(), true);
+                     }
+@@ -524,7 +540,7 @@ public function newAction()
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'form'   => $form->createView(),
+                     'lead'   => $lead,
+                     'fields' => $model->organizeFieldsByGroup($fields),
+@@ -627,12 +643,14 @@ public function editAction($objectId, $ignorePost = false)
+                     $model->setFieldValues($lead, $data, true);
+ 
+                     //form is valid so process the data
+-                    $lead->setManipulator(new LeadManipulator(
+-                        'lead',
+-                        'lead',
+-                        $objectId,
+-                        $this->get('mautic.helper.user')->getUser()->getName()
+-                    ));
++                    $lead->setManipulator(
++                        new LeadManipulator(
++                            'lead',
++                            'lead',
++                            $objectId,
++                            $this->get('mautic.helper.user')->getUser()->getName()
++                        )
++                    );
+                     $model->saveEntity($lead, $form->get('buttons')->get('save')->isClicked());
+                     $model->modifyCompanies($lead, $companies);
+ 
+@@ -699,10 +717,11 @@ public function editAction($objectId, $ignorePost = false)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'form'   => $form->createView(),
+                     'lead'   => $lead,
+-                    'fields' => $lead->getFields(), //pass in the lead fields as they are already organized by ['group']['alias']
++                    'fields' => $lead->getFields(),
++                    //pass in the lead fields as they are already organized by ['group']['alias']
+                 ],
+                 'contentTemplate' => 'MauticLeadBundle:Lead:form.html.php',
+                 'passthroughVars' => [
+@@ -823,7 +842,10 @@ public function mergeAction($objectId)
+             $leadChoices[$l->getId()] = $l->getPrimaryIdentifier();
+         }
+ 
+-        $action = $this->generateUrl('mautic_contact_action', ['objectAction' => 'merge', 'objectId' => $mainLead->getId()]);
++        $action = $this->generateUrl(
++            'mautic_contact_action',
++            ['objectAction' => 'merge', 'objectId' => $mainLead->getId()]
++        );
+ 
+         $form = $this->get('form.factory')->create(
+             'lead_merge',
+@@ -858,8 +880,16 @@ public function mergeAction($objectId)
+                             )
+                         );
+                     } elseif (
+-                        !$this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $mainLead->getPermissionUser())
+-                        || !$this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $secLead->getPermissionUser())
++                        !$this->get('mautic.security')->hasEntityAccess(
++                            'lead:leads:editown',
++                            'lead:leads:editother',
++                            $mainLead->getPermissionUser()
++                        )
++                        || !$this->get('mautic.security')->hasEntityAccess(
++                            'lead:leads:editown',
++                            'lead:leads:editother',
++                            $secLead->getPermissionUser()
++                        )
+                     ) {
+                         return $this->accessDenied();
+                     } elseif ($model->isLocked($mainLead)) {
+@@ -903,7 +933,7 @@ public function mergeAction($objectId)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'tmpl'         => $tmpl,
+                     'leads'        => $leads,
+                     'searchValue'  => $search,
+@@ -959,16 +989,22 @@ public function contactFrequencyAction($objectId)
+             $viewParameters,
+             $data,
+             false,
+-            $this->generateUrl('mautic_contact_action', ['objectAction' => 'contactFrequency', 'objectId' => $lead->getId()])
++            $this->generateUrl(
++                'mautic_contact_action',
++                ['objectAction' => 'contactFrequency', 'objectId' => $lead->getId()]
++            )
+         );
+ 
+         if (true === $form) {
+             return $this->postActionRedirect(
+                 [
+-                    'returnUrl'       => $this->generateUrl('mautic_contact_action', [
+-                        'objectId'     => $lead->getId(),
+-                        'objectAction' => 'view',
+-                    ]),
++                    'returnUrl'       => $this->generateUrl(
++                        'mautic_contact_action',
++                        [
++                            'objectId'     => $lead->getId(),
++                            'objectAction' => 'view',
++                        ]
++                    ),
+                     'viewParameters'  => $viewParameters,
+                     'contentTemplate' => 'MauticLeadBundle:Lead:view',
+                     'passthroughVars' => [
+@@ -982,7 +1018,7 @@ public function contactFrequencyAction($objectId)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => array_merge(
++                'viewParameters'  => array_merge(
+                     [
+                         'tmpl'         => $tmpl,
+                         'form'         => $form->createView(),
+@@ -993,7 +1029,7 @@ public function contactFrequencyAction($objectId)
+                                 'objectId'     => $lead->getId(),
+                             ]
+                         ),
+-                        'lead' => $lead,
++                        'lead'         => $lead,
+                     ],
+                     $viewParameters
+                 ),
+@@ -1179,7 +1215,7 @@ public function listAction($objectId)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'lists'      => $lists,
+                     'leadsLists' => $leadsLists,
+                     'lead'       => $lead,
+@@ -1224,7 +1260,7 @@ public function companyAction($objectId)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'companies'   => $companies,
+                     'companyLead' => $companyLead,
+                     'lead'        => $lead,
+@@ -1267,7 +1303,7 @@ public function campaignAction($objectId)
+ 
+         return $this->delegateView(
+             [
+-                'viewParameters' => [
++                'viewParameters'  => [
+                     'campaigns' => $campaigns,
+                     'lead'      => $lead,
+                 ],
+@@ -1310,7 +1346,9 @@ public function emailAction($objectId = 0)
+         $leadFields['owner_id'] = $this->get('mautic.helper.user')->getUser()->getId();
+ 
+         // Check if lead has a bounce status
+-        $dnc    = $this->getDoctrine()->getManager()->getRepository('MauticLeadBundle:DoNotContact')->getEntriesByLeadAndChannel($lead, 'email');
++        $dnc    = $this->getDoctrine()->getManager()->getRepository(
++            'MauticLeadBundle:DoNotContact'
++        )->getEntriesByLeadAndChannel($lead, 'email');
+         $inList = ($this->request->getMethod() == 'GET')
+             ? $this->request->get('list', 0)
+             : $this->request->request->get(
+@@ -1405,14 +1443,14 @@ public function emailAction($objectId = 0)
+                 $viewParameters = [
+                     'page' => $this->get('session')->get('mautic.lead.page', 1),
+                 ];
+-                $func = 'index';
++                $func           = 'index';
+             } else {
+                 $route          = 'mautic_contact_action';
+                 $viewParameters = [
+                     'objectAction' => 'view',
+                     'objectId'     => $objectId,
+                 ];
+-                $func = 'view';
++                $func           = 'view';
+             }
+ 
+             return $this->postActionRedirect(
+@@ -1465,7 +1503,7 @@ public function batchCampaignsAction($objectId = 0)
+             if (is_array($ids)) {
+                 $entities = $model->getEntities(
+                     [
+-                        'filter' => [
++                        'filter'           => [
+                             'force' => [
+                                 [
+                                     'column' => 'l.id',
+@@ -1480,7 +1518,11 @@ public function batchCampaignsAction($objectId = 0)
+             }
+ 
+             foreach ($entities as $key => $lead) {
+-                if (!$this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
++                if (!$this->get('mautic.security')->hasEntityAccess(
++                    'lead:leads:editown',
++                    'lead:leads:editother',
++                    $lead->getPermissionUser()
++                )) {
+                     unset($entities[$key]);
+                 }
+             }
+@@ -1491,7 +1533,7 @@ public function batchCampaignsAction($objectId = 0)
+             if ($count = count($entities)) {
+                 $campaigns = $campaignModel->getEntities(
+                     [
+-                        'filter' => [
++                        'filter'           => [
+                             'force' => [
+                                 [
+                                     'column' => 'c.id',
+@@ -1548,7 +1590,7 @@ public function batchCampaignsAction($objectId = 0)
+ 
+             return $this->delegateView(
+                 [
+-                    'viewParameters' => [
++                    'viewParameters'  => [
+                         'form' => $this->createForm(
+                             'lead_batch',
+                             [],
+@@ -1588,7 +1630,7 @@ public function batchDncAction($objectId = 0)
+             if (is_array($ids)) {
+                 $entities = $model->getEntities(
+                     [
+-                        'filter' => [
++                        'filter'           => [
+                             'force' => [
+                                 [
+                                     'column' => 'l.id',
+@@ -1605,7 +1647,11 @@ public function batchDncAction($objectId = 0)
+             if ($count = count($entities)) {
+                 $persistEntities = [];
+                 foreach ($entities as $lead) {
+-                    if ($this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
++                    if ($this->get('mautic.security')->hasEntityAccess(
++                        'lead:leads:editown',
++                        'lead:leads:editother',
++                        $lead->getPermissionUser()
++                    )) {
+                         if ($model->addDncForLead($lead, 'email', $data['reason'], DoNotContact::MANUAL)) {
+                             $persistEntities[] = $lead;
+                         }
+@@ -1640,7 +1686,7 @@ public function batchDncAction($objectId = 0)
+ 
+             return $this->delegateView(
+                 [
+-                    'viewParameters' => [
++                    'viewParameters'  => [
+                         'form' => $this->createForm(
+                             'lead_batch_dnc',
+                             [],
+@@ -1679,7 +1725,7 @@ public function batchStagesAction($objectId = 0)
+             if (is_array($ids)) {
+                 $entities = $model->getEntities(
+                     [
+-                        'filter' => [
++                        'filter'           => [
+                             'force' => [
+                                 [
+                                     'column' => 'l.id',
+@@ -1695,7 +1741,11 @@ public function batchStagesAction($objectId = 0)
+ 
+             $count = 0;
+             foreach ($entities as $lead) {
+-                if ($this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
++                if ($this->get('mautic.security')->hasEntityAccess(
++                    'lead:leads:editown',
++                    'lead:leads:editother',
++                    $lead->getPermissionUser()
++                )) {
+                     ++$count;
+ 
+                     if (!empty($data['addstage'])) {
+@@ -1746,7 +1796,7 @@ public function batchStagesAction($objectId = 0)
+ 
+             return $this->delegateView(
+                 [
+-                    'viewParameters' => [
++                    'viewParameters'  => [
+                         'form' => $this->createForm(
+                             'lead_batch_stage',
+                             [],
+@@ -1786,7 +1836,7 @@ public function batchOwnersAction($objectId = 0)
+             if (is_array($ids)) {
+                 $entities = $model->getEntities(
+                     [
+-                        'filter' => [
++                        'filter'           => [
+                             'force' => [
+                                 [
+                                     'column' => 'l.id',
+@@ -1801,7 +1851,11 @@ public function batchOwnersAction($objectId = 0)
+             }
+             $count = 0;
+             foreach ($entities as $lead) {
+-                if ($this->get('mautic.security')->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $lead->getPermissionUser())) {
++                if ($this->get('mautic.security')->hasEntityAccess(
++                    'lead:leads:editown',
++                    'lead:leads:editother',
++                    $lead->getPermissionUser()
++                )) {
+                     ++$count;
+ 
+                     if (!empty($data['addowner'])) {
+@@ -1843,7 +1897,7 @@ public function batchOwnersAction($objectId = 0)
+ 
+             return $this->delegateView(
+                 [
+-                    'viewParameters' => [
++                    'viewParameters'  => [
+                         'form' => $this->createForm(
+                             'lead_batch_owner',
+                             [],
+@@ -1962,9 +2016,9 @@ public function contactExportAction($contactId)
+         }
+ 
+         /** @var LeadModel $leadModel */
+-        $leadModel  = $this->getModel('lead.lead');
+-        $lead       = $leadModel->getEntity($contactId);
+-        $dataType   = $this->request->get('filetype', 'csv');
++        $leadModel = $this->getModel('lead.lead');
++        $lead      = $leadModel->getEntity($contactId);
++        $dataType  = $this->request->get('filetype', 'csv');
+ 
+         if (empty($lead)) {
+             return $this->notFound();
+@@ -1972,13 +2026,17 @@ public function contactExportAction($contactId)
+ 
+         $contactFields = $lead->getProfileFields();
+         $export        = [];
+-        foreach ($contactFields as $alias=>$contactField) {
++        foreach ($contactFields as $alias => $contactField) {
+             $export[] = [
+                 'alias' => $alias,
+                 'value' => $contactField,
+             ];
+         }
+ 
+-        return $this->exportResultsAs($export, $dataType, 'contact_data_'.($contactFields['email'] ?: $contactFields['id']));
++        return $this->exportResultsAs(
++            $export,
++            $dataType,
++            'contact_data_'.($contactFields['email'] ?: $contactFields['id'])
++        );
+     }
+ }
+diff --git a/app/bundles/LeadBundle/Entity/DoNotContactRepository.php b/app/bundles/LeadBundle/Entity/DoNotContactRepository.php
+index 3bf4d9304f..da886cddad 100644
+--- a/app/bundles/LeadBundle/Entity/DoNotContactRepository.php
++++ b/app/bundles/LeadBundle/Entity/DoNotContactRepository.php
+@@ -13,6 +13,10 @@
+ 
+ use Mautic\CoreBundle\Entity\CommonRepository;
+ use Mautic\CoreBundle\Helper\Chart\ChartQuery;
++use Mautic\LeadBundle\Event\LeadDNCGetCountEvent;
++use Mautic\LeadBundle\Event\LeadDNCGetEntitiesEvent;
++use Mautic\LeadBundle\Event\LeadDNCGetListEvent;
++use Mautic\LeadBundle\LeadEvents;
+ 
+ /**
+  * DoNotContactRepository.
+@@ -21,6 +25,8 @@ class DoNotContactRepository extends CommonRepository
+ {
+     use TimelineTrait;
+ 
++    protected $dispatcher;
++
+     /**
+      * Get a list of DNC entries based on channel and lead_id.
+      *
+@@ -31,7 +37,18 @@ class DoNotContactRepository extends CommonRepository
+      */
+     public function getEntriesByLeadAndChannel(Lead $lead, $channel)
+     {
+-        return $this->findBy(['channel' => $channel, 'lead' => $lead]);
++        $dncEntities = $this->findBy(['channel' => $channel, 'lead' => $lead]);
++
++        // Allow other bundles / plugins to add to the DNC list
++        if (!empty($this->dispatcher)) {
++            $event       = $this->dispatcher->dispatch(
++                LeadEvents::GET_DNC_ENTITIES,
++                new LeadDNCGetEntitiesEvent($dncEntities)
++            );
++            $dncEntities = $event->getDNCEntities();
++        }
++
++        return $dncEntities;
+     }
+ 
+     /**
+@@ -115,10 +132,21 @@ public function getCount($channel = null, $ids = null, $reason = null, $listId =
+                 $byList[$result['leadlist_id']] = $result['dnc_count'];
+             }
+ 
+-            return $byList;
++            $dncCount =  $byList;
++        } else {
++            $dncCount = (isset($results[0])) ? $results[0]['dnc_count'] : 0;
++        }
++
++        // Allow other bundles / plugins to add to the DNC count
++        if (!empty($this->dispatcher)) {
++            $event    = $this->dispatcher->dispatch(
++                LeadEvents::GET_DNC_COUNT,
++                new LeadDNCGetCountEvent($dncCount, $channel, $ids, $reason, $listId, $combined)
++            );
++            $dncCount = $event->getDNCCount();
+         }
+ 
+-        return (isset($results[0])) ? $results[0]['dnc_count'] : 0;
++        return $dncCount;
+     }
+ 
+     /**
+@@ -190,6 +218,25 @@ public function getChannelList($channel, array $contacts = null)
+ 
+         unset($results);
+ 
++        // Allow other bundles / plugins to add to the DNC list
++        if (!empty($this->dispatcher)) {
++            $event = $this->dispatcher->dispatch(
++                LeadEvents::GET_DNC_LIST,
++                new LeadDNCGetListEvent($dnc, $channel, $contacts)
++            );
++            $dnc = $event->getDNCList();
++        }
++
+         return $dnc;
+     }
++
++    /**
++     * @param $dispatcher
++     */
++    public function setDispatcher($dispatcher)
++    {
++        $this->dispatcher = $dispatcher;
++
++        return $this;
++    }
+ }
+diff --git a/app/bundles/LeadBundle/Entity/LeadRepository.php b/app/bundles/LeadBundle/Entity/LeadRepository.php
+index 5176ce7403..ab7c4b6949 100755
+--- a/app/bundles/LeadBundle/Entity/LeadRepository.php
++++ b/app/bundles/LeadBundle/Entity/LeadRepository.php
+@@ -454,6 +454,7 @@ function ($r) {
+ 
+                 /** @var DoNotContactRepository $dncRepository */
+                 $dncRepository = $this->getEntityManager()->getRepository('MauticLeadBundle:DoNotContact');
++                $dncRepository->setDispatcher($this->dispatcher);
+                 $dncRules      = $dncRepository->getChannelList(null, $contactIds);
+             }
+ 
+diff --git a/app/bundles/LeadBundle/Event/LeadDNCGetCountEvent.php b/app/bundles/LeadBundle/Event/LeadDNCGetCountEvent.php
+new file mode 100644
+index 0000000000..8c2af01bd5
+--- /dev/null
++++ b/app/bundles/LeadBundle/Event/LeadDNCGetCountEvent.php
+@@ -0,0 +1,141 @@
++<?php
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\LeadBundle\Event;
++
++use Mautic\CoreBundle\Event\CommonEvent;
++
++/**
++ * Class LeadDNCGetCountEvent.
++ */
++class LeadDNCGetCountEvent extends CommonEvent
++{
++    /**
++     * @var array
++     */
++    protected $dncCount;
++
++    /**
++     * @var null | string
++     */
++    protected $channel;
++
++    /**
++     * @var null | array
++     */
++    protected $ids;
++
++    /**
++     * @var null | int
++     */
++    protected $reason;
++
++    /**
++     * @var null | int
++     */
++    protected $listId;
++
++    /**
++     * @var bool
++     */
++    protected $combined;
++
++    /**
++     * LeadDNCGetCountEvent constructor.
++     *
++     * @param array $dncCount
++     * @param null  $channel
++     * @param null  $ids
++     * @param null  $reason
++     * @param null  $listId
++     * @param bool  $combined
++     */
++    public function __construct(array $dncCount, $channel = null, $ids = null, $reason = null, $listId = null, $combined = false)
++    {
++        $this->dncCount = $dncCount;
++        $this->channel  = $channel;
++        $this->ids      = $ids;
++        $this->reason   = $reason;
++        $this->listId   = $listId;
++        $this->combined = $combined;
++    }
++
++    /**
++     * Returns the DNCEntities count.
++     *
++     * @return int | array
++     */
++    public function getDNCCount()
++    {
++        return $this->dncCount;
++    }
++
++    /**
++     * Sets the DNCEntities Count.
++     *
++     * @param int | array
++     */
++    public function setDNCCount(int $dncCount)
++    {
++        $this->dncCount = $dncCount;
++
++        return $this;
++    }
++
++    /**
++     * Returns the channel.
++     *
++     * @return mixed | null
++     */
++    public function getChannel()
++    {
++        return $this->channel;
++    }
++
++    /**
++     * Returns the ids.
++     *
++     * @return mixed | null
++     */
++    public function getIds()
++    {
++        return $this->ids;
++    }
++
++    /**
++     * Returns the reason int.
++     *
++     * @return int | null
++     */
++    public function getReason()
++    {
++        return $this->reason;
++    }
++
++    /**
++     * Returns the list id.
++     *
++     * @return int | null
++     */
++    public function getListId()
++    {
++        return $this->listId;
++    }
++
++    /**
++     * Returns the combined bool.
++     *
++     * @return bool
++     */
++    public function getCombined()
++    {
++        return $this->combined;
++    }
++}
+diff --git a/app/bundles/LeadBundle/Event/LeadDNCGetEntitiesEvent.php b/app/bundles/LeadBundle/Event/LeadDNCGetEntitiesEvent.php
+new file mode 100644
+index 0000000000..6519868043
+--- /dev/null
++++ b/app/bundles/LeadBundle/Event/LeadDNCGetEntitiesEvent.php
+@@ -0,0 +1,54 @@
++<?php
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\LeadBundle\Event;
++
++use Mautic\CoreBundle\Event\CommonEvent;
++
++/**
++ * Class LeadDNCGetEntitiesEvent.
++ */
++class LeadDNCGetEntitiesEvent extends CommonEvent
++{
++    /**
++     * @var array
++     */
++    protected $dncEntities;
++
++    /**
++     * @param array $dncEntities
++     */
++    public function __construct(array $dncEntities)
++    {
++        $this->dncEntities = $dncEntities;
++    }
++
++    /**
++     * Returns the array of DoNotContact entities.
++     *
++     * @return array
++     */
++    public function getDNCEntities()
++    {
++        return $this->dncEntities;
++    }
++
++    /**
++     * Sets the  array of DoNotContact entities.
++     *
++     * @param array $dncEntities
++     */
++    public function setDNCEntities(array $dncEntities)
++    {
++        $this->dncEntities = $dncEntities;
++
++        return $this;
++    }
++}
+diff --git a/app/bundles/LeadBundle/Event/LeadDNCGetListEvent.php b/app/bundles/LeadBundle/Event/LeadDNCGetListEvent.php
+new file mode 100644
+index 0000000000..63cf0d6b8d
+--- /dev/null
++++ b/app/bundles/LeadBundle/Event/LeadDNCGetListEvent.php
+@@ -0,0 +1,86 @@
++<?php
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\LeadBundle\Event;
++
++use Mautic\CoreBundle\Event\CommonEvent;
++
++/**
++ * Class LeadDNCGetListEvent.
++ */
++class LeadDNCGetListEvent extends CommonEvent
++{
++    /**
++     *  @var array
++     */
++    protected $dncList;
++
++    /**
++     * @var null | string
++     */
++    protected $channel;
++
++    /**
++     * @var null | mixed
++     */
++    protected $contacts;
++
++    /**
++     * LeadDNCGetListEvent constructor.
++     *
++     * @param array $dncList
++     * @param null  $channel
++     * @param null  $contacts
++     */
++    public function __construct(array $dncList, $channel = null, $contacts = null)
++    {
++        $this->dncList  = $dncList;
++        $this->channel  = $channel;
++        $this->contacts = $contacts;
++    }
++
++    /**
++     * Returns the array of dnc entries.
++     *
++     * @return array
++     */
++    public function getDNCList()
++    {
++        return $this->dncList;
++    }
++
++    /**
++     * Sets the array of dncList entries.
++     *
++     * @param array $dncList
++     */
++    public function setDNCList(array $dncList)
++    {
++        $this->dncList = $dncList;
++
++        return $this;
++    }
++
++    /**
++     * @return mixed
++     */
++    public function getChannel()
++    {
++        return $this->channel;
++    }
++
++    /**
++     * @return mixed
++     */
++    public function getContacts()
++    {
++        return $this->contacts;
++    }
++}
+diff --git a/app/bundles/LeadBundle/EventListener/LeadSubscriber.php b/app/bundles/LeadBundle/EventListener/LeadSubscriber.php
+index 390af0ffe2..19eb8fd250 100644
+--- a/app/bundles/LeadBundle/EventListener/LeadSubscriber.php
++++ b/app/bundles/LeadBundle/EventListener/LeadSubscriber.php
+@@ -526,6 +526,7 @@ protected function addTimelineDoNotContactEntries(Events\LeadTimelineEvent $even
+     {
+         /** @var \Mautic\LeadBundle\Entity\DoNotContactRepository $dncRepo */
+         $dncRepo = $this->em->getRepository('MauticLeadBundle:DoNotContact');
++        $dncRepo->setDispatcher($this->dispatcher);
+ 
+         /** @var \Mautic\LeadBundle\Entity\DoNotContact[] $entries */
+         $rows = $dncRepo->getTimelineStats($event->getLeadId(), $event->getQueryOptions());
+diff --git a/app/bundles/LeadBundle/LeadEvents.php b/app/bundles/LeadBundle/LeadEvents.php
+index 0c7815012a..aa04bbe8cf 100644
+--- a/app/bundles/LeadBundle/LeadEvents.php
++++ b/app/bundles/LeadBundle/LeadEvents.php
+@@ -592,4 +592,31 @@ final class LeadEvents
+      * @var string
+      */
+     const ADD_CHANNEL = 'mautic.bc_add_channel';
++
++    /**
++     * The mautic.dnc_get_entities event allows plugins to add to the DNC entities list.
++     *
++     * The event listener receives a Mautic\LeadBundle\Event\LeadDNCGetEntitiesEvent instance
++     *
++     * @var string
++     */
++    const GET_DNC_ENTITIES = 'mautic.dnc_get_entities';
++
++    /**
++     * The mautic.dnc_get_list event allows plugins to add to the DNC array list.
++     *
++     * The event listener receives a Mautic\LeadBundle\Event\LeadDNCGetListEvent instance
++     *
++     * @var string
++     */
++    const GET_DNC_LIST = 'mautic.dnc_get_list';
++
++    /**
++     * The mautic.dnc_get_count event allows plugins to add to the DNC array count.
++     *
++     * The event listener receives a Mautic\LeadBundle\Event\LeadDNCGetCountEvent instance
++     *
++     * @var string
++     */
++    const GET_DNC_COUNT = 'mautic.dnc_get_count';
+ }
+diff --git a/app/bundles/LeadBundle/Model/DoNotContact.php b/app/bundles/LeadBundle/Model/DoNotContact.php
+index c45391e5aa..1e9d0ef9fc 100644
+--- a/app/bundles/LeadBundle/Model/DoNotContact.php
++++ b/app/bundles/LeadBundle/Model/DoNotContact.php
+@@ -11,11 +11,12 @@
+ 
+ namespace Mautic\LeadBundle\Model;
+ 
++use Mautic\CoreBundle\Model\AbstractCommonModel;
+ use Mautic\LeadBundle\Entity\DoNotContact as DNC;
+ use Mautic\LeadBundle\Entity\DoNotContactRepository;
+ use Mautic\LeadBundle\Entity\Lead;
+ 
+-class DoNotContact
++class DoNotContact extends AbstractCommonModel
+ {
+     /**
+      * @var LeadModel
+@@ -151,6 +152,7 @@ public function isContactable(Lead $contact, $channel)
+             $channel = key($channel);
+         }
+ 
++        $this->dncRepo->setDispatcher($this->dispatcher);
+         /** @var \Mautic\LeadBundle\Entity\DoNotContact[] $entries */
+         $dncEntries = $this->dncRepo->getEntriesByLeadAndChannel($contact, $channel);
+ 
+diff --git a/app/bundles/LeadBundle/Model/LeadModel.php b/app/bundles/LeadBundle/Model/LeadModel.php
+index a13f7ca5e1..ad44a57bd3 100644
+--- a/app/bundles/LeadBundle/Model/LeadModel.php
++++ b/app/bundles/LeadBundle/Model/LeadModel.php
+@@ -2528,6 +2528,7 @@ public function isContactable(Lead $lead, $channel)
+ 
+         /** @var \Mautic\LeadBundle\Entity\DoNotContactRepository $dncRepo */
+         $dncRepo = $this->em->getRepository('MauticLeadBundle:DoNotContact');
++        $dncRepo->setDispatcher($this->dispatcher);
+ 
+         /** @var \Mautic\LeadBundle\Entity\DoNotContact[] $entries */
+         $dncEntries = $dncRepo->getEntriesByLeadAndChannel($lead, $channel);
+diff --git a/app/bundles/SmsBundle/Model/SmsModel.php b/app/bundles/SmsBundle/Model/SmsModel.php
+index 83a5f38b8f..88dff1625b 100644
+--- a/app/bundles/SmsBundle/Model/SmsModel.php
++++ b/app/bundles/SmsBundle/Model/SmsModel.php
+@@ -224,6 +224,7 @@ public function sendSms(Sms $sms, $sendTo, $options = [])
+ 
+         /** @var DoNotContactRepository $dncRepo */
+         $dncRepo = $this->em->getRepository('MauticLeadBundle:DoNotContact');
++        $dncRepo->setDispatcher($this->dispatcher);
+         $dnc     = $dncRepo->getChannelList('sms', $contactIds);
+ 
+         if (!empty($dnc)) {
