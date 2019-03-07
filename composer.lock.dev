@@ -9531,12 +9531,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-dnc-extras.git",
-                "reference": "115f5b68d3aea761e29d4dd3fe1b8695a60c3d02"
+                "reference": "681d0a6ddfa53d07ecad9c0b7454da27c8df1059"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dnc-extras/zipball/115f5b68d3aea761e29d4dd3fe1b8695a60c3d02",
-                "reference": "115f5b68d3aea761e29d4dd3fe1b8695a60c3d02",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-dnc-extras/zipball/681d0a6ddfa53d07ecad9c0b7454da27c8df1059",
+                "reference": "681d0a6ddfa53d07ecad9c0b7454da27c8df1059",
                 "shasum": ""
             },
             "require": {
@@ -9560,7 +9560,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-03-07T18:20:59+00:00"
+            "time": "2019-03-07T19:12:04+00:00"
         },
         {
             "name": "thedmsgroup/mautic-eb-custom",
