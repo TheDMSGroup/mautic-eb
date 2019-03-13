@@ -9377,12 +9377,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "1a83fe103cbe5a747bf899054811758fc110f9cd"
+                "reference": "fdf5f2ca07bc2f7f703a0ab8ea4c20ea58f10845"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/1a83fe103cbe5a747bf899054811758fc110f9cd",
-                "reference": "1a83fe103cbe5a747bf899054811758fc110f9cd",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/fdf5f2ca07bc2f7f703a0ab8ea4c20ea58f10845",
+                "reference": "fdf5f2ca07bc2f7f703a0ab8ea4c20ea58f10845",
                 "shasum": ""
             },
             "require": {
@@ -9412,7 +9412,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-03-08T19:54:25+00:00"
+            "time": "2019-03-10T19:00:44+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
