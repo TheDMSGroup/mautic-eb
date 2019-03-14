@@ -697,7 +697,7 @@ index 2bdc6132e3..413cba13cc 100644
      }
  }
 diff --git a/app/bundles/LeadBundle/Entity/DoNotContactRepository.php b/app/bundles/LeadBundle/Entity/DoNotContactRepository.php
-index 3bf4d9304f..da886cddad 100644
+index 3bf4d9304f..04f0216cae 100644
 --- a/app/bundles/LeadBundle/Entity/DoNotContactRepository.php
 +++ b/app/bundles/LeadBundle/Entity/DoNotContactRepository.php
 @@ -13,6 +13,10 @@
@@ -731,7 +731,7 @@ index 3bf4d9304f..da886cddad 100644
 +        if (!empty($this->dispatcher)) {
 +            $event       = $this->dispatcher->dispatch(
 +                LeadEvents::GET_DNC_ENTITIES,
-+                new LeadDNCGetEntitiesEvent($dncEntities)
++                new LeadDNCGetEntitiesEvent($lead, $channel, $dncEntities)
 +            );
 +            $dncEntities = $event->getDNCEntities();
 +        }
@@ -951,10 +951,10 @@ index 0000000000..8c2af01bd5
 +}
 diff --git a/app/bundles/LeadBundle/Event/LeadDNCGetEntitiesEvent.php b/app/bundles/LeadBundle/Event/LeadDNCGetEntitiesEvent.php
 new file mode 100644
-index 0000000000..6519868043
+index 0000000000..e3477f025f
 --- /dev/null
 +++ b/app/bundles/LeadBundle/Event/LeadDNCGetEntitiesEvent.php
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,93 @@
 +<?php
 +/*
 + * @copyright   2019 Mautic Contributors. All rights reserved
@@ -968,6 +968,7 @@ index 0000000000..6519868043
 +namespace Mautic\LeadBundle\Event;
 +
 +use Mautic\CoreBundle\Event\CommonEvent;
++use Mautic\LeadBundle\Entity\Lead;
 +
 +/**
 + * Class LeadDNCGetEntitiesEvent.
@@ -975,16 +976,54 @@ index 0000000000..6519868043
 +class LeadDNCGetEntitiesEvent extends CommonEvent
 +{
 +    /**
-+     * @var array
++     * @var Lead
 +     */
-+    protected $dncEntities;
++    protected $lead;
 +
 +    /**
-+     * @param array $dncEntities
++     * @var string
 +     */
-+    public function __construct(array $dncEntities)
++    protected $channel;
++
++    /**
++     * @var array
++     */
++    protected $coreEntities;
++
++    /**
++     * @var array
++     */
++    protected $pluginEntities;
++
++    /**
++     * LeadDNCGetEntitiesEvent constructor.
++     *
++     * @param Lead   $lead
++     * @param string $channel
++     * @param array  $dncEntities
++     */
++    public function __construct(Lead $lead, $channel, array $dncEntities = [])
 +    {
-+        $this->dncEntities = $dncEntities;
++        $this->lead           = $lead;
++        $this->channel        = $channel;
++        $this->coreEntities   = $dncEntities;
++        $this->pluginEntities = [];
++    }
++
++    /**
++     * @return Lead
++     */
++    public function getLead()
++    {
++        return $this->lead;
++    }
++
++    /**
++     * @return string
++     */
++    public function getChannel()
++    {
++        return $this->channel;
 +    }
 +
 +    /**
@@ -994,17 +1033,17 @@ index 0000000000..6519868043
 +     */
 +    public function getDNCEntities()
 +    {
-+        return $this->dncEntities;
++        return array_merge($this->coreEntities, $this->pluginEntities);
 +    }
 +
 +    /**
-+     * Sets the  array of DoNotContact entities.
-+     *
 +     * @param array $dncEntities
++     *
++     * @return $this
 +     */
-+    public function setDNCEntities(array $dncEntities)
++    public function addDNCEntities(array $dncEntities)
 +    {
-+        $this->dncEntities = $dncEntities;
++        $this->pluginEntities = array_merge($this->pluginEntities, $dncEntities);
 +
 +        return $this;
 +    }
