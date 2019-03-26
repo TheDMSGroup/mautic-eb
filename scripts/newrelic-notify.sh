@@ -22,11 +22,14 @@ then
 fi
 
 APP_VER=$( tail /var/log/eb-activity.log | grep -i "\[Application update .*\] : Completed activity." | tail -1 | sed -E 's/.*Application update (.*)@.*/\1/' )
-
 if [ -z "$APP_VER" ]
 then
-    echo "Could not discern app version."
-    exit
+    APP_VER=$( tail /var/log/eb-activity.log | grep -i "\[Application deployment .*\] : Completed activity." | tail -1 | sed -E 's/.*Application deployment (.*)@.*/\1/' )
+    if [ -z "$APP_VER" ]
+    then
+        echo "Could not discern app version."
+        exit
+    fi
 fi
 
 curl -X POST 'https://api.newrelic.com/v2/applications/${NR_APPID}/deployments.json' \
