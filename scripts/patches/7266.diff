@@ -29,10 +29,10 @@ index 76d3f02d4c..9b612caa93 100644
      }
  }
 diff --git a/app/bundles/ReportBundle/Model/ReportModel.php b/app/bundles/ReportBundle/Model/ReportModel.php
-index d33e84391c..448d7febcb 100644
+index d33e84391c..bd96e3399f 100644
 --- a/app/bundles/ReportBundle/Model/ReportModel.php
 +++ b/app/bundles/ReportBundle/Model/ReportModel.php
-@@ -552,17 +552,19 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
+@@ -552,15 +552,17 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
          $totalResults    = $limit    = 0;
 
          // Prepare the query builder
@@ -44,17 +44,15 @@ index d33e84391c..448d7febcb 100644
 
          foreach ($aggregatorColumns as $aggregatorColumn) {
              $selectedColumns[] = $aggregatorColumn['column'];
++            // add aggregator columns to dataColumns also
++            $dataColumns[$aggregatorColumn['function'].' '.$aggregatorColumn['column']]           = $aggregatorColumn['column'];
++            $dataAggregatorColumns[$aggregatorColumn['function'].' '.$aggregatorColumn['column']] = $aggregatorColumn['column'];
          }
          // Build a reference for column to data column (without table prefix)
 -        $dataColumns = [];
          foreach ($tableDetails['columns'] as $dbColumn => &$columnData) {
              $dataColumns[$columnData['alias']] = $dbColumn;
-+            // add aggregator columns to dataColumns also
-+            $dataColumns[$aggregatorColumn['function'].' '.$aggregatorColumn['column']]           = $aggregatorColumn['column'];
-+            $dataAggregatorColumns[$aggregatorColumn['function'].' '.$aggregatorColumn['column']] = $aggregatorColumn['column'];
          }
-
-         $orderBy    = $this->session->get('mautic.report.'.$entity->getId().'.orderby', '');
 @@ -699,17 +701,18 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
          }
 
@@ -84,4 +82,4 @@ index d33e84391c..448d7febcb 100644
 +            'aggregatorColumns' => $dataAggregatorColumns,
          ];
      }
-
+ 
