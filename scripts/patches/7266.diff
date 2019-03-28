@@ -3,7 +3,7 @@ index 76d3f02d4c..9b612caa93 100644
 --- a/app/bundles/ReportBundle/Crate/ReportDataResult.php
 +++ b/app/bundles/ReportBundle/Crate/ReportDataResult.php
 @@ -95,8 +95,7 @@ private function buildHeader($data)
-
+ 
          $row = $this->data[0];
          foreach ($row as $k => $v) {
 -            $dataColumn = $data['dataColumns'][$k];
@@ -13,7 +13,7 @@ index 76d3f02d4c..9b612caa93 100644
          }
      }
 @@ -112,9 +111,12 @@ private function buildTypes($data)
-
+ 
          $row = $this->data[0];
          foreach ($row as $k => $v) {
 -            $dataColumn = $data['dataColumns'][$k];
@@ -34,14 +34,14 @@ index d33e84391c..bd96e3399f 100644
 +++ b/app/bundles/ReportBundle/Model/ReportModel.php
 @@ -552,15 +552,17 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
          $totalResults    = $limit    = 0;
-
+ 
          // Prepare the query builder
 -        $tableDetails = $this->getTableData($entity->getSource());
 -
 +        $tableDetails      = $this->getTableData($entity->getSource());
 +        $dataColumns       = $dataAggregatorColumns = [];
          $aggregatorColumns = ($aggregators = $entity->getAggregators()) ? $aggregators : [];
-
+ 
          foreach ($aggregatorColumns as $aggregatorColumn) {
              $selectedColumns[] = $aggregatorColumn['column'];
 +            // add aggregator columns to dataColumns also
@@ -55,7 +55,7 @@ index d33e84391c..bd96e3399f 100644
          }
 @@ -699,17 +701,18 @@ public function getReportData(Report $entity, FormFactoryInterface $formFactory
          }
-
+ 
          return [
 -            'totalResults'    => $totalResults,
 -            'data'            => $data,
@@ -82,3 +82,4 @@ index d33e84391c..bd96e3399f 100644
 +            'aggregatorColumns' => $dataAggregatorColumns,
          ];
      }
+ 
