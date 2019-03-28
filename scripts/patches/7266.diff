@@ -82,4 +82,3 @@ index d33e84391c..bd96e3399f 100644
 +            'aggregatorColumns' => $dataAggregatorColumns,
          ];
      }
- 
