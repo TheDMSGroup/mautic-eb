@@ -133,3 +133,10 @@ echo "Allow 3rd party Do Not Contact entries to be appended to exiting DNC entit
 echo "https://github.com/mautic/mautic/pull/7288"
 git apply -v "../scripts/patches/7288.diff"
 git add . ; git commit --author="7288 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7288"
+
+# Prevent a downward spiral of sadness if a jump-to event target is deleted/unpublished.
+echo "----------------------------------------------------"
+echo "Prevent a downward spiral of sadness if a jump-to event target is deleted/unpublished."
+echo "https://github.com/mautic/mautic/pull/7364"
+git apply -v "../scripts/patches/7364.diff"
+git add . ; git commit --author="7364 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7364"
