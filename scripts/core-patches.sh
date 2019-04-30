@@ -134,6 +134,13 @@ echo "https://github.com/mautic/mautic/pull/7288"
 git apply -v "../scripts/patches/7288.diff"
 git add . ; git commit --author="7288 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7288"
 
+# Allow Admin to disable background ajax searches until user hits enter.
+echo "----------------------------------------------------"
+echo "Allow Admin to disable background ajax searches until user hits enter"
+echo "https://github.com/mautic/mautic/pull/7427"
+git apply -v "../scripts/patches/7427.diff"
+git add . ; git commit --author="7427 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7427"
+
 # Prevent a downward spiral of sadness if a jump-to event target is deleted/unpublished.
 echo "----------------------------------------------------"
 echo "Prevent a downward spiral of sadness if a jump-to event target is deleted/unpublished."
