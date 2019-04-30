@@ -1,34 +1,16 @@
-[//]: # ( Please answer the following questions: )
+**Please be sure you are submitting this against the _master_ branch.**
 
-| Q  | A
-| --- | ---
-| Bug fix? | 
-| New feature? | 
-| Automated tests included? |
-| Related user documentation PR URL | 
-| Related developer documentation PR URL | 
-| Issues addressed (#s or URLs) | 
-| BC breaks? | 
-| Deprecations? | 
+[//]: # This Pull Request (Place an 'X' for each):
 
-[//]: # ( Note that all new features should have a related user and/or developer documentation PR in their respective repositories. )
+| Risk Level                                | No | Low | High |
+| ----------------------------------------- | -- | --- | ---- |
+| Alters Lead Data?                         |    |     |      |
+| Schema Change?                            |    |     |      |
+| Adds A Query or Modifies Existing Query?  |    |     |      |
+| Adds or Modifies Existing Auto-Enhancer?  |    |     |      |
+| Modifies Ingestion Process?               |    |     |      |
+| Modifies sendContact Data?                |    |     |      |
+
 
 [//]: # ( Required: )
 #### Description:
-
-[//]: # ( As applicable: )
-#### Steps to reproduce the bug:
-1. 
-2. 
-
-#### Steps to test this PR:
-1. 
-2. 
-
-#### List deprecations along with the new alternative:
-1. 
-2. 
-
-#### List backwards compatibility breaks:
-1. 
-2. 
