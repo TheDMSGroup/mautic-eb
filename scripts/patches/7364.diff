@@ -1,0 +1,31 @@
+diff --git a/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php b/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
+index 05ebe6e50b..049865142c 100644
+--- a/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
++++ b/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
+@@ -95,6 +95,11 @@ public function onCampaignBuild(CampaignBuilderEvent $event)
+      * Process campaign.jump_to_event actions.
+      *
+      * @param PendingEvent $campaignEvent
++     *
++     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogNotProcessedException
++     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogPassedAndFailedException
++     * @throws \Mautic\CampaignBundle\Executioner\Exception\CannotProcessEventException
++     * @throws \Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableException
+      */
+     public function onJumpToEvent(PendingEvent $campaignEvent)
+     {
+@@ -102,11 +107,11 @@ public function onJumpToEvent(PendingEvent $campaignEvent)
+         $jumpTarget = $this->getJumpTargetForEvent($event, 'e.id');
+
+         if ($jumpTarget === null) {
+-            $campaignEvent->passWithError($jumpTarget, $this->translator->trans('mautic.campaign.campaign.jump_to_event.target_not_exist'));
++            $campaignEvent->passWithError($event, $this->translator->trans('mautic.campaign.campaign.jump_to_event.target_not_exist'));
++        } else {
++            $this->eventExecutioner->executeForContacts($jumpTarget, $campaignEvent->getContacts());
+         }
+
+-        $this->eventExecutioner->executeForContacts($jumpTarget, $campaignEvent->getContacts());
+-
+         $campaignEvent->passRemaining();
+     }
+
