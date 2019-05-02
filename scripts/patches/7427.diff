@@ -1,0 +1,138 @@
+diff --git a/app/bundles/CoreBundle/Assets/js/1a.content.js b/app/bundles/CoreBundle/Assets/js/1a.content.js
+index 20efc69205..025da24536 100644
+--- a/app/bundles/CoreBundle/Assets/js/1a.content.js
++++ b/app/bundles/CoreBundle/Assets/js/1a.content.js
+@@ -1356,8 +1356,10 @@ Mautic.activateLiveSearch = function (el, searchStrVar, liveCacheVar) {
+         }
+
+         //searchStr in MauticVars[liveCacheVar] ||
+-        if ((!searchStr && MauticVars[searchStrVar].length) || diff >= 3 || spaceKeyPressed || enterKeyPressed) {
+-            MauticVars[searchStrVar] = searchStr;
++        if (
++            (MauticVars['disableSearchUntilEnter'] && enterKeyPressed) ||
++            (!MauticVars['disableSearchUntilEnter'] && ((!searchStr && MauticVars[searchStrVar].length) || diff >= 3 || spaceKeyPressed || enterKeyPressed))
++        ) {            MauticVars[searchStrVar] = searchStr;
+             event.data.livesearch = true;
+
+             Mautic.filterList(event,
+diff --git a/app/bundles/CoreBundle/Config/config.php b/app/bundles/CoreBundle/Config/config.php
+index 263c3dfba0..ff4569245f 100644
+--- a/app/bundles/CoreBundle/Config/config.php
++++ b/app/bundles/CoreBundle/Config/config.php
+@@ -1085,16 +1085,17 @@
+             'Facebot',
+             'facebookexternalhit',
+         ],
+-        'do_not_track_internal_ips' => [],
+-        'track_private_ip_ranges'   => false,
+-        'link_shortener_url'        => null,
+-        'cached_data_timeout'       => 10,
+-        'batch_sleep_time'          => 1,
+-        'batch_campaign_sleep_time' => false,
+-        'cors_restrict_domains'     => true,
+-        'cors_valid_domains'        => [],
+-        'rss_notification_url'      => 'https://mautic.com/?feed=rss2&tag=notification',
+-        'max_entity_lock_time'      => 0,
+-        'default_daterange_filter'  => '-1 month',
++        'do_not_track_internal_ips'     => [],
++        'track_private_ip_ranges'       => false,
++        'link_shortener_url'            => null,
++        'cached_data_timeout'           => 10,
++        'batch_sleep_time'              => 1,
++        'batch_campaign_sleep_time'     => false,
++        'cors_restrict_domains'         => true,
++        'cors_valid_domains'            => [],
++        'rss_notification_url'          => 'https://mautic.com/?feed=rss2&tag=notification',
++        'max_entity_lock_time'          => 0,
++        'default_daterange_filter'      => '-1 month',
++        'disable_search_until_enter'    => false,
+     ],
+ ];
+diff --git a/app/bundles/CoreBundle/Controller/DefaultController.php b/app/bundles/CoreBundle/Controller/DefaultController.php
+index b00f11e4b3..f85ac50651 100644
+--- a/app/bundles/CoreBundle/Controller/DefaultController.php
++++ b/app/bundles/CoreBundle/Controller/DefaultController.php
+@@ -66,10 +66,14 @@ public function globalSearchAction()
+             $results = [];
+         }
+
++        // Allow disable of ajax search until user hits enter key
++        $disableSearchUntilEnter = $this->container->getParameter('mautic.disable_search_until_enter');
++
+         return $this->render('MauticCoreBundle:GlobalSearch:globalsearch.html.php',
+             [
+-                'results'      => $results,
+-                'searchString' => $searchStr,
++                'results'                 => $results,
++                'searchString'            => $searchStr,
++                'disableSearchUntilEnter' => $disableSearchUntilEnter,
+             ]
+         );
+     }
+diff --git a/app/bundles/CoreBundle/Form/Type/ConfigType.php b/app/bundles/CoreBundle/Form/Type/ConfigType.php
+index 7107044eed..c92a217e49 100644
+--- a/app/bundles/CoreBundle/Form/Type/ConfigType.php
++++ b/app/bundles/CoreBundle/Form/Type/ConfigType.php
+@@ -645,6 +645,20 @@ function (FormEvent $event) use ($formModifier) {
+                 ]
+             )->addViewTransformer($arrayLinebreakTransformer)
+         );
++
++        // Allow disable of the Search Auto complete until Enter Key hit (performance)
++        $builder->add(
++            'disable_search_until_enter',
++            'yesno_button_group',
++            [
++                'label' => 'mautic.core.config.disable_search_until_enter',
++                'data'  => (array_key_exists('disable_search_until_enter', $options['data']) && !empty($options['data']['disable_search_until_enter'])),
++                'attr'  => [
++                    'class'   => 'form-control',
++                    'tooltip' => 'mautic.core.config.disable_search_until_enter.tooltip',
++                ],
++            ]
++        );
+     }
+
+     /**
+diff --git a/app/bundles/CoreBundle/Translations/en_US/messages.ini b/app/bundles/CoreBundle/Translations/en_US/messages.ini
+index 09c866b903..61d6301bb6 100644
+--- a/app/bundles/CoreBundle/Translations/en_US/messages.ini
++++ b/app/bundles/CoreBundle/Translations/en_US/messages.ini
+@@ -72,6 +72,8 @@ mautic.core.config.cors.restrict.domains="Restrict Domains"
+ mautic.core.config.cors.restrict.domains.tooltip="Would you like to restrict the domains that can send CORS requests to your Mautic installation?"
+ mautic.core.config.cors.valid.domains="Valid Domains"
+ mautic.core.config.cors.valid.domains.tooltip="Enter the domains (http://yourdomain.com), one per line, to which you'd like to restrict incoming CORS requests."
++mautic.core.config.disable_search_until_enter = "Disable Ajax Search Suggestions"
++mautic.core.config.disable_search_until_enter.tooltip = "Wait until the user hits enter before performing a background ajax search."
+ mautic.core.config.form.cache.path="Path to the cache directory"
+ mautic.core.config.form.cache.path.tooltip="Set the absolute path to the cache directory. %kernel.root_dir% can be used as a placeholder to the app directory in the public web root. It is advised to use a directory outside of the public web root to prevent the cache from being accessible by the public."
+ mautic.core.dir.not.accesssible="%dir% is not accessible"
+diff --git a/app/bundles/CoreBundle/Views/FormTheme/Config/_config_coreconfig_widget.html.php b/app/bundles/CoreBundle/Views/FormTheme/Config/_config_coreconfig_widget.html.php
+index c4cea0edab..062287fcab 100644
+--- a/app/bundles/CoreBundle/Views/FormTheme/Config/_config_coreconfig_widget.html.php
++++ b/app/bundles/CoreBundle/Views/FormTheme/Config/_config_coreconfig_widget.html.php
+@@ -79,6 +79,9 @@
+         <h3 class="panel-title"><?php echo $view['translator']->trans('mautic.core.config.header.misc'); ?></h3>
+     </div>
+     <div class="panel-body">
++        <div class="row">
++            <?php echo $view['form']->rowIfExists($fields, 'disable_search_until_enter', $template); ?>
++        </div>
+         <div class="row">
+             <?php echo $view['form']->rowIfExists($fields, 'trusted_hosts', $template); ?>
+             <?php echo $view['form']->rowIfExists($fields, 'trusted_proxies', $template); ?>
+diff --git a/app/bundles/CoreBundle/Views/GlobalSearch/globalsearch.html.php b/app/bundles/CoreBundle/Views/GlobalSearch/globalsearch.html.php
+index 48946b0482..5ff35d605f 100644
+--- a/app/bundles/CoreBundle/Views/GlobalSearch/globalsearch.html.php
++++ b/app/bundles/CoreBundle/Views/GlobalSearch/globalsearch.html.php
+@@ -10,6 +10,10 @@
+  */
+ ?>
+
++<?php
++    $view['assets']->addScriptDeclaration("MauticVars.disableSearchUntilEnter = $disableSearchUntilEnter", 'bodyClose');
++?>
++
+ <li class="dropdown dropdown-custom" id="globalSearchDropdown">
+     <div class="dropdown-menu">
+         <div class="panel panel-default">
