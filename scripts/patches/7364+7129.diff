@@ -1,0 +1,216 @@
+diff --git a/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php b/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
+index 05ebe6e50b..89932ed89e 100644
+--- a/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
++++ b/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
+@@ -95,6 +95,11 @@ public function onCampaignBuild(CampaignBuilderEvent $event)
+      * Process campaign.jump_to_event actions.
+      *
+      * @param PendingEvent $campaignEvent
++     *
++     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogNotProcessedException
++     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogPassedAndFailedException
++     * @throws \Mautic\CampaignBundle\Executioner\Exception\CannotProcessEventException
++     * @throws \Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableException
+      */
+     public function onJumpToEvent(PendingEvent $campaignEvent)
+     {
+@@ -102,12 +107,21 @@ public function onJumpToEvent(PendingEvent $campaignEvent)
+         $jumpTarget = $this->getJumpTargetForEvent($event, 'e.id');
+ 
+         if ($jumpTarget === null) {
+-            $campaignEvent->passWithError($jumpTarget, $this->translator->trans('mautic.campaign.campaign.jump_to_event.target_not_exist'));
++            // Target event has been removed.
++            $pending  = $campaignEvent->getPending();
++            $contacts = $campaignEvent->getContacts();
++            foreach ($contacts as $logId => $contact) {
++                // Pass with an error for the UI.
++                $campaignEvent->passWithError(
++                    $pending->get($logId),
++                    $this->translator->trans('mautic.campaign.campaign.jump_to_event.target_not_exist')
++                );
++            }
++        } else {
++            $this->eventExecutioner->incrementCampaignRotationForContacts($campaignEvent->getContactIds(), $campaignEvent->getEvent()->getCampaign()->getId());
++            $this->eventExecutioner->executeForContacts($jumpTarget, $campaignEvent->getContactsKeyedById());
++            $campaignEvent->passRemaining();
+         }
+-
+-        $this->eventExecutioner->executeForContacts($jumpTarget, $campaignEvent->getContacts());
+-
+-        $campaignEvent->passRemaining();
+     }
+ 
+     /**
+diff --git a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
+index fcf10886fa..327203c63d 100644
+--- a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
+@@ -245,6 +245,19 @@ public function executeLogs(Event $event, ArrayCollection $logs, Counter $counte
+         }
+     }
+ 
++    /**
++     * @param array $contacts
++     * @param int   $campaignId
++     */
++    public function incrementCampaignRotationForContacts(array $contacts, int $campaignId)
++    {
++        // Increment the campaign rotation for the given contacts and current campaign
++        $this->leadRepository->incrementCampaignRotationForContacts(
++            $contacts,
++            $campaignId
++        );
++    }
++
+     /**
+      * @param ArrayCollection $events
+      * @param ArrayCollection $contacts
+@@ -261,7 +274,6 @@ public function executeEventsForContacts(ArrayCollection $events, ArrayCollectio
+         if (!$contacts->count()) {
+             return;
+         }
+-
+         // Schedule then return those that need to be immediately executed
+         $executeThese = $this->scheduleEvents($events, $contacts, $childrenCounter, $isInactive);
+ 
+@@ -275,20 +287,17 @@ public function executeEventsForContacts(ArrayCollection $events, ArrayCollectio
+                 $this->executeForContacts($event, $contacts, $childrenCounter, $isInactive);
+             }
+         }
+-
+         // Now execute jump to events
+         $jumpEvents = $executeThese->filter(function (Event $event) {
+             return CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType();
+         });
+         if ($jumpEvents->count()) {
+             $jumpLogs = [];
+-
+             // Create logs for the jump to events before the rotation is incremented
+             foreach ($jumpEvents as $key => $event) {
+                 $config         = $this->collector->getEventConfig($event);
+                 $jumpLogs[$key] = $this->eventLogger->fetchRotationAndGenerateLogsFromContacts($event, $config, $contacts, $isInactive);
+             }
+-
+             // Increment the campaign rotation for the given contacts and current campaign
+             $this->leadRepository->incrementCampaignRotationForContacts(
+                 $contacts->getKeys(),
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/EventExecutionerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/EventExecutionerTest.php
+index 2a80a5e4b0..621c524e06 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/EventExecutionerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/EventExecutionerTest.php
+@@ -15,8 +15,10 @@
+ use Mautic\CampaignBundle\CampaignEvents;
+ use Mautic\CampaignBundle\Entity\Campaign;
+ use Mautic\CampaignBundle\Entity\Event;
++use Mautic\CampaignBundle\Entity\EventRepository;
+ use Mautic\CampaignBundle\Entity\LeadEventLog;
+ use Mautic\CampaignBundle\Entity\LeadRepository;
++use Mautic\CampaignBundle\Event\PendingEvent;
+ use Mautic\CampaignBundle\EventCollector\Accessor\Event\ActionAccessor;
+ use Mautic\CampaignBundle\EventCollector\EventCollector;
+ use Mautic\CampaignBundle\EventListener\CampaignActionJumpToEventSubscriber;
+@@ -29,6 +31,7 @@
+ use Mautic\CampaignBundle\Executioner\Scheduler\EventScheduler;
+ use Mautic\CampaignBundle\Form\Type\CampaignEventJumpToEventType;
+ use Mautic\CampaignBundle\Helper\RemovedContactTracker;
++use Mautic\CoreBundle\Translation\Translator;
+ use Mautic\EmailBundle\EmailEvents;
+ use Mautic\LeadBundle\Entity\Lead;
+ use Psr\Log\LoggerInterface;
+@@ -80,6 +83,16 @@ class EventExecutionerTest extends \PHPUnit_Framework_TestCase
+      */
+     private $leadRepository;
+ 
++    /**
++     * @var EventRepository|\PHPUnit_Framework_MockObject_MockBuilder
++     */
++    private $eventRepository;
++
++    /**
++     * @var Translator|\PHPUnit_Framework_MockObject_MockBuilder
++     */
++    private $translator;
++
+     protected function setUp()
+     {
+         $this->eventCollector        = $this->createMock(EventCollector::class);
+@@ -93,6 +106,13 @@ protected function setUp()
+         $this->eventScheduler        = $this->createMock(EventScheduler::class);
+         $this->removedContactTracker = $this->createMock(RemovedContactTracker::class);
+         $this->leadRepository        = $this->createMock(LeadRepository::class);
++        $this->eventRepository       = $this->getMockBuilder(EventRepository::class)
++            ->disableOriginalConstructor()
++            ->getMock();
++
++        $this->translator = $this->getMockBuilder(Translator::class)
++            ->disableOriginalConstructor()
++            ->getMock();
+     }
+ 
+     public function testJumpToEventsAreProcessedAfterOtherEvents()
+@@ -209,4 +229,65 @@ private function getEventExecutioner()
+             $this->leadRepository
+         );
+     }
++
++    public function testJumpToEventsExecutedWithoutTarget()
++    {
++        $campaign = new Campaign();
++
++        $event = new Event();
++        $event->setEventType(ActionExecutioner::TYPE)
++            ->setType(CampaignActionJumpToEventSubscriber::EVENT_NAME)
++            ->setCampaign($campaign)
++            ->setProperties(['jumpToEvent' => 999]);
++
++        $lead = $this->getMockBuilder(Lead::class)
++            ->getMock();
++        $lead->method('getId')
++            ->willReturn(1);
++
++        $log = $this->getMockBuilder(LeadEventLog::class)
++            ->getMock();
++        $log->method('getLead')
++            ->willReturn($lead);
++        $log->method('setIsScheduled')
++            ->willReturn($log);
++        $log->method('getEvent')
++            ->willReturn($event);
++        $log->method('getId')
++            ->willReturn(1);
++
++        $logs = new ArrayCollection(
++            [
++                1 => $log,
++            ]
++        );
++
++        $config = new ActionAccessor(
++            [
++                'label'                  => 'mautic.campaign.event.jump_to_event',
++                'description'            => 'mautic.campaign.event.jump_to_event_descr',
++                'formType'               => CampaignEventJumpToEventType::class,
++                'template'               => 'MauticCampaignBundle:Event:jump.html.php',
++                'batchEventName'         => CampaignEvents::ON_EVENT_JUMP_TO_EVENT,
++                'connectionRestrictions' => [
++                    'target' => [
++                        Event::TYPE_DECISION  => ['none'],
++                        Event::TYPE_ACTION    => ['none'],
++                        Event::TYPE_CONDITION => ['none'],
++                    ],
++                ],
++            ]
++        );
++
++        $pendingEvent = new PendingEvent($config, $event, $logs);
++
++        $this->eventRepository->method('getEntities')
++            ->willReturn([]);
++
++        $subscriber = new CampaignActionJumpToEventSubscriber($this->eventRepository, $this->getEventExecutioner(), $this->translator);
++        $subscriber->onJumpToEvent($pendingEvent);
++
++        $this->assertEquals(count($pendingEvent->getSuccessful()), 1);
++        $this->assertEquals(count($pendingEvent->getFailures()), 0);
++    }
+ }
