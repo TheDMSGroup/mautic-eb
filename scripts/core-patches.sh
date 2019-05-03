@@ -141,9 +141,11 @@ echo "https://github.com/mautic/mautic/pull/7427"
 git apply -v "../scripts/patches/7427.diff"
 git add . ; git commit --author="7427 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7427"
 
-# Prevent a downward spiral of sadness if a jump-to event target is deleted/unpublished.
+# Merged from 2 PRs currently open and in testing.
 echo "----------------------------------------------------"
-echo "Prevent a downward spiral of sadness if a jump-to event target is deleted/unpublished."
+echo "Prevent exceptions if a campaign jump target is removed. #7364"
+echo "Fix scheduled jump to event campaign action #7129"
 echo "https://github.com/mautic/mautic/pull/7364"
-git apply -v "../scripts/patches/7364.diff"
-git add . ; git commit --author="7364 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7364"
+echo "https://github.com/mautic/mautic/pull/7129"
+git apply -v "../scripts/patches/7364+7129.diff"
+git add . ; git commit --author="7364+7129 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7364 https://github.com/mautic/mautic/pull/7129"
