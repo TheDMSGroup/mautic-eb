@@ -83,6 +83,17 @@ composer install
 2. Set up local host at http://mautic.loc that points to the `.../mautic-eb/mautic` sub-folder.
 3. Browse to http://mautic.loc and go through the standard setup. 
 
+### Local setup for plugin/mautic-eb development
+
+1. Clone & composer:
+```
+git clone https://github.com/TheDMSGroup/mautic-eb.git
+cd mautic-eb
+bash ./scripts/build-local.sh
+```
+2. Set up local host at http://mautic.loc that points to the `.../mautic-eb/mautic` sub-folder.
+3. Browse to http://mautic.loc and go through the standard setup. 
+
 ### Traditional deployment (from local)
 Should you not wish to use Travis to deploy for you, you can do it manually from your local machine:
 
