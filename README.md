@@ -45,6 +45,8 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     NR_APM_INSTALL_KEY       - NewRelic install key for Application Monitoring.
     NR_INF_INSTALL_KEY       - NewRelic install key for Infrastructure.
     NR_API_KEY               - NewRelic API key (optional, for Health plugin).
+    IP_RESTRICT              - Restrict all UI (/s/) access by IP address/range, must also select URI.
+    IP_RESTRICT_URI          - The URI to which 403 IP Restriction should be sent.
 
 ### Travis CI Environment Variables
 
