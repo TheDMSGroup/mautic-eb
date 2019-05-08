@@ -31,7 +31,7 @@ $container->setParameter('mautic.batch_sleep_time', .050);
 
 // Optionally allow CSRF to be disabled. Useful if all users are behind a firewall and you have multiple nodes.
 // Just set the environment variable CSRF to 0.
-$container->setParameter('mautic.framework.csrf_protection', (bool) getenv('CSRF') ?: true);
+$container->setParameter('mautic.framework.csrf_protection', !empty(getenv('CSRF')) ? boolval(getenv('CSRF')) : true);
 
 // Check for APCu
 if (function_exists('apcu_fetch') && class_exists('\Doctrine\Common\Cache\ApcuCache')) {
