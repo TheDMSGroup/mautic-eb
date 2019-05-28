@@ -127,10 +127,10 @@ index 0000000000..90d643486d
 +    }
 +}
 diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
-index b8edbfb440..7590f2f00f 100644
+index a052fd486f..65f6bff98c 100644
 --- a/app/bundles/CampaignBundle/Config/config.php
 +++ b/app/bundles/CampaignBundle/Config/config.php
-@@ -275,6 +275,9 @@
+@@ -277,6 +277,9 @@
                      'mautic.helper.ip_lookup',
                  ],
              ],
@@ -140,7 +140,7 @@ index b8edbfb440..7590f2f00f 100644
          ],
          'repositories' => [
              'mautic.campaign.repository.campaign' => [
-@@ -305,6 +308,13 @@
+@@ -307,6 +310,13 @@
                      \Mautic\CampaignBundle\Entity\LeadEventLog::class,
                  ],
              ],
@@ -154,7 +154,7 @@ index b8edbfb440..7590f2f00f 100644
          ],
          'execution'    => [
              'mautic.campaign.contact_finder.kickoff'  => [
-@@ -361,6 +371,7 @@
+@@ -363,6 +373,7 @@
                      'mautic.tracker.contact',
                      'mautic.campaign.repository.lead_event_log',
                      'mautic.campaign.repository.lead',
@@ -162,7 +162,7 @@ index b8edbfb440..7590f2f00f 100644
                  ],
              ],
              'mautic.campaign.event_collector' => [
-@@ -598,9 +609,20 @@
+@@ -600,9 +611,20 @@
                  ],
                  'tag' => 'console.command',
              ],
@@ -186,7 +186,7 @@ index b8edbfb440..7590f2f00f 100644
 diff --git a/app/bundles/CampaignBundle/Controller/CampaignController.php b/app/bundles/CampaignBundle/Controller/CampaignController.php
 old mode 100644
 new mode 100755
-index f3e2ddd730..3aedde4f96
+index 7563ec3a29..47b1bf7fea
 --- a/app/bundles/CampaignBundle/Controller/CampaignController.php
 +++ b/app/bundles/CampaignBundle/Controller/CampaignController.php
 @@ -14,6 +14,7 @@
@@ -197,7 +197,7 @@ index f3e2ddd730..3aedde4f96
  use Mautic\CampaignBundle\EventListener\CampaignActionJumpToEventSubscriber;
  use Mautic\CampaignBundle\Model\CampaignModel;
  use Mautic\CampaignBundle\Model\EventModel;
-@@ -96,12 +97,15 @@ public function cloneAction($objectId)
+@@ -120,12 +121,15 @@ public function cloneAction($objectId)
      }
  
      /**
@@ -216,7 +216,7 @@ index f3e2ddd730..3aedde4f96
      {
          return $this->generateContactsGrid(
              $objectId,
-@@ -111,7 +115,16 @@ public function contactsAction($objectId, $page = 1)
+@@ -135,7 +139,16 @@ public function contactsAction($objectId, $page = 1)
              'campaign_leads',
              null,
              'campaign_id',
@@ -234,7 +234,7 @@ index f3e2ddd730..3aedde4f96
          );
      }
  
-@@ -654,12 +667,25 @@ protected function getViewArguments(array $args, $action)
+@@ -678,13 +691,26 @@ protected function getViewArguments(array $args, $action)
                  $dateRangeValues = $this->request->get('daterange', []);
                  $action          = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
                  $dateRangeForm   = $this->get('form.factory')->create('daterange', $dateRangeValues, ['action' => $action]);
@@ -244,6 +244,7 @@ index f3e2ddd730..3aedde4f96
 -                $events            = $this->getCampaignModel()->getEventRepository()->getCampaignEvents($entity->getId());
 -                $leadCount         = $this->getCampaignModel()->getRepository()->getCampaignLeadCount($entity->getId());
 -                $campaignLogCounts = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false);
+-                $sortedEvents      = [
 +                $events          = $this->getCampaignModel()->getEventRepository()->getCampaignEvents($entity->getId());
 +                $dateFrom        = null;
 +                $dateTo          = null;
@@ -255,18 +256,19 @@ index f3e2ddd730..3aedde4f96
 +                }
 +                if ($this->coreParametersHelper->getParameter('campaign_use_summary')) {
 +                    /** @var SummaryRepository $summaryRepo */
-+                    $summaryRepo       = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:Summary');
-+                    $campaignLogCounts = $summaryRepo->getCampaignLogCounts($entity->getId(), $dateFrom, $dateTo);
++                    $summaryRepo              = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:Summary');
++                    $campaignLogCounts        = $summaryRepo->getCampaignLogCounts($entity->getId(), $dateFrom, $dateTo);
 +                } else {
 +                    /** @var LeadEventLogRepository $eventLogRepo */
-+                    $eventLogRepo      = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:LeadEventLog');
-+                    $campaignLogCounts = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false, $dateFrom, $dateTo);
++                    $eventLogRepo             = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:LeadEventLog');
++                    $campaignLogCounts        = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false, true, $dateFrom, $dateTo);
 +                }
 +                $leadCount         = $this->getCampaignModel()->getRepository()->getCampaignLeadCount($entity->getId(), null, [], $dateFrom, $dateTo);
-                 $sortedEvents      = [
++                $sortedEvents      = [
                      'decision'  => [],
                      'action'    => [],
-@@ -718,6 +744,9 @@ protected function getViewArguments(array $args, $action)
+                     'condition' => [],
+@@ -763,6 +790,9 @@ protected function getViewArguments(array $args, $action)
                                  'objectId'   => $entity->getId(),
                                  'page'       => $this->get('session')->get('mautic.campaign.contact.page', 1),
                                  'ignoreAjax' => true,
@@ -279,7 +281,7 @@ index f3e2ddd730..3aedde4f96
 diff --git a/app/bundles/CampaignBundle/Entity/CampaignRepository.php b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 old mode 100644
 new mode 100755
-index 9e71510324..62c9d6ae9c
+index 00a4a72c9e..812b5054a5
 --- a/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
 @@ -11,6 +11,7 @@
@@ -290,7 +292,7 @@ index 9e71510324..62c9d6ae9c
  use Doctrine\DBAL\Types\Type;
  use Mautic\CampaignBundle\Entity\Result\CountResult;
  use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
-@@ -452,13 +453,17 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
+@@ -464,13 +465,17 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
      /**
       * Get a count of leads that belong to the campaign.
       *
@@ -312,7 +314,7 @@ index 9e71510324..62c9d6ae9c
      {
          $q = $this->getSlaveConnection()->createQueryBuilder();
  
-@@ -478,6 +483,12 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
+@@ -490,6 +495,12 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
              );
          }
  
@@ -325,7 +327,7 @@ index 9e71510324..62c9d6ae9c
          if (count($pendingEvents) > 0) {
              $sq = $this->getSlaveConnection()->createQueryBuilder();
              $sq->select('null')
-@@ -489,12 +500,27 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
+@@ -501,12 +512,27 @@ public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents
                      )
                  );
  
@@ -357,7 +359,7 @@ index 9e71510324..62c9d6ae9c
 diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 old mode 100644
 new mode 100755
-index 54cd3b2196..ead4e3800b
+index 7f2a3ac01f..14e50023c2
 --- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 @@ -12,6 +12,7 @@
@@ -401,7 +403,7 @@ index 54cd3b2196..ead4e3800b
          $expr->add(
              sprintf('NOT EXISTS (%s)', $failedSq->getSQL())
          );
-@@ -268,7 +279,22 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
+@@ -275,7 +285,22 @@ public function getCampaignLogCounts($campaignId, $excludeScheduled = false, $ex
            ->setParameter('false', false, 'boolean')
            ->groupBy($groupBy);
  
@@ -425,7 +427,7 @@ index 54cd3b2196..ead4e3800b
  
          $return = [];
  
-@@ -525,6 +551,24 @@ public function getDatesExecuted($eventId, array $contactIds)
+@@ -532,6 +557,24 @@ public function getDatesExecuted($eventId, array $contactIds)
          return $dates;
      }
  
@@ -450,7 +452,7 @@ index 54cd3b2196..ead4e3800b
      /**
       * @param int $contactId
       * @param int $campaignId
-@@ -534,7 +578,7 @@ public function getDatesExecuted($eventId, array $contactIds)
+@@ -541,7 +584,7 @@ public function getDatesExecuted($eventId, array $contactIds)
       */
      public function hasBeenInCampaignRotation($contactId, $campaignId, $rotation)
      {
@@ -725,10 +727,10 @@ index 0000000000..a508f5a75d
 +}
 diff --git a/app/bundles/CampaignBundle/Entity/SummaryRepository.php b/app/bundles/CampaignBundle/Entity/SummaryRepository.php
 new file mode 100644
-index 0000000000..7b1a20eada
+index 0000000000..620717189f
 --- /dev/null
 +++ b/app/bundles/CampaignBundle/Entity/SummaryRepository.php
-@@ -0,0 +1,175 @@
+@@ -0,0 +1,177 @@
 +<?php
 +
 +/*
@@ -801,8 +803,6 @@ index 0000000000..7b1a20eada
 +            ->getConnection()
 +            ->prepare($sql)
 +            ->execute();
-+
-+        $this->getEntityManager()->flush();
 +    }
 +
 +    /**
@@ -849,6 +849,8 @@ index 0000000000..7b1a20eada
 +     * Get the oldest triggered time for back-filling historical data.
 +     *
 +     * @return \DateTime|null
++     *
++     * @throws \Exception
 +     */
 +    public function getOldestTriggeredDate()
 +    {
@@ -898,14 +900,47 @@ index 0000000000..7b1a20eada
 +            ->getConnection()
 +            ->prepare($sql);
 +
-+        $q->bindParam('dateFrom', $dateFrom->getTimestamp(), \PDO::PARAM_INT);
-+        $q->bindParam('dateTo', $dateTo->getTimestamp(), \PDO::PARAM_INT);
++        $dateFromTs = $dateFrom->getTimestamp();
++        $dateToTs   = $dateTo->getTimestamp();
++        $q->bindParam('dateFrom', $dateFromTs, \PDO::PARAM_INT);
++        $q->bindParam('dateTo', $dateToTs, \PDO::PARAM_INT);
 +
 +        $q->execute();
 +    }
 +}
+diff --git a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
+index 1c805d3400..97ea83af70 100644
+--- a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
+@@ -577,4 +577,14 @@ private function executeNegativePathEventsForContacts(Event $event, ArrayCollect
+ 
+         $this->executeEventsForContacts($children, $contacts, $counter);
+     }
++
++    /**
++     * @throws \Doctrine\DBAL\DBALException
++     * @throws \Doctrine\ORM\OptimisticLockException
++     */
++    public function persistSummaries()
++    {
++        $summaryModel = $this->eventLogger->getsummaryModel();
++        $summaryModel->persistSummaries();
++    }
+ }
+diff --git a/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php b/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php
+index cfb39a392b..bae517f641 100644
+--- a/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/KickoffExecutioner.php
+@@ -143,6 +143,7 @@ public function execute(Campaign $campaign, ContactLimiter $limiter, OutputInter
+             if ($this->progressBar) {
+                 $this->progressBar->finish();
+             }
++            $this->executioner->persistSummaries();
+         }
+ 
+         return $this->counter;
 diff --git a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
-index 14c8bd79c2..2d6efe1573 100644
+index 14c8bd79c2..2519e0c6bb 100644
 --- a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
 +++ b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
 @@ -18,6 +18,7 @@
@@ -966,6 +1001,19 @@ index 14c8bd79c2..2d6efe1573 100644
  
          return $this;
      }
+@@ -272,4 +283,12 @@ private function persistPendingAndInsertIntoLogStack()
+ 
+         $this->persistQueue->clear();
+     }
++
++    /**
++     * @return SummaryModel
++     */
++    public function getSummaryModel()
++    {
++        return $this->summaryModel;
++    }
+ }
 diff --git a/app/bundles/CampaignBundle/Form/Type/ConfigType.php b/app/bundles/CampaignBundle/Form/Type/ConfigType.php
 index 79c0f15d82..a7e4378300 100644
 --- a/app/bundles/CampaignBundle/Form/Type/ConfigType.php
@@ -1000,10 +1048,10 @@ index 79c0f15d82..a7e4378300 100644
  
      /**
 diff --git a/app/bundles/CampaignBundle/Model/CampaignModel.php b/app/bundles/CampaignBundle/Model/CampaignModel.php
-index 504a7f9666..7191dd8841 100644
+index de95b2362b..bbca915db1 100644
 --- a/app/bundles/CampaignBundle/Model/CampaignModel.php
 +++ b/app/bundles/CampaignBundle/Model/CampaignModel.php
-@@ -770,19 +770,24 @@ public function getCampaignMetricsLineChartData($unit, \DateTime $dateFrom, \Dat
+@@ -773,19 +773,24 @@ public function getCampaignMetricsLineChartData($unit, \DateTime $dateFrom, \Dat
                  foreach ($events as $type => $eventIds) {
                      $filter['event_id'] = $eventIds;
  
@@ -1043,10 +1091,10 @@ index 504a7f9666..7191dd8841 100644
                          $triggers = $query->completeTimeData($rawData);
 diff --git a/app/bundles/CampaignBundle/Model/SummaryModel.php b/app/bundles/CampaignBundle/Model/SummaryModel.php
 new file mode 100644
-index 0000000000..5a7e48e25b
+index 0000000000..9d9e78afff
 --- /dev/null
 +++ b/app/bundles/CampaignBundle/Model/SummaryModel.php
-@@ -0,0 +1,145 @@
+@@ -0,0 +1,162 @@
 +<?php
 +
 +/*
@@ -1074,6 +1122,9 @@ index 0000000000..5a7e48e25b
 +    /** @var ProgressBarHelper */
 +    private $progressBar;
 +
++    /** @var array */
++    private $summaries = [];
++
 +    /**
 +     * Collapse Event Log entities into insert/update queries for the campaign summary.
 +     *
@@ -1081,7 +1132,6 @@ index 0000000000..5a7e48e25b
 +     */
 +    public function updateSummary($logs)
 +    {
-+        $summaries = [];
 +        $now       = new \DateTime();
 +        foreach ($logs as $log) {
 +            /** @var LeadEventLog $log */
@@ -1091,16 +1141,16 @@ index 0000000000..5a7e48e25b
 +            $campaign  = $log->getCampaign();
 +            $event     = $log->getEvent();
 +            $key       = $campaign->getId().'.'.$event->getId().'.'.$timestamp;
-+            if (!isset($summaries[$key])) {
++            if (!isset($this->summaries[$key])) {
 +                $dateTriggered = new \DateTime();
 +                $dateTriggered->setTimestamp($timestamp);
 +                $summary = new Summary();
 +                $summary->setCampaign($campaign);
 +                $summary->setEvent($event);
 +                $summary->setDateTriggered($dateTriggered);
-+                $summaries[$key] = $summary;
++                $this->summaries[$key] = $summary;
 +            } else {
-+                $summary = $summaries[$key];
++                $summary = $this->summaries[$key];
 +            }
 +
 +            if ($log->getIsScheduled() && $log->getTriggerDate() > $now) {
@@ -1113,8 +1163,9 @@ index 0000000000..5a7e48e25b
 +                $summary->setTriggeredCount($summary->getTriggeredCount() + 1);
 +            }
 +        }
-+        if ($summaries) {
-+            $this->getRepository()->saveEntities($summaries);
++
++        if (count($this->summaries) >= 100) {
++            $this->persistSummaries($this->summaries);
 +        }
 +    }
 +
@@ -1155,7 +1206,8 @@ index 0000000000..5a7e48e25b
 +            /** @var \DateTime $oldestSumamryDate */
 +            $start = $this->getRepository()->getOldestTriggeredDate();
 +        }
-+        $start = $start ? $start : new \DateTime();
++        // Start with the last complete hour.
++        $start = $start ? $start : new \DateTime('-1 hour');
 +        $start->setTimestamp($start->getTimestamp() - ($start->getTimestamp() % 3600));
 +
 +        /** @var LeadEventLog $oldestTriggeredEventLog */
@@ -1190,6 +1242,19 @@ index 0000000000..5a7e48e25b
 +    public function getCampaignLeadEventLogRepository()
 +    {
 +        return $this->em->getRepository('MauticCampaignBundle:LeadEventLog');
++    }
++
++    /**
++     * @throws \Doctrine\DBAL\DBALException
++     * @throws \Doctrine\ORM\OptimisticLockException
++     */
++    public function persistSummaries()
++    {
++        if ($this->summaries) {
++            $this->getRepository()->saveEntities($this->summaries);
++            $this->summaries = [];
++            $this->em->clear(Summary::class);
++        }
 +    }
 +}
 diff --git a/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
@@ -1232,10 +1297,10 @@ index cf3a415f78..260093f9a2 100644
      }
  }
 diff --git a/app/bundles/CampaignBundle/Translations/en_US/messages.ini b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
-index 88324607b2..6a36c8b715 100644
+index 09e305bcf2..79238d2e8e 100644
 --- a/app/bundles/CampaignBundle/Translations/en_US/messages.ini
 +++ b/app/bundles/CampaignBundle/Translations/en_US/messages.ini
-@@ -110,6 +110,7 @@ mautic.campaign.rebuild.not_found="Campaign #%id% does not exist"
+@@ -111,6 +111,7 @@ mautic.campaign.rebuild.not_found="Campaign #%id% does not exist"
  mautic.campaign.rebuild.to_be_added="%leads% total contact(s) to be added in batches of %batch%"
  mautic.campaign.rebuild.to_be_removed="%leads% total contact(s) to be removed in batches of %batch%"
  mautic.campaign.scheduled="Campaign event scheduled"
@@ -1243,7 +1308,7 @@ index 88324607b2..6a36c8b715 100644
  mautic.campaign.trigger.event_count="%events% total events(s) to be processed in batches of %batch% contacts"
  mautic.campaign.trigger.events_executed="{0} 0 total events were executed|{1} 1 total event was executed|[2,Inf] %events% total events were executed"
  mautic.campaign.trigger.events_scheduled="{0} 0 total events were scheduled|{1} 1 total event was scheduled|[2,Inf] %events% total events were scheduled"
-@@ -129,6 +130,10 @@ mautic.campaign.triggered.events="Triggered Events"
+@@ -130,6 +131,10 @@ mautic.campaign.triggered.events="Triggered Events"
  mautic.config.tab.campaignconfig="Campaign Settings"
  mautic.campaignconfig.campaign_time_wait_on_event_false="Wait time before retrying a failed action"
  mautic.campaignconfig.campaign_time_wait_on_event_false_tooltip="If an action fails to execute, wait this long before trying again."
@@ -1363,7 +1428,7 @@ index 123ca3e967..4c385a7f0a 100644
       *
       * @return mixed
       */
-@@ -45,7 +50,12 @@ protected function generateContactsGrid(
+@@ -46,7 +51,12 @@ protected function generateContactsGrid(
          array $additionalJoins = null,
          $contactColumnName = null,
          array $routeParameters = [],
@@ -1377,7 +1442,7 @@ index 123ca3e967..4c385a7f0a 100644
      ) {
          if ($permission && !$this->get('mautic.security')->isGranted($permission)) {
              return $this->accessDenied();
-@@ -66,8 +76,8 @@ protected function generateContactsGrid(
+@@ -67,8 +77,8 @@ protected function generateContactsGrid(
          $this->get('session')->set('mautic.'.$sessionVar.'.contact.filter', $search);
  
          $filter     = ['string' => $search, 'force' => []];
@@ -1388,7 +1453,7 @@ index 123ca3e967..4c385a7f0a 100644
  
          //set limits
          $limit = $this->get('session')->get(
-@@ -84,7 +94,7 @@ protected function generateContactsGrid(
+@@ -85,7 +95,7 @@ protected function generateContactsGrid(
          $repo     = $this->getModel('lead')->getRepository();
          $contacts = $repo->getEntityContacts(
              [
@@ -1397,7 +1462,7 @@ index 123ca3e967..4c385a7f0a 100644
                  'start'          => $start,
                  'limit'          => $limit,
                  'filter'         => $filter,
-@@ -96,10 +106,21 @@ protected function generateContactsGrid(
+@@ -97,10 +107,21 @@ protected function generateContactsGrid(
              $contactFilter,
              $entityIdColumnName,
              $additionalJoins,
@@ -1427,7 +1492,7 @@ index 6953838ea2..0f2c50b231 100644
 +++ b/app/bundles/LeadBundle/Entity/CustomFieldRepositoryTrait.php
 @@ -49,22 +49,25 @@ public function getEntitiesWithCustomFields($object, $args, $resultsCallback = n
          $this->buildWhereClause($dq, $args);
-
+ 
          // Distinct is required here to get the correct count when group by is used due to applied filters
 -        $countSelect = ($this->useDistinctCount) ? 'COUNT(DISTINCT('.$this->getTableAlias().'.id))' : 'COUNT('.$this->getTableAlias().'.id)';
 -        $dq->select($countSelect.' as count');
@@ -1440,7 +1505,7 @@ index 6953838ea2..0f2c50b231 100644
 +            if ($groupBy = $dq->getQueryPart('groupBy')) {
 +                $dq->resetQueryPart('groupBy');
 +            }
-
+ 
 -        // Advanced search filters may have set a group by and if so, let's remove it for the count.
 -        if ($groupBy = $dq->getQueryPart('groupBy')) {
 -            $dq->resetQueryPart('groupBy');
@@ -1448,7 +1513,7 @@ index 6953838ea2..0f2c50b231 100644
 +            $result = $dq->execute()->fetchAll();
 +            $total  = ($result) ? $result[0]['count'] : 0;
          }
-
+ 
 -        //get a total count
 -        $result = $dq->execute()->fetchAll();
 -        $total  = ($result) ? $result[0]['count'] : 0;
@@ -1463,10 +1528,10 @@ index 6953838ea2..0f2c50b231 100644
              }
              //now get the actual paginated results
 diff --git a/app/bundles/LeadBundle/Entity/LeadRepository.php b/app/bundles/LeadBundle/Entity/LeadRepository.php
-index 5176ce7403..41617e56ab 100755
+index ac9f1910b8..b274b301b1 100755
 --- a/app/bundles/LeadBundle/Entity/LeadRepository.php
 +++ b/app/bundles/LeadBundle/Entity/LeadRepository.php
-@@ -545,16 +545,18 @@ public function getEntitiesOrmQueryBuilder($order)
+@@ -544,16 +544,18 @@ public function getEntitiesOrmQueryBuilder($order)
      /**
       * Get contacts for a specific channel entity.
       *
@@ -1492,7 +1557,7 @@ index 5176ce7403..41617e56ab 100755
      {
          $qb = $this->getEntitiesDbalQueryBuilder();
  
-@@ -608,6 +610,12 @@ public function getEntityContacts($args, $joinTable, $entityId, $filters = [], $
+@@ -607,6 +609,12 @@ public function getEntityContacts($args, $joinTable, $entityId, $filters = [], $
              }
          }
  
