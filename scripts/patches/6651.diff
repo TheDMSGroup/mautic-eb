@@ -261,7 +261,7 @@ index 7563ec3a29..47b1bf7fea
 +                } else {
 +                    /** @var LeadEventLogRepository $eventLogRepo */
 +                    $eventLogRepo             = $this->getDoctrine()->getManager()->getRepository('MauticCampaignBundle:LeadEventLog');
-+                    $campaignLogCounts        = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false, true, $dateFrom, $dateTo);
++                    $campaignLogCounts        = $eventLogRepo->getCampaignLogCounts($entity->getId(), false, false, $dateFrom, $dateTo);
 +                }
 +                $leadCount         = $this->getCampaignModel()->getRepository()->getCampaignLeadCount($entity->getId(), null, [], $dateFrom, $dateTo);
 +                $sortedEvents      = [
