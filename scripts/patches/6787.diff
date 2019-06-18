@@ -11,10 +11,10 @@ index 9d0a59286e..c259392925 100644
              ->addIndex(['lead_id', 'campaign_id', 'rotation'], 'campaign_leads')
              ->addIndex(['channel', 'channel_id', 'lead_id'], 'campaign_log_channel')
 diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
-index 54cd3b2196..21bf0bbd1c 100644
+index 54cd3b2196..84630ac5f7 100644
 --- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
 +++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
-@@ -620,4 +620,103 @@ public function removeScheduledEvents($campaignId, $leadId)
+@@ -620,4 +620,102 @@ public function removeScheduledEvents($campaignId, $leadId)
              'is_scheduled' => 1,
          ]);
      }
@@ -74,16 +74,15 @@ index 54cd3b2196..21bf0bbd1c 100644
 +                $q->expr()->lte('l.trigger_date', ':now'),
 +                $q->expr()->eq('l.is_scheduled', ':true')
 +            );
-+            $this->updateQueryFromContactLimiter('l', $q, $limiter, true);
-+            $results = $q->select('COUNT(*) as event_count, l.event_id')
++            $q->select('COUNT(*) as event_count, l.event_id')
 +                ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
 +                ->where($expr)
 +                ->setParameter('ids', $eventIds, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
 +                ->setParameter('true', true)
 +                ->setParameter('now', $now->format('Y-m-d H:i:s'))
-+                ->groupBy('l.event_id')
-+                ->execute()
-+                ->fetchAll();
++                ->groupBy('l.event_id');
++            $this->updateQueryFromContactLimiter('l', $q, $limiter, true);
++            $results = $q->execute()->fetchAll();
 +
 +            foreach ($results as $result) {
 +                $events[$result['event_id']] = $result['event_count'];
@@ -98,13 +97,13 @@ index 54cd3b2196..21bf0bbd1c 100644
 +                    $q->expr()->lte('l.trigger_date', ':now'),
 +                    $q->expr()->eq('l.is_scheduled', ':true')
 +                );
-+                $this->updateQueryFromContactLimiter('l', $q, $limiter);
-+                $results = $q->select('1 as event_count, l.event_id')
++                $q->select('1 as event_count, l.event_id')
 +                    ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
 +                    ->where($expr)
 +                    ->setParameter('true', true)
-+                    ->setParameter('now', $now->format('Y-m-d H:i:s'))
-+                    ->setMaxResults(1)
++                    ->setParameter('now', $now->format('Y-m-d H:i:s'));
++                $this->updateQueryFromContactLimiter('l', $q, $limiter);
++                $results = $q->setMaxResults(1)
 +                    ->execute()
 +                    ->fetchAll();
 +
