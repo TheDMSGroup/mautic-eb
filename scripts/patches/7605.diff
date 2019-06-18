@@ -1,0 +1,339 @@
+diff --git a/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php b/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php
+index aa417057ab..8f03d69bee 100644
+--- a/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php
++++ b/app/bundles/CampaignBundle/Command/TriggerCampaignCommand.php
+@@ -11,6 +11,8 @@
+ 
+ namespace Mautic\CampaignBundle\Command;
+ 
++use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
++use Doctrine\ORM\ORMException;
+ use Mautic\CampaignBundle\CampaignEvents;
+ use Mautic\CampaignBundle\Entity\Campaign;
+ use Mautic\CampaignBundle\Entity\CampaignRepository;
+@@ -373,12 +375,19 @@ private function triggerCampaign(Campaign $campaign)
+                 $this->executeInactive();
+             }
+         } catch (\Exception $exception) {
++            $this->logger->error('CAMPAIGN '.$this->campaign->getId().': '.$exception->getMessage());
+             if ('prod' !== MAUTIC_ENV) {
+                 // Throw the exception for dev/test mode
+                 throw $exception;
+             }
+-
+-            $this->logger->error('CAMPAIGN: '.$exception->getMessage());
++            if (
++                $exception instanceof UniqueConstraintViolationException
++                || ($exception instanceof ORMException && 'The EntityManager is closed.' === $exception->getMessage())
++            ) {
++                // This is the result of a faulty query or integrity constraint violation.
++                // Better to throw this exception to prevent likely errors with subsequent batches.
++                throw $exception;
++            }
+         }
+ 
+         // Don't detach in tests since this command will be ran multiple times in the same process
+diff --git a/app/bundles/CampaignBundle/Config/config.php b/app/bundles/CampaignBundle/Config/config.php
+index a052fd486f..edc2cae94e 100644
+--- a/app/bundles/CampaignBundle/Config/config.php
++++ b/app/bundles/CampaignBundle/Config/config.php
+@@ -363,6 +363,7 @@
+                     'mautic.campaign.repository.lead_event_log',
+                     'mautic.campaign.repository.lead',
+                     'mautic.campaign.model.summary',
++                    'monolog.logger.mautic',
+                 ],
+             ],
+             'mautic.campaign.event_collector' => [
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+index 7f2a3ac01f..8c85130ee4 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+@@ -398,8 +398,7 @@ public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter)
+             return new ArrayCollection();
+         }
+ 
+-        $this->getSlaveConnection($limiter);
+-
++        // We cannot use a slave connection here, due to replication delay on large batches.
+         $q = $this->createQueryBuilder('o');
+ 
+         $q->select('o, e, c')
+@@ -561,6 +560,45 @@ public function hasBeenInCampaignRotation($contactId, $campaignId, $rotation)
+         return !empty($results);
+     }
+ 
++    /**
++     * Find a duplicate log entry based on the campaign_rotation unique constraint.
++     *
++     * @param LeadEventLog $log
++     *
++     * @return LeadEventLog|null
++     */
++    public function findDuplicate(LeadEventLog $log)
++    {
++        $this->getSlaveConnection();
++        $entities = $this->getEntities(
++            [
++                'limit'            => 1,
++                'ignore_paginator' => true,
++                'filter'           => [
++                    'force' => [
++                        [
++                            'column' => 'll.event',
++                            'expr'   => 'eq',
++                            'value'  => $log->getEvent()->getId(),
++                        ],
++                        [
++                            'column' => 'll.lead',
++                            'expr'   => 'eq',
++                            'value'  => $log->getLead()->getId(),
++                        ],
++                        [
++                            'column' => 'll.rotation',
++                            'expr'   => 'eq',
++                            'value'  => $log->getRotation(),
++                        ],
++                    ],
++                ],
++            ]
++        );
++
++        return $entities ? reset($entity) : null;
++    }
++
+     /**
+      * @param Lead   $campaignMember
+      * @param string $message
+diff --git a/app/bundles/CampaignBundle/Entity/LeadRepository.php b/app/bundles/CampaignBundle/Entity/LeadRepository.php
+index 08d8340d07..5e175567d9 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadRepository.php
+@@ -375,7 +375,7 @@ public function getContactRotations(array $contactIds, $campaignId)
+ 
+         $contactRotations = [];
+         foreach ($results as $result) {
+-            $contactRotations[$result['lead_id']] = $result['rotation'];
++            $contactRotations[(int) $result['lead_id']] = (int) $result['rotation'];
+         }
+ 
+         return $contactRotations;
+diff --git a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
+index 1c805d3400..400d3905cb 100644
+--- a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
++++ b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
+@@ -279,18 +279,19 @@ public function executeEventsForContacts(ArrayCollection $events, ArrayCollectio
+             return CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType();
+         });
+         if ($jumpEvents->count()) {
+-            $jumpLogs = [];
+-            // Create logs for the jump to events before the rotation is incremented
+-            foreach ($jumpEvents as $key => $event) {
+-                $config         = $this->collector->getEventConfig($event);
+-                $jumpLogs[$key] = $this->eventLogger->fetchRotationAndGenerateLogsFromContacts($event, $config, $contacts, $isInactive);
+-            }
+             // Increment the campaign rotation for the given contacts and current campaign
+             $this->leadRepository->incrementCampaignRotationForContacts(
+                 $contacts->getKeys(),
+                 $jumpEvents->first()->getCampaign()->getId()
+             );
+ 
++            // Create logs for the jump to events after the rotation is incremented
++            $jumpLogs = [];
++            foreach ($jumpEvents as $key => $event) {
++                $config         = $this->collector->getEventConfig($event);
++                $jumpLogs[$key] = $this->eventLogger->fetchRotationAndGenerateLogsFromContacts($event, $config, $contacts, $isInactive);
++            }
++
+             // Process the jump to events
+             foreach ($jumpLogs as $key => $logs) {
+                 $this->executeLogs($jumpEvents->get($key), $logs, $childrenCounter);
+diff --git a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
+index 14c8bd79c2..ed85374fa8 100644
+--- a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
++++ b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
+@@ -21,9 +21,12 @@
+ use Mautic\CoreBundle\Helper\IpLookupHelper;
+ use Mautic\LeadBundle\Entity\Lead;
+ use Mautic\LeadBundle\Tracker\ContactTracker;
++use Psr\Log\LoggerInterface;
+ 
+ class EventLogger
+ {
++    const CONCURRENT_THREAD_THRESHOLD_SECONDS = 60;
++
+     /**
+      * @var IpLookupHelper
+      */
+@@ -49,6 +52,11 @@ class EventLogger
+      */
+     private $persistQueue;
+ 
++    /**
++     * @var LoggerInterface
++     */
++    private $logger;
++
+     /**
+      * @var ArrayCollection
+      */
+@@ -66,18 +74,21 @@ class EventLogger
+      * @param LeadRepository         $leadRepository
+      * @param SummaryModel           $summaryModel
++     * @param LoggerInterface        $logger
+      */
+     public function __construct(
+         IpLookupHelper $ipLookupHelper,
+         ContactTracker $contactTracker,
+         LeadEventLogRepository $leadEventLogRepository,
+         LeadRepository $leadRepository,
+-        SummaryModel $summaryModel
++        SummaryModel $summaryModel,
++        LoggerInterface $logger
+     ) {
+         $this->ipLookupHelper         = $ipLookupHelper;
+         $this->contactTracker         = $contactTracker;
+         $this->leadEventLogRepository = $leadEventLogRepository;
+         $this->leadRepository         = $leadRepository;
+         $this->summaryModel           = $summaryModel;
++        $this->logger                 = $logger;
+ 
+         $this->persistQueue = new ArrayCollection();
+         $this->logs         = new ArrayCollection();
+@@ -130,12 +141,41 @@ public function buildLogEntry(Event $event, Lead $contact = null, $isInactiveEve
+         $log->setDateTriggered(new \DateTime());
+         $log->setSystemTriggered(defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED'));
+ 
+-        if (isset($this->contactRotations[$contact->getId()])) {
+-            $log->setRotation($this->contactRotations[$contact->getId()]);
+-        } else {
++        if (!isset($this->contactRotations[$contact->getId()])) {
+             // Likely a single contact handle such as decision processing
+-            $rotations = $this->leadRepository->getContactRotations([$contact->getId()], $event->getCampaign()->getId());
+-            $log->setRotation($rotations[$contact->getId()]);
++            $this->hydrateContactRotationsForNewLogs([$contact->getId()], $event->getCampaign()->getId());
++        }
++        $log->setRotation($this->contactRotations[$contact->getId()]);
++
++        return $this->deDuplicate($log);
++    }
++
++    /**
++     * Given a new log entry, prevent a duplicate insertion by deferring to a previous event, or incrementing rotation.
++     *
++     * @param LeadEventLog $log
++     *
++     * @return LeadEventLog
++     */
++    private function deDuplicate(LeadEventLog $log)
++    {
++        if (Event::TYPE_DECISION !== $log->getEvent()->getEventType()) {
++            $duplicateLog = $this->leadEventLogRepository->findDuplicate($log);
++            if ($duplicateLog) {
++                // By campaign_rotation this event log already exists.
++                if (time() - $duplicateLog->getDateTriggered()->format('U') <= self::CONCURRENT_THREAD_THRESHOLD_SECONDS) {
++                    // A concurrent thread, do not repeat/recreate the event as it is unintentional.
++                    $log = $duplicateLog;
++                } else {
++                    // A campaign rearrangement occurred. Increment rotation to allow event repetition.
++                    $this->leadRepository->incrementCampaignRotationForContacts(
++                        [$log->getLead()->getId()],
++                        $log->getCampaign()->getId()
++                    );
++                    $this->hydrateContactRotationsForNewLogs([$log->getLead()->getId()], $log->getCampaign()->getId());
++                    $log->setRotation($this->contactRotations[$log->getLead()->getId()]);
++                }
++            }
+         }
+ 
+         return $log;
+@@ -232,6 +272,13 @@ public function generateLogsFromContacts(Event $event, AbstractEventAccessor $co
+         // Ensure each contact has a log entry to prevent them from being picked up again prematurely
+         foreach ($contacts as $contact) {
+             $log = $this->buildLogEntry($event, $contact, $isInactiveEntry);
++            if ($log->getId()) {
++                $this->logger->debug(
++                    'CAMPAIGN: '.ucfirst($event->getEventType()).' ID# '.$event->getId().' for contact ID# '.$contact->getId()
++                    .' has already generated log entry ID# '.$log->getId()
++                );
++                continue;
++            }
+             $log->setIsScheduled(false);
+             $log->setDateTriggered(new \DateTime());
+             ChannelExtractor::setChannel($log, $event, $config);
+@@ -253,7 +300,12 @@ public function generateLogsFromContacts(Event $event, AbstractEventAccessor $co
+      */
+     public function hydrateContactRotationsForNewLogs(array $contactIds, $campaignId)
+     {
+-        $this->contactRotations = $this->leadRepository->getContactRotations($contactIds, $campaignId);
++        $rotations = $this->leadRepository->getContactRotations($contactIds, $campaignId);
++        if (1 === count($contactIds)) {
++            $this->contactRotations = array_replace($this->contactRotations, $rotations);
++        } else {
++            $this->contactRotations = $rotations;
++        }
+     }
+ 
+     private function persistPendingAndInsertIntoLogStack()
+diff --git a/app/bundles/CampaignBundle/Executioner/Scheduler/EventScheduler.php b/app/bundles/CampaignBundle/Executioner/Scheduler/EventScheduler.php
+index ebcebf7ec0..5cb74bc717 100644
+--- a/app/bundles/CampaignBundle/Executioner/Scheduler/EventScheduler.php
++++ b/app/bundles/CampaignBundle/Executioner/Scheduler/EventScheduler.php
+@@ -446,6 +446,13 @@ private function scheduleEventForContacts(Event $event, AbstractEventAccessor $c
+         foreach ($contacts as $contact) {
+             // Create the entry
+             $log = $this->eventLogger->buildLogEntry($event, $contact, $isInactiveEvent);
++            if ($log->getId()) {
++                $this->logger->debug(
++                    'CAMPAIGN: '.ucfirst($event->getEventType()).' ID# '.$event->getId().' for contact ID# '.$contact->getId()
++                    .' has already built log entry ID# '.$log->getId()
++                );
++                continue;
++            }
+ 
+             // Schedule it
+             $log->setTriggerDate($executionDate);
+diff --git a/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php b/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
+index cf3a415f78..b166d0130b 100644
+--- a/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
++++ b/app/bundles/CampaignBundle/Tests/Executioner/Logger/EventLoggerTest.php
+@@ -18,7 +18,8 @@
+ use Mautic\CampaignBundle\Executioner\Logger\EventLogger;
+ use Mautic\CampaignBundle\Model\SummaryModel;
+ use Mautic\CoreBundle\Helper\IpLookupHelper;
+ use Mautic\LeadBundle\Tracker\ContactTracker;
++use Psr\Log\LoggerInterface;
+ 
+ class EventLoggerTest extends \PHPUnit_Framework_TestCase
+ {
+@@ -44,13 +45,19 @@ class EventLoggerTest extends \PHPUnit_Framework_TestCase
+     /** @var SummaryModel */
+     private $summaryModel;
+ 
++    /**
++     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
++     */
++    private $logger;
++
+     protected function setUp()
+     {
+         $this->ipLookupHelper         = $this->createMock(IpLookupHelper::class);
+         $this->contactTracker         = $this->createMock(ContactTracker::class);
+         $this->leadEventLogRepository = $this->createMock(LeadEventLogRepository::class);
+         $this->leadRepository         = $this->createMock(LeadRepository::class);
+         $this->summaryModel           = $this->createMock(summaryModel::class);
++        $this->logger                 = $this->createMock(LoggerInterface::class);
+     }
+ 
+     public function testAllLogsAreReturnedWithFinalPersist()
+@@ -80,8 +87,9 @@ private function getLogger()
+             $this->ipLookupHelper,
+             $this->contactTracker,
+             $this->leadEventLogRepository,
+             $this->leadRepository,
+-            $this->summaryModel
++            $this->summaryModel,
++            $this->logger
+         );
+     }
+ }

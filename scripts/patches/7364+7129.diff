@@ -2,18 +2,6 @@ diff --git a/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventS
 index 05ebe6e50b..89932ed89e 100644
 --- a/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
 +++ b/app/bundles/CampaignBundle/EventListener/CampaignActionJumpToEventSubscriber.php
-@@ -95,6 +95,11 @@ public function onCampaignBuild(CampaignBuilderEvent $event)
-      * Process campaign.jump_to_event actions.
-      *
-      * @param PendingEvent $campaignEvent
-+     *
-+     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogNotProcessedException
-+     * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogPassedAndFailedException
-+     * @throws \Mautic\CampaignBundle\Executioner\Exception\CannotProcessEventException
-+     * @throws \Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableException
-      */
-     public function onJumpToEvent(PendingEvent $campaignEvent)
-     {
 @@ -102,12 +107,21 @@ public function onJumpToEvent(PendingEvent $campaignEvent)
          $jumpTarget = $this->getJumpTargetForEvent($event, 'e.id');
  
@@ -30,7 +18,7 @@ index 05ebe6e50b..89932ed89e 100644
 +                );
 +            }
 +        } else {
-+            $this->eventExecutioner->incrementCampaignRotationForContacts($campaignEvent->getContactIds(), $campaignEvent->getEvent()->getCampaign()->getId());
++            // Should no longer be needed - $this->eventExecutioner->incrementCampaignRotationForContacts($campaignEvent->getContactIds(), $campaignEvent->getEvent()->getCampaign()->getId());
 +            $this->eventExecutioner->executeForContacts($jumpTarget, $campaignEvent->getContactsKeyedById());
 +            $campaignEvent->passRemaining();
          }
@@ -45,26 +33,6 @@ diff --git a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php b/app/b
 index fcf10886fa..327203c63d 100644
 --- a/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
 +++ b/app/bundles/CampaignBundle/Executioner/EventExecutioner.php
-@@ -245,6 +245,19 @@ public function executeLogs(Event $event, ArrayCollection $logs, Counter $counte
-         }
-     }
- 
-+    /**
-+     * @param array $contacts
-+     * @param int   $campaignId
-+     */
-+    public function incrementCampaignRotationForContacts(array $contacts, int $campaignId)
-+    {
-+        // Increment the campaign rotation for the given contacts and current campaign
-+        $this->leadRepository->incrementCampaignRotationForContacts(
-+            $contacts,
-+            $campaignId
-+        );
-+    }
-+
-     /**
-      * @param ArrayCollection $events
-      * @param ArrayCollection $contacts
 @@ -261,7 +274,6 @@ public function executeEventsForContacts(ArrayCollection $events, ArrayCollectio
          if (!$contacts->count()) {
              return;

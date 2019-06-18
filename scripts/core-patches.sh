@@ -149,3 +149,10 @@ echo "https://github.com/mautic/mautic/pull/7364"
 echo "https://github.com/mautic/mautic/pull/7129"
 git apply -v "../scripts/patches/7364+7129.diff"
 git add . ; git commit --author="7364+7129 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7364 https://github.com/mautic/mautic/pull/7129"
+
+echo "----------------------------------------------------"
+echo "Campaign duplicate entry errors #7605"
+echo "https://github.com/mautic/mautic/pull/7605"
+git apply -v "../scripts/patches/7605.diff"
+git add . ; git commit --author="7605 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7605"
+
