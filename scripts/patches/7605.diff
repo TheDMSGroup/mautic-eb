@@ -99,7 +99,7 @@ index 7f2a3ac01f..8c85130ee4 100644
 +            ]
 +        );
 +
-+        return $entities ? reset($entity) : null;
++        return $entities ? reset($entities) : null;
 +    }
 +
      /**
