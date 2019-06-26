@@ -9748,6 +9748,43 @@
             "time": "2019-05-27T16:28:27+00:00"
         },
         {
+            "name": "thedmsgroup/mautic-revenue-event-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-revenue-event.git",
+                "reference": "c87cbc7d0b6ac24ebe0f598f9169fb8e333fe23f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-revenue-event/zipball/c87cbc7d0b6ac24ebe0f598f9169fb8e333fe23f",
+                "reference": "c87cbc7d0b6ac24ebe0f598f9169fb8e333fe23f",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "wwatson",
+                    "email": "wwatson@thedmsgrp.com"
+                }
+            ],
+            "description": "Send Attribution/Revenue Events to W4 Conversion Tracker",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2019-06-26T14:00:24+00:00"
+        },
+        {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
             "version": "dev-master",
             "source": {
@@ -12310,7 +12347,8 @@
         "thedmsgroup/mautic-dashboard-warm-bundle": 20,
         "thedmsgroup/mautic-segment-extras-bundle": 20,
         "thedmsgroup/mautic-media-bundle": 20,
-        "thedmsgroup/mautic-do-not-contact-extras-bundle": 20
+        "thedmsgroup/mautic-do-not-contact-extras-bundle": 20,
+        "thedmsgroup/mautic-revenue-event-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
