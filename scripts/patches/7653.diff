@@ -1,0 +1,977 @@
+diff --git a/app/bundles/CoreBundle/Assets/js/14.notifications.js b/app/bundles/CoreBundle/Assets/js/14.notifications.js
+new file mode 100644
+index 0000000000..385828c3cc
+--- /dev/null
++++ b/app/bundles/CoreBundle/Assets/js/14.notifications.js
+@@ -0,0 +1,15 @@
++Mautic.notificationIndexLoad = function (translations) { 
++    mQuery(document).ready(function() { 
++        // Hide the New button
++        mQuery("a[href$='account/notifications/new']").hide();
++
++        // Mark a notification as read.
++        mQuery('.notificationClearBtn').on('click', function() { 
++            var tr = mQuery(this).parent().parent();
++            var children = tr.children('#isRead');
++            children.text(translations['mautic.core.yes']);
++            Mautic.clearNotification(mQuery(this).data('notification-id'));
++            console.log(mQuery(this).data('notification-id'));
++        });
++    });
++};
+diff --git a/app/bundles/CoreBundle/Command/CleanupMaintenanceCommand.php b/app/bundles/CoreBundle/Command/CleanupMaintenanceCommand.php
+index 4bb118c547..00807a4ef5 100644
+--- a/app/bundles/CoreBundle/Command/CleanupMaintenanceCommand.php
++++ b/app/bundles/CoreBundle/Command/CleanupMaintenanceCommand.php
+@@ -81,7 +81,7 @@ protected function execute(InputInterface $input, OutputInterface $output)
+         }
+ 
+         if (!empty($gdpr)) {
+-            // to fullfil GDPR, you must delete inactive user data older than 3years
++            // to fullfil GDPR, you must delete inactive user data older than 3 years
+             $daysOld = 365 * 3;
+         }
+ 
+diff --git a/app/bundles/CoreBundle/Command/PurgeStaleNotificationsCommand.php b/app/bundles/CoreBundle/Command/PurgeStaleNotificationsCommand.php
+new file mode 100644
+index 0000000000..b2d1046afb
+--- /dev/null
++++ b/app/bundles/CoreBundle/Command/PurgeStaleNotificationsCommand.php
+@@ -0,0 +1,92 @@
++<?php
++
++/*
++ * @copyright   2014 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CoreBundle\Command;
++
++use DateTime;
++use Doctrine\ORM\EntityManager;
++use Mautic\CoreBundle\Entity\Notification;
++use Mautic\CoreBundle\Entity\NotificationRepository;
++use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
++use Symfony\Component\Console\Input\InputInterface;
++use Symfony\Component\Console\Input\InputOption;
++use Symfony\Component\Console\Output\OutputInterface;
++
++class PurgeStaleNotificationsCommand extends ContainerAwareCommand
++{
++    /**
++     * {@inheritdoc}
++     */
++    protected function configure()
++    {
++        $inputOptions = [
++            new InputOption(
++                'stale-days',
++                null,
++                InputOption::VALUE_OPTIONAL,
++                'Notificiations from "X" days ago will be considered stale.',
++                '-7 day'
++            ),
++            new InputOption(
++                'dry-run',
++                null,
++                InputOption::VALUE_NONE,
++                'Do a dry run without actually deleting anything.'
++            ),
++        ];
++
++        $this->setName('mautic:notifications:purge')
++            ->setDescription("Purge stale users' notfications.")
++            ->setDefinition($inputOptions)
++            ->setHelp(<<<'EOT'
++The <info>%command.name%</info> command is used to purge stale user's notifications
++
++<info>php %command.full_name%</info>
++
++You can optionally set the --stale-days flag to consider what is a stale notification:
++
++<info>php %command.full_name% --stale-days="-3 days"</info>
++EOT
++        );
++    }
++
++    /**
++     * {@inheritdoc}
++     */
++    protected function execute(InputInterface $input, OutputInterface $output)
++    {
++        $options = $input->getOptions();
++        $from    = new DateTime($options['stale-days']);
++
++        /** @var EntityManager $em */
++        $em = $this->getContainer()->get(EntityManager::class);
++        /** @var NotificationRepository $repo */
++        $repo = $em->getRepository(Notification::class);
++
++        if ($options['dry-run']) {
++            $qb = $repo->createQueryBuilder('n')
++                    ->select('count(n.id)')
++                    ->where('n.dateAdded <= :from')
++                    ->setParameter('from', $from->format('Y-m-d H:i:s'));
++            $count = $qb->getQuery()->getSingleScalarResult();
++
++            $output->writeln("<info>{$count} notification(s) would be purged.</info> ", false);
++
++            return 0;
++        }
++
++        $output->writeln("Purging notifications older than {$from->format('Y-m-d')}");
++        $repo->deleteNotifications($from);
++        $output->writeln('Finished.');
++
++        return 0;
++    }
++}
+diff --git a/app/bundles/CoreBundle/Config/config.php b/app/bundles/CoreBundle/Config/config.php
+index 1575ef6ab1..563be5a1eb 100644
+--- a/app/bundles/CoreBundle/Config/config.php
++++ b/app/bundles/CoreBundle/Config/config.php
+@@ -43,6 +43,10 @@
+                 'path'       => '/themes/{objectAction}/{objectId}',
+                 'controller' => 'MauticCoreBundle:Theme:execute',
+             ],
++            'mautic_user_notification_index'        => [
++                'path'       => '/account/notifications/{page}',
++                'controller' => 'MauticCoreBundle:Notification:index',
++            ],
+         ],
+         'public' => [
+             'mautic_js' => [
+diff --git a/app/bundles/CoreBundle/Controller/CommonController.php b/app/bundles/CoreBundle/Controller/CommonController.php
+index 6fc10f5229..435465fa81 100644
+--- a/app/bundles/CoreBundle/Controller/CommonController.php
++++ b/app/bundles/CoreBundle/Controller/CommonController.php
+@@ -621,7 +621,7 @@ protected function getNotificationContent(Request $request = null)
+         /** @var \Mautic\CoreBundle\Model\NotificationModel $model */
+         $model = $this->getModel('core.notification');
+ 
+-        list($notifications, $showNewIndicator, $updateMessage) = $model->getNotificationContent($afterId, false, 200);
++        list($notifications, $showNewIndicator, $updateMessage) = $model->getNotificationContent($afterId, false, 20);
+ 
+         $lastNotification = reset($notifications);
+ 
+diff --git a/app/bundles/CoreBundle/Controller/NotificationController.php b/app/bundles/CoreBundle/Controller/NotificationController.php
+new file mode 100644
+index 0000000000..c7b7f1bf68
+--- /dev/null
++++ b/app/bundles/CoreBundle/Controller/NotificationController.php
+@@ -0,0 +1,108 @@
++<?php
++
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic, Inc.
++ *
++ * @link        https://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CoreBundle\Controller;
++
++use Doctrine\ORM\EntityManager;
++use Mautic\CoreBundle\Entity\Notification;
++
++class NotificationController extends AbstractStandardFormController
++{
++    /**
++     * @param int $page
++     *
++     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
++     */
++    public function indexAction($page)
++    {
++        return $this->indexStandard($page);
++    }
++
++    /**
++     * {@inheritdoc}
++     */
++    protected function getDefaultOrderColumn()
++    {
++        return 'dateAdded';
++    }
++
++    /**
++     * {@inheritdoc}
++     */
++    protected function getDefaultOrderDirection()
++    {
++        return 'DESC';
++    }
++
++    /**
++     * Get the route base for getIndexRoute() and getActionRoute() if they do not meet the mautic_*_index and mautic_*_action standards.
++     *
++     * @return mixed
++     */
++    protected function getRouteBase()
++    {
++        return 'mautic_user_notification';
++    }
++
++    /**
++     * @param       $start
++     * @param       $limit
++     * @param       $filter
++     * @param       $orderBy
++     * @param       $orderByDir
++     * @param array $args
++     */
++    protected function getIndexItems($start, $limit, $filter, $orderBy, $orderByDir, array $args = [])
++    {
++        $repo = $this->getModel($this->getModelName())->getRepository();
++        preg_match_all('/(\w+):([\w\s]*\w\b(?!:))/', $filter['string'], $matches);
++        $alias   = $repo->getTableAlias();
++        $matches = reset($matches);
++        /** @var EntityManager $em */
++        $em         = $this->container->get(EntityManager::class);
++        $fieldNames = $em->getClassMetadata(Notification::class)->getFieldNames();
++        foreach ($matches as $item) {
++            $parsed = explode(':', $item);
++            if (in_array($parsed[0], $fieldNames)) {
++                $filter['where'][] = [
++                    'col'  => $alias.'.'.$parsed[0],
++                    'expr' => 'like',
++                    'val'  => '%'.$parsed[1].'%',
++                ];
++            }
++        }
++
++        return parent::getIndexItems(
++            $start,
++            $limit,
++            $filter,
++            $orderBy,
++            $orderByDir,
++            $args
++        );
++    }
++
++    /**
++     * {@inheritdoc}
++     */
++    protected function getControllerBase()
++    {
++        return 'MauticCoreBundle:Notification';
++    }
++
++    /**
++     * @return string
++     */
++    protected function getModelName()
++    {
++        return 'core.notification';
++    }
++}
+diff --git a/app/bundles/CoreBundle/DataFixtures/ORM/NotificationFixtures.php b/app/bundles/CoreBundle/DataFixtures/ORM/NotificationFixtures.php
+new file mode 100644
+index 0000000000..339cea71a7
+--- /dev/null
++++ b/app/bundles/CoreBundle/DataFixtures/ORM/NotificationFixtures.php
+@@ -0,0 +1,47 @@
++<?php
++
++namespace Mautic\CoreBundle\DataFixtures\ORM;
++
++use DateTime;
++use Doctrine\Common\DataFixtures\AbstractFixture;
++use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
++use Doctrine\Common\Persistence\ObjectManager;
++use Mautic\CoreBundle\Entity\Notification;
++
++class NotificationFixtures extends AbstractFixture implements OrderedFixtureInterface
++{
++    /**
++     * {@inheritdoc}
++     */
++    public function getOrder()
++    {
++        return 3;
++    }
++
++    /*
++     * {@inheritdoc}
++     */
++    public function load(ObjectManager $manager)
++    {
++        $user = $this->getReference('admin-user');
++        for ($i = 0; $i < 500; ++$i) {
++            $n = new Notification();
++            $n->setHeader('notification'.$i);
++            $n->setMessage('lorem ipsum');
++            $n->setDateAdded($this->randomDateInRange(new \DateTime('-8 day'), new DateTime()));
++            $n->setUser($user);
++            $manager->persist($n);
++        }
++
++        $manager->flush();
++    }
++
++    private function randomDateInRange(DateTime $start, DateTime $end)
++    {
++        $randomTimestamp = mt_rand($start->getTimestamp(), $end->getTimestamp());
++        $randomDate      = new DateTime();
++        $randomDate->setTimestamp($randomTimestamp);
++
++        return $randomDate;
++    }
++}
+diff --git a/app/bundles/CoreBundle/Entity/NotificationRepository.php b/app/bundles/CoreBundle/Entity/NotificationRepository.php
+index eec3e2a18c..b3a187f946 100644
+--- a/app/bundles/CoreBundle/Entity/NotificationRepository.php
++++ b/app/bundles/CoreBundle/Entity/NotificationRepository.php
+@@ -11,6 +11,8 @@
+ 
+ namespace Mautic\CoreBundle\Entity;
+ 
++use DateTime;
++
+ /**
+  * NotificationRepository.
+  */
+@@ -48,6 +50,21 @@ public function markAllReadForUser($userId)
+         $this->_em->getConnection()->update(MAUTIC_TABLE_PREFIX.'notifications', ['is_read' => 1], ['user_id' => (int) $userId]);
+     }
+ 
++    /*
++     * Clear notifications from X days old.
++     *
++     * @param DateTime $from
++     */
++    public function deleteNotifications(DateTime $from)
++    {
++        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
++        $qb->delete(MAUTIC_TABLE_PREFIX.'notifications')
++            ->where('date_added <= :from')
++            ->setParameter('from', $from->format('Y-m-d H:i:s'));
++
++        return $qb->execute();
++    }
++
+     /**
+      * Clear notifications for a user.
+      *
+@@ -103,7 +120,7 @@ public function getUpstreamLastDate()
+         /** @var Notification $result */
+         $result = $qb->getQuery()->getOneOrNullResult();
+ 
+-        return $result === null ? null : $result->getDateAdded();
++        return null === $result ? null : $result->getDateAdded();
+     }
+ 
+     /**
+diff --git a/app/bundles/CoreBundle/Model/NotificationModel.php b/app/bundles/CoreBundle/Model/NotificationModel.php
+index 4bbbf53848..fd984bcc5b 100644
+--- a/app/bundles/CoreBundle/Model/NotificationModel.php
++++ b/app/bundles/CoreBundle/Model/NotificationModel.php
+@@ -78,6 +78,14 @@ public function __construct(
+         $this->coreParametersHelper = $coreParametersHelper;
+     }
+ 
++    /**
++     * {@inheritdoc}
++     */
++    public function getPermissionBase()
++    {
++        return 'core:notifications';
++    }
++
+     /**
+      * @param Session $session
+      */
+diff --git a/app/bundles/CoreBundle/Tests/functional/Notification/IndexTest.php b/app/bundles/CoreBundle/Tests/functional/Notification/IndexTest.php
+new file mode 100644
+index 0000000000..ac3d271cca
+--- /dev/null
++++ b/app/bundles/CoreBundle/Tests/functional/Notification/IndexTest.php
+@@ -0,0 +1,48 @@
++<?php
++
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic, Inc.
++ *
++ * @link        https://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CoreBundle\Tests\functional\Notification;
++
++use Mautic\CoreBundle\Entity\Notification;
++use Mautic\CoreBundle\Test\MauticMysqlTestCase;
++use Mautic\UserBundle\Entity\User;
++
++class IndexTest extends MauticMysqlTestCase
++{
++    /**
++     * @test
++     */
++    public function it_shows_notifications_on_index()
++    {
++        // The default logged in user is 'admin', is there not a function/trait
++        // to get the default admin user for tests?
++        $repo = $this->em->getRepository(User::class);
++        $user = $repo->findOneBy(['username' => 'admin']);
++
++        $notification = new Notification();
++        $notification->setMessage('Test Notification Message!');
++        $notification->setDateAdded(new \DateTime());
++        $notification->setUser($user);
++
++        $this->em->persist($notification);
++        $this->em->flush();
++        $this->em->refresh($notification);
++
++        $this->client->request('GET', 's/account/notifications');
++
++        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
++        $this->assertContains($notification->getMessage(), $this->client->getResponse()->getContent());
++        // Asserting the message exists isn't really reliable, since the
++        // notification would be on every page because of the widget, so we
++        // test by making sure the date is visible on the table.
++        $this->assertContains($notification->getDateAdded()->format('Y-m-d H:i:s'), $this->client->getResponse()->getContent());
++    }
++}
+diff --git a/app/bundles/CoreBundle/Tests/unit/Command/PurgeStaleNotificationsCommandTest.php b/app/bundles/CoreBundle/Tests/unit/Command/PurgeStaleNotificationsCommandTest.php
+new file mode 100644
+index 0000000000..868a9dab88
+--- /dev/null
++++ b/app/bundles/CoreBundle/Tests/unit/Command/PurgeStaleNotificationsCommandTest.php
+@@ -0,0 +1,181 @@
++<?php
++
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++namespace Mautic\CoreBundle\Tests\Command;
++
++use Mautic\CoreBundle\Command\PurgeStaleNotificationsCommand;
++use Mautic\CoreBundle\Entity\Notification;
++use Mautic\CoreBundle\Test\MauticMysqlTestCase;
++use Mautic\UserBundle\Entity\User;
++use Symfony\Bundle\FrameworkBundle\Console\Application;
++use Symfony\Component\Console\Tester\CommandTester;
++
++class PurgeStaleNotificationsCommandTest extends MauticMysqlTestCase
++{
++    /** @test */
++    public function it_doesnt_delete_notifications_on_dry_run()
++    {
++        for ($i = 0; $i < 20; ++$i) {
++            $note = $this->createNotification(new \DateTime('-7 days'));
++            $this->em->persist($note);
++        }
++        $this->em->flush();
++
++        $command       = $this->getCommand();
++        $commandTester = new CommandTester($command);
++        $commandTester->execute([
++            'command'   => $command->getName(),
++            '--dry-run' => true,
++        ]);
++
++        $output = $commandTester->getDisplay();
++        $this->assertContains('20 notification(s) would be purged.', $output);
++    }
++
++    /**
++     * @test
++     */
++    public function it_accepts_the_stale_days_argument()
++    {
++        $command       = $this->getCommand();
++        $commandTester = new CommandTester($command);
++        $commandTester->execute([
++            'command'      => $command->getName(),
++            '--stale-days' => '-3 days',
++        ]);
++        $output = $commandTester->getDisplay();
++        $this->assertContains((new \DateTime('-3 days'))->format('Y-m-d'), $output);
++    }
++
++    /**
++     * @test
++     */
++    public function it_purges_notifcations_older_than_seven_days_old_by_default()
++    {
++        $staleNotifications      = [];
++        $staleCount              = 10;
++        for ($i = 0; $i < $staleCount; ++$i) {
++            $date = $this->randomDateInRange(new \DateTime('-30 days'), new \DateTime('-7 days'));
++            $not  = $this->createNotification($date);
++            $this->em->persist($not);
++            $staleNotifications[] = $not;
++        }
++
++        $freshNotifications      = [];
++        $freshCount              = 15;
++        for ($i = 0; $i < $freshCount; ++$i) {
++            $date = $this->randomDateInRange(new \DateTime('-7 days'), new \DateTime());
++            $not  = $this->createNotification($date);
++            $this->em->persist($not);
++            $freshNotifications[] = $not;
++        }
++        $this->em->flush();
++
++        $this->assertEquals(($staleCount + $freshCount), $this->getNotificationCount());
++
++        $command     = $this->getCommand();
++        $commandTest = new CommandTester($command);
++        $commandTest->execute(['command' => $command->getName()]);
++        $output = $commandTest->getDisplay();
++
++        $this->assertEquals($freshCount, $this->getNotificationCount());
++    }
++
++    /**
++     * Helper method to make creating Notifications easier.
++     *
++     * @param \DateTime $dateAdded
++     * @param string    $message
++     */
++    private function createNotification($dateAdded, $message = 'Test Message')
++    {
++        $notification = new Notification();
++        $notification->setMessage($message);
++        $notification->setDateAdded($dateAdded);
++        $notification->setUser($this->getOrCreateDefaultAdminUser());
++
++        return $notification;
++    }
++
++    /**
++     * Return the count of current notifications.
++     *
++     * @return int
++     */
++    private function getNotificationCount()
++    {
++        $qb = $this->em->createQueryBuilder();
++        $qb->select('count(n.id)');
++        $qb->from(Notification::class, 'n');
++
++        return $qb->getQuery()->getSingleScalarResult();
++    }
++
++    /**
++     * Get the PurgeStaleNotificationsCommand command.
++     *
++     * @return PurgeStaleNotificationsCommand
++     */
++    private function getCommand()
++    {
++        $app     = new Application(static::$kernel);
++
++        return $app->find('mautic:notifications:purge');
++    }
++
++    /**
++     * Get a random \DateTime between $start and $end.
++     *
++     * @param \DateTime $start
++     * @param \DateTime $end
++     *
++     * @return \DateTime
++     */
++    private function randomDateInRange(\DateTime $start, \DateTime $end)
++    {
++        $randomTimestamp = mt_rand($start->getTimestamp(), $end->getTimestamp());
++        $randomDate      = new \DateTime();
++        $randomDate->setTimestamp($randomTimestamp);
++
++        return $randomDate;
++    }
++
++    /**
++     * Get or create the admin user.
++     *
++     * @return User
++     */
++    private function getOrCreateDefaultAdminUser()
++    {
++        // NOTE: This codebase really needs some sort of 'factory' for entities,
++        // this makes it difficult and repetitive to test functionality.
++        /** @var UserRepository $repo */
++        $repo = $this->em->getRepository(User::class);
++        $user = $repo->findOneBy(['username' => 'admin']);
++        if (null === $user) {
++            $user = new User();
++            $user->setFirstName('Admin');
++            $user->setLastName('User');
++            $user->setUsername('admin');
++            $user->setEmail('admin@yoursite.com');
++            $encoder = $this->container
++                ->get('security.encoder_factory')
++                ->getEncoder($user)
++            ;
++            $user->setPassword($encoder->encodePassword('mautic', $user->getSalt()));
++            $user->setRole($this->getReference('admin-role'));
++            $manager->persist($user);
++            $manager->flush();
++        }
++
++        return $user;
++    }
++}
+diff --git a/app/bundles/CoreBundle/Translations/en_US/messages.ini b/app/bundles/CoreBundle/Translations/en_US/messages.ini
+index f00ddcf617..a905511afa 100644
+--- a/app/bundles/CoreBundle/Translations/en_US/messages.ini
++++ b/app/bundles/CoreBundle/Translations/en_US/messages.ini
+@@ -477,6 +477,7 @@ mautic.core.customize.slot="Customize Slot"
+ mautic.core.customize.section="Customize Section"
+ mautic.core.slot.customize.info="Select the slot to customize"
+ mautic.core.section.customize.info="Select the section to customize"
++mautic.core.read="Read"
+ mautic.core.left="Left"
+ mautic.core.right="Right"
+ mautic.core.center="Center"
+@@ -553,3 +554,5 @@ mautic.core.daterange.month = "1 Month|%count% Months"
+ mautic.core.daterange.year = "1 Year|%count% Years"
+ mautic.core.config.form.default.daterange_default = "Date Range Filter Default"
+ mautic.core.config.form.default.daterange_default.tooltip = "The default range to go back from current date/time on all Date Filters. This is overriden by the current user session last used values"
++mautic.core.header="Header"
++mautic.core.message="Message"
+diff --git a/app/bundles/CoreBundle/Views/Notification/index.html.php b/app/bundles/CoreBundle/Views/Notification/index.html.php
+new file mode 100644
+index 0000000000..8251c02dd1
+--- /dev/null
++++ b/app/bundles/CoreBundle/Views/Notification/index.html.php
+@@ -0,0 +1,39 @@
++<?php
++
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++$view->extend('MauticCoreBundle:Default:content.html.php');
++$view['slots']->set('headerTitle', 'test test');
++
++$view['slots']->set(
++    'actions',
++    $view->render(
++        'MauticCoreBundle:Helper:page_actions.html.php',
++        [
++            'templateButtons' => [
++                'new' => $permissions['campaign:campaigns:create'],
++            ],
++            'routeBase' => 'campaign',
++        ]
++    )
++);
++?>
++
++<div class="panel panel-default bdr-t-wdh-0">
++	<?php echo $view->render('MauticCoreBundle:Helper:list_toolbar.html.php', [
++        'searchValue' => $searchValue,
++        'searchHelp'  => 'mautic.core.help.searchcommands',
++        'action'      => $currentRoute,
++        'filters'     => $filters,
++    ]); ?>
++
++    <div class="page-list">
++        <?php $view['slots']->output('_content'); ?>
++    </div>
++</div>
+diff --git a/app/bundles/CoreBundle/Views/Notification/list.html.php b/app/bundles/CoreBundle/Views/Notification/list.html.php
+new file mode 100644
+index 0000000000..b84fc59227
+--- /dev/null
++++ b/app/bundles/CoreBundle/Views/Notification/list.html.php
+@@ -0,0 +1,120 @@
++<?php
++
++/*
++ * @copyright   2019 Mautic Contributors. All rights reserved
++ * @author      Mautic
++ *
++ * @link        http://mautic.org
++ *
++ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
++ */
++
++$view['slots']->set('headerTitle', $view['translator']->trans('mautic.core.notifications'));
++if ('index' == $tmpl) {
++    $view->extend('MauticCoreBundle:Standard:index.html.php');
++}
++?>
++
++<script defer type="text/javascript">
++    Mautic.notificationIndexLoad( <?php echo json_encode(['mautic.core.yes' => $view['translator']->trans('mautic.core.yes')]); ?> );
++</script> 
++
++<?php if (count($items)): ?>
++    <div class="table-responsive">
++        <table class="table table-hover table-striped table-bordered campaign-list" id="notificationTable">
++            <thead>
++            <tr>
++                <?php
++                echo $view->render(
++                    'MauticCoreBundle:Helper:tableheader.html.php',
++                    [
++                        'sessionVar' => 'notification',
++                        'orderBy'    => 'n.id',
++                        'text'       => 'mautic.core.id',
++                        'class'      => 'visible-md visible-lg',
++                    ]
++                );
++
++                echo $view->render(
++                    'MauticCoreBundle:Helper:tableheader.html.php',
++                    [
++                        'sessionVar' => 'notification',
++                        'orderBy'    => 'n.header',
++                        'text'       => 'mautic.core.header',
++                        'class'      => 'visible-md visible-lg',
++                        'default'    => true,
++                    ]
++                );
++
++                echo $view->render(
++                    'MauticCoreBundle:Helper:tableheader.html.php',
++                    [
++                        'sessionVar' => 'notification',
++                        'orderBy'    => 'n.message',
++                        'text'       => 'mautic.core.message',
++                        'class'      => 'visible-md visible-lg',
++                    ]
++                );
++
++                echo $view->render(
++                    'MauticCoreBundle:Helper:tableheader.html.php',
++                    [
++                        'sessionVar' => 'notification',
++                        'orderBy'    => 'n.isRead',
++                        'text'       => 'mautic.core.read',
++                        'class'      => 'visible-md visible-lg',
++                    ]
++                );
++
++                echo $view->render(
++                    'MauticCoreBundle:Helper:tableheader.html.php',
++                    [
++                        'sessionVar' => 'notification',
++                        'orderBy'    => 'n.dateAdded',
++                        'text'       => 'mautic.core.date.added',
++                        'class'      => 'visible-md visible-lg',
++                    ]
++                );
++
++                echo $view->render(
++                    'MauticCoreBundle:Helper:tableheader.html.php',
++                    [
++                        'sessionVar' => 'notification',
++                        'text'       => 'mautic.core.actions',
++                        'class'      => 'visible-md visible-lg',
++                    ]
++                );
++                ?>
++            </tr>
++            </thead>
++            <tbody>
++            <?php foreach ($items as $item): ?>
++            <?php $mauticTemplateVars['item'] = $item; ?>
++                <tr>
++                    <td id="notificationId" class="visible-md visible-lg"><?php echo $item->getId(); ?></td>
++                    <td><?php echo $item->getHeader(); ?></td>
++                    <td class="visible-md visible-lg"><?php echo $item->getMessage(); ?></td>
++                    <td id="isRead" class="visible-md visible-lg"><?php echo $view['translator']->trans($item->getIsRead() ? 'mautic.core.yes' : 'mautic.core.no'); ?></td>
++                    <td class="visible-md visible-lg"><?php echo $item->getDateAdded()->format('Y-m-d H:i:s'); ?></td>
++                    <td class="visible-md visible-lg"> 
++                        <a href="javascript:void(0);" data-notification-id="<?php echo $item->getId() ?>" class="notificationClearBtn btn btn-default btn-xs btn-nospin do-not-close" data-toggle="tooltip" title="<?php echo $view['translator']->trans('mautic.core.notifications.clear'); ?>"><i class="fa fa-times do-not-close"></i></a>
++                    </td>
++                </tr>
++            <?php endforeach; ?>
++            </tbody>
++        </table>
++    </div>
++    <div class="panel-footer">
++        <?php echo $view->render(
++            'MauticCoreBundle:Helper:pagination.html.php',
++            [
++                'totalItems' => count($items),
++                'page'       => $page,
++                'limit'      => $limit,
++                'menuLinkId' => 'mautic_user_notification_index',
++                'baseUrl'    => $view['router']->path('mautic_user_notification_index'),
++                'sessionVar' => 'notification',
++            ]
++        ); ?>
++    </div>
++<?php endif; ?>
+diff --git a/app/bundles/CoreBundle/Views/Notification/notifications.html.php b/app/bundles/CoreBundle/Views/Notification/notifications.html.php
+index 5d82b145ae..a7dd823063 100644
+--- a/app/bundles/CoreBundle/Views/Notification/notifications.html.php
++++ b/app/bundles/CoreBundle/Views/Notification/notifications.html.php
+@@ -20,7 +20,10 @@
+         <div class="panel panel-default">
+             <div class="panel-heading">
+                 <div class="panel-title">
+-                    <h6 class="fw-sb"><?php echo $view['translator']->trans('mautic.core.notifications'); ?>
++                    <h6 class="fw-sb">
++                        <a href="<?php echo $view['router']->path('mautic_user_notification_index'); ?>">
++                            <?php echo $view['translator']->trans('mautic.core.notifications'); ?>
++                        </a>
+                         <a href="javascript:void(0);" class="btn btn-default btn-xs btn-nospin pull-right text-danger" data-toggle="tooltip" title="<?php echo $view['translator']->trans('mautic.core.notifications.clearall'); ?>" onclick="Mautic.clearNotification(0);"><i class="fa fa-times"></i></a>
+                     </h6>
+                 </div>
+diff --git a/app/bundles/UserBundle/DataFixtures/ORM/LoadRoleData.php b/app/bundles/UserBundle/DataFixtures/ORM/LoadRoleData.php
+index d1907f5224..49d651f9ad 100644
+--- a/app/bundles/UserBundle/DataFixtures/ORM/LoadRoleData.php
++++ b/app/bundles/UserBundle/DataFixtures/ORM/LoadRoleData.php
+@@ -41,30 +41,37 @@ public function setContainer(ContainerInterface $container = null)
+      */
+     public function load(ObjectManager $manager)
+     {
++        $repo = $manager->getRepository(Role::class);
+         if (!$this->hasReference('admin-role')) {
+-            $role = new Role();
+-            $role->setName('Administrators');
+-            $role->setDescription('Has access to everything.');
+-            $role->setIsAdmin(1);
+-            $manager->persist($role);
+-            $manager->flush();
++            $role = $repo->findOneBy(['name' => 'Administrators']);
++            if (null === $role) {
++                $role = new Role();
++                $role->setName('Administrators');
++                $role->setDescription('Has access to everything.');
++                $role->setIsAdmin(1);
++                $manager->persist($role);
++                $manager->flush();
++            }
+ 
+             $this->addReference('admin-role', $role);
+         }
+ 
+-        $role = new Role();
+-        $role->setName('Sales Team');
+-        $role->setDescription('Has access to sales');
+-        $role->setIsAdmin(0);
++        $role = $repo->findOneBy(['name' => 'Sales Team']);
++        if (null === $role) {
++            $role = new Role();
++            $role->setName('Sales Team');
++            $role->setDescription('Has access to sales');
++            $role->setIsAdmin(0);
+ 
+-        $permissions = [
+-            'user:profile' => ['editname'],
+-            'lead:leads'   => ['full'],
+-        ];
+-        $this->container->get('mautic.user.model.role')->setRolePermissions($role, $permissions);
++            $permissions = [
++                'user:profile' => ['editname'],
++                'lead:leads'   => ['full'],
++            ];
++            $this->container->get('mautic.user.model.role')->setRolePermissions($role, $permissions);
+ 
+-        $manager->persist($role);
+-        $manager->flush();
++            $manager->persist($role);
++            $manager->flush();
++        }
+ 
+         $this->addReference('sales-role', $role);
+     }
+diff --git a/app/bundles/UserBundle/DataFixtures/ORM/LoadUserData.php b/app/bundles/UserBundle/DataFixtures/ORM/LoadUserData.php
+index a5f7a82e52..453444e6f8 100644
+--- a/app/bundles/UserBundle/DataFixtures/ORM/LoadUserData.php
++++ b/app/bundles/UserBundle/DataFixtures/ORM/LoadUserData.php
+@@ -15,6 +15,7 @@
+ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+ use Doctrine\Common\Persistence\ObjectManager;
+ use Mautic\UserBundle\Entity\User;
++use Mautic\UserBundle\Entity\UserRepository;
+ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+ use Symfony\Component\DependencyInjection\ContainerInterface;
+ 
+@@ -41,35 +42,43 @@ public function setContainer(ContainerInterface $container = null)
+      */
+     public function load(ObjectManager $manager)
+     {
+-        $user = new User();
+-        $user->setFirstName('Admin');
+-        $user->setLastName('User');
+-        $user->setUsername('admin');
+-        $user->setEmail('admin@yoursite.com');
+-        $encoder = $this->container
+-            ->get('security.encoder_factory')
+-            ->getEncoder($user)
+-        ;
+-        $user->setPassword($encoder->encodePassword('mautic', $user->getSalt()));
+-        $user->setRole($this->getReference('admin-role'));
+-        $manager->persist($user);
+-        $manager->flush();
++        /** @var UserRepository $repo */
++        $repo = $manager->getRepository(User::class);
++        $user = $repo->findOneBy(['username' => 'admin']);
++        if (null === $user) {
++            $user = new User();
++            $user->setFirstName('Admin');
++            $user->setLastName('User');
++            $user->setUsername('admin');
++            $user->setEmail('admin@yoursite.com');
++            $encoder = $this->container
++                ->get('security.encoder_factory')
++                ->getEncoder($user)
++            ;
++            $user->setPassword($encoder->encodePassword('mautic', $user->getSalt()));
++            $user->setRole($this->getReference('admin-role'));
++            $manager->persist($user);
++            $manager->flush();
++        }
+ 
+         $this->addReference('admin-user', $user);
+ 
+-        $user = new User();
+-        $user->setFirstName('Sales');
+-        $user->setLastName('User');
+-        $user->setUsername('sales');
+-        $user->setEmail('sales@yoursite.com');
+-        $encoder = $this->container
+-            ->get('security.encoder_factory')
+-            ->getEncoder($user)
+-        ;
+-        $user->setPassword($encoder->encodePassword('mautic', $user->getSalt()));
+-        $user->setRole($this->getReference('sales-role'));
+-        $manager->persist($user);
+-        $manager->flush();
++        $user = $repo->findOneBy(['username' => 'sales']);
++        if (null === $user) {
++            $user = new User();
++            $user->setFirstName('Sales');
++            $user->setLastName('User');
++            $user->setUsername('sales');
++            $user->setEmail('sales@yoursite.com');
++            $encoder = $this->container
++                ->get('security.encoder_factory')
++                ->getEncoder($user)
++            ;
++            $user->setPassword($encoder->encodePassword('mautic', $user->getSalt()));
++            $user->setRole($this->getReference('sales-role'));
++            $manager->persist($user);
++            $manager->flush();
++        }
+ 
+         $this->addReference('sales-user', $user);
+     }
