@@ -10025,6 +10025,45 @@
             "time": "2018-12-25T11:19:39+00:00"
         },
         {
+            "name": "westonwatson/datescan",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/westonwatson/datescan.git",
+                "reference": "66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/westonwatson/datescan/zipball/66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9",
+                "reference": "66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.7.27"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "": "src/"
+                },
+                "psr-4": {
+                    "westonwatson\\Datescan\\": "src/Datescan"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "westonwatson",
+                    "email": "wwatson@thedmsgrp.com"
+                }
+            ],
+            "description": "Recognize and parse multiple date/time formats.",
+            "time": "2019-06-20T19:41:50+00:00"
+        },
+        {
             "name": "wikimedia/composer-merge-plugin",
             "version": "dev-master",
             "source": {
