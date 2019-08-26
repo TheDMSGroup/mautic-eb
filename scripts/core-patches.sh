@@ -156,3 +156,16 @@ echo "https://github.com/mautic/mautic/pull/7605"
 git apply -v "../scripts/patches/7605.diff"
 git add . ; git commit --author="7605 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7605"
 
+# Already in core.
+echo "----------------------------------------------------"
+echo "Fix import ip address duplicates #7222"
+echo "https://github.com/mautic/mautic/pull/7222"
+git apply -v "../scripts/patches/7222.diff"
+git add . ; git commit --author="7222 <zdeno@kuzmany.biz>" -nm "https://github.com/mautic/mautic/pull/7222"
+
+echo "----------------------------------------------------"
+echo "Duplicate internal IPs from campaign_lead_event_log with master/slave connections. #7806"
+echo "https://github.com/mautic/mautic/pull/7806"
+git apply -v "../scripts/patches/7806.diff"
+git add . ; git commit --author="7806 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7806"
+
