@@ -1408,16 +1408,16 @@
         },
         {
             "name": "facebook/php-business-sdk",
-            "version": "3.2.7",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/facebook-php-business-sdk.git",
-                "reference": "7a8bd28eead86a94028287a13dac83c91646eee8"
+                "reference": "741a0273e8e810a3ad7461461f02b58c77596044"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/facebook-php-business-sdk/zipball/7a8bd28eead86a94028287a13dac83c91646eee8",
-                "reference": "7a8bd28eead86a94028287a13dac83c91646eee8",
+                "url": "https://api.github.com/repos/facebook/facebook-php-business-sdk/zipball/741a0273e8e810a3ad7461461f02b58c77596044",
+                "reference": "741a0273e8e810a3ad7461461f02b58c77596044",
                 "shasum": ""
             },
             "require-dev": {
@@ -1441,7 +1441,7 @@
                 "page",
                 "sdk"
             ],
-            "time": "2019-01-29T21:33:49+00:00"
+            "time": "2019-08-21T00:19:49+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -9711,18 +9711,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-media.git",
-                "reference": "afd8bcd1ffaf4a176b0bc8124e8a8c2e474d2019"
+                "reference": "f85618344797bcfe8e0c5972a9dc7109fee500b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/afd8bcd1ffaf4a176b0bc8124e8a8c2e474d2019",
-                "reference": "afd8bcd1ffaf4a176b0bc8124e8a8c2e474d2019",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-media/zipball/f85618344797bcfe8e0c5972a9dc7109fee500b4",
+                "reference": "f85618344797bcfe8e0c5972a9dc7109fee500b4",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-soap": "*",
-                "facebook/php-business-sdk": "^4.0",
+                "facebook/php-business-sdk": "*",
                 "googleads/googleads-php-lib": "^38.0",
                 "mautic/composer-plugin": "^1.0",
                 "microsoft/bingads": "v0.12.0.2"
@@ -9745,7 +9745,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-05-27T16:28:27+00:00"
+            "time": "2019-08-26T21:57:03+00:00"
         },
         {
             "name": "thedmsgroup/mautic-revenue-event-bundle",
