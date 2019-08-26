@@ -9377,12 +9377,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-client.git",
-                "reference": "b43dd7df119c671cecaf9a128f6ef5bdd54fd50c"
+                "reference": "72cd0d32a95c22d7c77df87aa7e29d243a35f495"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/b43dd7df119c671cecaf9a128f6ef5bdd54fd50c",
-                "reference": "b43dd7df119c671cecaf9a128f6ef5bdd54fd50c",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-client/zipball/72cd0d32a95c22d7c77df87aa7e29d243a35f495",
+                "reference": "72cd0d32a95c22d7c77df87aa7e29d243a35f495",
                 "shasum": ""
             },
             "require": {
@@ -9412,7 +9412,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-06-20T20:34:25+00:00"
+            "time": "2019-07-10T18:33:23+00:00"
         },
         {
             "name": "thedmsgroup/mautic-contact-ledger-bundle",
@@ -9457,12 +9457,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-contact-source.git",
-                "reference": "457cba82ccd54a9d6cdf3c22dd33a2c9eea9bb8f"
+                "reference": "1102d15179b0909bc1cfbcac1029bd95a626203d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/457cba82ccd54a9d6cdf3c22dd33a2c9eea9bb8f",
-                "reference": "457cba82ccd54a9d6cdf3c22dd33a2c9eea9bb8f",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-contact-source/zipball/1102d15179b0909bc1cfbcac1029bd95a626203d",
+                "reference": "1102d15179b0909bc1cfbcac1029bd95a626203d",
                 "shasum": ""
             },
             "require": {
@@ -9486,7 +9486,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-06-20T20:34:11+00:00"
+            "time": "2019-07-11T12:34:09+00:00"
         },
         {
             "name": "thedmsgroup/mautic-dashboard-warm-bundle",
@@ -9582,12 +9582,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-enhancer.git",
-                "reference": "3df9b00383bfd62c1356b267df67d2ebc4b1ea65"
+                "reference": "3e029c17c0b6044c35a3bc5bcd947d5130db44d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/3df9b00383bfd62c1356b267df67d2ebc4b1ea65",
-                "reference": "3df9b00383bfd62c1356b267df67d2ebc4b1ea65",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-enhancer/zipball/3e029c17c0b6044c35a3bc5bcd947d5130db44d3",
+                "reference": "3e029c17c0b6044c35a3bc5bcd947d5130db44d3",
                 "shasum": ""
             },
             "require": {
@@ -9621,7 +9621,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-06-18T18:05:46+00:00"
+            "time": "2019-07-09T16:00:27+00:00"
         },
         {
             "name": "thedmsgroup/mautic-extended-field-bundle",
@@ -9629,12 +9629,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-extended-field.git",
-                "reference": "f828fea11c366faad2ac38c3c879ce750eea1382"
+                "reference": "45354658ca110f7a41ef9ea676834249d2be1496"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/f828fea11c366faad2ac38c3c879ce750eea1382",
-                "reference": "f828fea11c366faad2ac38c3c879ce750eea1382",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-extended-field/zipball/45354658ca110f7a41ef9ea676834249d2be1496",
+                "reference": "45354658ca110f7a41ef9ea676834249d2be1496",
                 "shasum": ""
             },
             "require": {
@@ -9666,7 +9666,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-06-18T18:06:24+00:00"
+            "time": "2019-07-10T17:00:10+00:00"
         },
         {
             "name": "thedmsgroup/mautic-health-bundle",
@@ -9748,17 +9748,54 @@
             "time": "2019-05-27T16:28:27+00:00"
         },
         {
+            "name": "thedmsgroup/mautic-revenue-event-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TheDMSGroup/mautic-revenue-event.git",
+                "reference": "917a692921a39fcbf2b5bf9782156dc484631ae2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-revenue-event/zipball/917a692921a39fcbf2b5bf9782156dc484631ae2",
+                "reference": "917a692921a39fcbf2b5bf9782156dc484631ae2",
+                "shasum": ""
+            },
+            "require": {
+                "mautic/composer-plugin": "^1.0"
+            },
+            "type": "mautic-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "wwatson",
+                    "email": "wwatson@thedmsgrp.com"
+                }
+            ],
+            "description": "Send Attribution/Revenue Events to W4 Conversion Tracker",
+            "keywords": [
+                "Marketing Automation",
+                "Mautic",
+                "marketing",
+                "plugin"
+            ],
+            "time": "2019-06-26T19:49:43+00:00"
+        },
+        {
             "name": "thedmsgroup/mautic-segment-extras-bundle",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDMSGroup/mautic-segment-extras.git",
-                "reference": "ab9313a43a049646433a3a87d0a297d598db16f4"
+                "reference": "42566b9a317da3c985f73f8e0a582e226caf37ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/ab9313a43a049646433a3a87d0a297d598db16f4",
-                "reference": "ab9313a43a049646433a3a87d0a297d598db16f4",
+                "url": "https://api.github.com/repos/TheDMSGroup/mautic-segment-extras/zipball/42566b9a317da3c985f73f8e0a582e226caf37ba",
+                "reference": "42566b9a317da3c985f73f8e0a582e226caf37ba",
                 "shasum": ""
             },
             "require": {
@@ -9782,7 +9819,7 @@
                 "marketing",
                 "plugin"
             ],
-            "time": "2019-05-20T16:08:55+00:00"
+            "time": "2019-07-09T16:08:28+00:00"
         },
         {
             "name": "thedmsgroup/mautic-usstate-normalizer-bundle",
@@ -9986,6 +10023,45 @@
                 "validate"
             ],
             "time": "2018-12-25T11:19:39+00:00"
+        },
+        {
+            "name": "westonwatson/datescan",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/westonwatson/datescan.git",
+                "reference": "66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/westonwatson/datescan/zipball/66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9",
+                "reference": "66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.7.27"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "": "src/"
+                },
+                "psr-4": {
+                    "westonwatson\\Datescan\\": "src/Datescan"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "westonwatson",
+                    "email": "wwatson@thedmsgrp.com"
+                }
+            ],
+            "description": "Recognize and parse multiple date/time formats.",
+            "time": "2019-06-20T19:41:50+00:00"
         },
         {
             "name": "wikimedia/composer-merge-plugin",
@@ -12310,7 +12386,8 @@
         "thedmsgroup/mautic-dashboard-warm-bundle": 20,
         "thedmsgroup/mautic-segment-extras-bundle": 20,
         "thedmsgroup/mautic-media-bundle": 20,
-        "thedmsgroup/mautic-do-not-contact-extras-bundle": 20
+        "thedmsgroup/mautic-do-not-contact-extras-bundle": 20,
+        "thedmsgroup/mautic-revenue-event-bundle": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

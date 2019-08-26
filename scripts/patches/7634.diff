@@ -1,0 +1,126 @@
+diff --git a/app/bundles/CoreBundle/Form/RequestTrait.php b/app/bundles/CoreBundle/Form/RequestTrait.php
+index f245413f78..3ddabebded 100644
+--- a/app/bundles/CoreBundle/Form/RequestTrait.php
++++ b/app/bundles/CoreBundle/Form/RequestTrait.php
+@@ -13,6 +13,7 @@
+ 
+ use Mautic\CoreBundle\Helper\InputHelper;
+ use Symfony\Component\Form\Form;
++use westonwatson\Datescan\Datescan;
+ 
+ trait RequestTrait
+ {
+@@ -76,19 +77,21 @@ protected function prepareParametersFromRequest(Form $form, array &$params, $ent
+                             // Date placeholder was used so just ignore it to allow import of the field
+                             unset($params[$name]);
+                         } else {
++                            $dateTime = (new Datescan($params[$name]))->getRealDateTime();
++
+                             if (false === ($timestamp = strtotime($params[$name]))) {
+                                 $timestamp = null;
+                             }
+                             if ($timestamp) {
+                                 switch ($type) {
+                                     case 'datetime':
+-                                        $params[$name] = (new \DateTime(date('Y-m-d H:i:s', $timestamp)))->format('Y-m-d H:i:s');
++                                        $params[$name] = $dateTime->format('Y-m-d H:i');
+                                         break;
+                                     case 'date':
+-                                        $params[$name] = (new \DateTime(date('Y-m-d', $timestamp)))->format('Y-m-d');
++                                        $params[$name] = $dateTime->format('Y-m-d');
+                                         break;
+                                     case 'time':
+-                                        $params[$name] = (new \DateTime(date('H:i:s', $timestamp)))->format('H:i:s');
++                                        $params[$name] = $dateTime->format('H:i:s');
+                                         break;
+                                 }
+                             } else {
+@@ -133,6 +136,8 @@ public function cleanFields(&$fieldData, $leadField)
+             case 'datetime':
+             case 'date':
+             case 'time':
++                $dateTime = (new Datescan($fieldData[$leadField['alias']]))->getRealDateTime();
++
+                 // Prevent zero based date placeholders
+                 $dateTest = (int) str_replace(['/', '-', ' '], '', $fieldData[$leadField['alias']]);
+                 if (!$dateTest) {
+@@ -145,13 +150,13 @@ public function cleanFields(&$fieldData, $leadField)
+                     if ($timestamp) {
+                         switch ($leadField['type']) {
+                             case 'datetime':
+-                                $fieldData[$leadField['alias']] = (new \DateTime(date('Y-m-d H:i:s', $timestamp)))->format('Y-m-d H:i:s');
++                                $fieldData[$leadField['alias']] = $dateTime->format('Y-m-d H:i:s');
+                                 break;
+                             case 'date':
+-                                $fieldData[$leadField['alias']] = (new \DateTime(date('Y-m-d', $timestamp)))->format('Y-m-d');
++                                $fieldData[$leadField['alias']] = $dateTime->format('Y-m-d');
+                                 break;
+                             case 'time':
+-                                $fieldData[$leadField['alias']] = (new \DateTime(date('H:i:s', $timestamp)))->format('H:i:s');
++                                $fieldData[$leadField['alias']] = $dateTime->format('H:i:s');
+                                 break;
+                         }
+                     }
+diff --git a/composer.json b/composer.json
+index 4fc32a7259..0c8031ebaa 100644
+--- a/composer.json
++++ b/composer.json
+@@ -113,6 +113,7 @@
+         "ramsey/uuid": "^3.7",
+         "sendgrid/sendgrid": "~6.0",
+-        "noxlogic/ratelimit-bundle": "^1.11"
++        "noxlogic/ratelimit-bundle": "^1.11",
++        "westonwatson/datescan": "1.0.3"
+     },
+     "require-dev": {
+         "symfony/web-profiler-bundle": "~2.8",
+diff --git a/composer.lock b/composer.lock
+index dd983752b7..f4e238a83a 100644
+--- a/composer.lock
++++ b/composer.lock
+@@ -8261,6 +8261,45 @@
+             ],
+             "time": "2017-11-17T22:59:03+00:00"
+         },
++        {
++            "name": "westonwatson/datescan",
++            "version": "1.0.3",
++            "source": {
++                "type": "git",
++                "url": "https://github.com/westonwatson/datescan.git",
++                "reference": "66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9"
++            },
++            "dist": {
++                "type": "zip",
++                "url": "https://api.github.com/repos/westonwatson/datescan/zipball/66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9",
++                "reference": "66f6f9a01c7e8a01d60b11b5c7a96c4e6cb153b9",
++                "shasum": ""
++            },
++            "require-dev": {
++                "phpunit/phpunit": "5.7.27"
++            },
++            "type": "library",
++            "autoload": {
++                "psr-0": {
++                    "": "src/"
++                },
++                "psr-4": {
++                    "westonwatson\\Datescan\\": "src/Datescan"
++                }
++            },
++            "notification-url": "https://packagist.org/downloads/",
++            "license": [
++                "MIT"
++            ],
++            "authors": [
++                {
++                    "name": "westonwatson",
++                    "email": "wwatson@thedmsgrp.com"
++                }
++            ],
++            "description": "Recognize and parse multiple date/time formats.",
++            "time": "2019-06-20T19:41:50+00:00"
++        },
+         {
+             "name": "willdurand/jsonp-callback-validator",
+             "version": "v1.1.0",

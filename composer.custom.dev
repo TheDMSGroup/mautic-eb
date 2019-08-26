@@ -13,7 +13,8 @@
       "thedmsgroup/mautic-dashboard-warm-bundle": "dev-master",
       "thedmsgroup/mautic-segment-extras-bundle": "dev-master",
       "thedmsgroup/mautic-media-bundle": "dev-master",
-      "thedmsgroup/mautic-do-not-contact-extras-bundle": "dev-master"
+      "thedmsgroup/mautic-do-not-contact-extras-bundle": "dev-master",
+      "thedmsgroup/mautic-revenue-event-bundle": "dev-master"
     },
     "config": {
         "preferred-install": {

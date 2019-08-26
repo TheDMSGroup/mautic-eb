@@ -156,6 +156,18 @@ echo "https://github.com/mautic/mautic/pull/7605"
 git apply -v "../scripts/patches/7605.diff"
 git add . ; git commit --author="7605 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7605"
 
+echo "----------------------------------------------------"
+echo "Implementing Datescan Date Parsing Library to Handle Multiple Formats #7634"
+echo "https://github.com/mautic/mautic/pull/7634"
+git apply -v "../scripts/patches/7634.diff"
+git add . ; git commit --author="7634 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7634"
+
+echo "----------------------------------------------------"
+echo "Add notifications page, command to purge old notifications, and changes the limit from 200 to 20 in the notification widget #7653"
+echo "https://github.com/mautic/mautic/pull/7653"
+git apply -v "../scripts/patches/7653.diff"
+git add . ; git commit --author="7653 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7653"
+
 # Already in core.
 echo "----------------------------------------------------"
 echo "Fix import ip address duplicates #7222"
