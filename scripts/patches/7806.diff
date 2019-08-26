@@ -1,0 +1,34 @@
+diff --git a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
+index 14c8bd79c2..a5f66e450f 100644
+--- a/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
++++ b/app/bundles/CampaignBundle/Executioner/Logger/EventLogger.php
+@@ -113,7 +113,9 @@ public function buildLogEntry(Event $event, Lead $contact = null, $isInactiveEve
+     {
+         $log = new LeadEventLog();
+ 
+-        $log->setIpAddress($this->ipLookupHelper->getIpAddress());
++        if (!defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED')) {
++            $log->setIpAddress($this->ipLookupHelper->getIpAddress());
++        }
+ 
+         $log->setEvent($event);
+         $log->setCampaign($event->getCampaign());
+diff --git a/app/bundles/CampaignBundle/Model/EventLogModel.php b/app/bundles/CampaignBundle/Model/EventLogModel.php
+index d337d50a79..0cde7a8fbb 100644
+--- a/app/bundles/CampaignBundle/Model/EventLogModel.php
++++ b/app/bundles/CampaignBundle/Model/EventLogModel.php
+@@ -168,9 +168,11 @@ public function updateContactEvent(Event $event, Lead $contact, array $parameter
+                     );
+                     break;
+                 case 'ipAddress':
+-                    $log->setIpAddress(
+-                        $this->ipLookupHelper->getIpAddress($value)
+-                    );
++                    if (!defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED')) {
++                        $log->setIpAddress(
++                            $this->ipLookupHelper->getIpAddress($value)
++                        );
++                    }
+                     break;
+                 case 'metadata':
+                     $metadata = $log->getMetadata();

@@ -1,0 +1,39 @@
+diff --git a/app/bundles/LeadBundle/Model/IpAddressModel.php b/app/bundles/LeadBundle/Model/IpAddressModel.php
+index 1f52fb9d0d..70137c05b5 100644
+--- a/app/bundles/LeadBundle/Model/IpAddressModel.php
++++ b/app/bundles/LeadBundle/Model/IpAddressModel.php
+@@ -53,6 +53,16 @@ public function saveIpAddressesReferencesForContact(Lead $contact)
+         }
+     }
+ 
++    /**
++     * @param string $ip
++     *
++     * @return IpAddress|null
++     */
++    public function findOneByIpAddress($ip)
++    {
++        return $this->entityManager->getRepository(IpAddress::class)->findOneByIpAddress($ip);
++    }
++
+     /**
+      * Tries to insert the Lead/IP relation and continues even if UniqueConstraintViolationException is thrown.
+      *
+diff --git a/app/bundles/LeadBundle/Model/LeadModel.php b/app/bundles/LeadBundle/Model/LeadModel.php
+index 8622ed93ec..9d390ef8d5 100644
+--- a/app/bundles/LeadBundle/Model/LeadModel.php
++++ b/app/bundles/LeadBundle/Model/LeadModel.php
+@@ -1438,8 +1438,11 @@ public function import($fields, $data, $owner = null, $list = null, $tags = null
+         if (!empty($fields['ip']) && !empty($data[$fields['ip']])) {
+             $addresses = explode(',', $data[$fields['ip']]);
+             foreach ($addresses as $address) {
+-                $ipAddress = new IpAddress();
+-                $ipAddress->setIpAddress(trim($address));
++                $address = trim($address);
++                if (!$ipAddress = $this->ipAddressModel->findOneByIpAddress($address)) {
++                    $ipAddress = new IpAddress();
++                    $ipAddress->setIpAddress($address);
++                }
+                 $lead->addIpAddress($ipAddress);
+             }
+         }
