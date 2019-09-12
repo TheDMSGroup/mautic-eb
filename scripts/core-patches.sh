@@ -181,3 +181,9 @@ echo "https://github.com/mautic/mautic/pull/7806"
 git apply -v "../scripts/patches/7806.diff"
 git add . ; git commit --author="7806 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7806"
 
+echo "----------------------------------------------------"
+echo "Improve pending contacts queries. #7838"
+echo "https://github.com/mautic/mautic/pull/7838"
+git apply -v "../scripts/patches/7838.diff"
+git add . ; git commit --author="7838 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7838"
+
