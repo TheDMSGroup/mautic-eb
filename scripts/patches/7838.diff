@@ -1,0 +1,141 @@
+diff --git a/app/bundles/CampaignBundle/Entity/CampaignRepository.php b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
+index 00a4a72c9e..121be19ced 100644
+--- a/app/bundles/CampaignBundle/Entity/CampaignRepository.php
++++ b/app/bundles/CampaignBundle/Entity/CampaignRepository.php
+@@ -433,15 +433,14 @@ public function getPendingContactIds($campaignId, ContactLimiter $limiter)
+             ->where(
+                 $sq->expr()->andX(
+                     $sq->expr()->eq('e.lead_id', 'cl.lead_id'),
+-                    $sq->expr()->eq('e.campaign_id', ':campaignId'),
++                    $sq->expr()->eq('e.campaign_id', (int) $campaignId),
+                     $sq->expr()->eq('e.rotation', 'cl.rotation')
+                 )
+             );
+ 
+         $q->andWhere(
+             sprintf('NOT EXISTS (%s)', $sq->getSQL())
+-        )
+-            ->setParameter('campaignId', (int) $campaignId);
++        );
+ 
+         if ($limiter->hasCampaignLimit() && $limiter->getCampaignLimitRemaining() < $limiter->getBatchLimit()) {
+             $q->setMaxResults($limiter->getCampaignLimitRemaining());
+@@ -603,15 +602,14 @@ public function getCampaignLeadIds($campaignId, $start = 0, $limit = false, $pen
+                 ->where(
+                     $sq->expr()->andX(
+                         $sq->expr()->eq('e.lead_id', 'cl.lead_id'),
+-                        $sq->expr()->eq('e.campaign_id', ':campaignId'),
++                        $sq->expr()->eq('e.campaign_id', (int) $campaignId),
+                         $sq->expr()->eq('e.rotation', 'cl.rotation')
+                     )
+                 );
+ 
+             $q->andWhere(
+                 sprintf('NOT EXISTS (%s)', $sq->getSQL())
+-            )
+-                ->setParameter('campaignId', (int) $campaignId);
++            );
+         }
+ 
+         if (!empty($limit)) {
+diff --git a/app/bundles/CampaignBundle/Entity/ContactLimiterTrait.php b/app/bundles/CampaignBundle/Entity/ContactLimiterTrait.php
+index 62959bb281..76182ae5b0 100644
+--- a/app/bundles/CampaignBundle/Entity/ContactLimiterTrait.php
++++ b/app/bundles/CampaignBundle/Entity/ContactLimiterTrait.php
+@@ -32,7 +32,7 @@ private function updateQueryFromContactLimiter($alias, DbalQueryBuilder $qb, Con
+             $qb->andWhere(
+                 $qb->expr()->eq("$alias.lead_id", ':contactId')
+             )
+-                ->setParameter('contactId', $contactId);
++                ->setParameter('contactId', $contactId, \PDO::PARAM_INT);
+         } elseif ($contactIds = $contactLimiter->getContactIdList()) {
+             $qb->andWhere(
+                 $qb->expr()->in("$alias.lead_id", ':contactIds')
+@@ -42,26 +42,26 @@ private function updateQueryFromContactLimiter($alias, DbalQueryBuilder $qb, Con
+             $qb->andWhere(
+                 "$alias.lead_id BETWEEN :minContactId AND :maxContactId"
+             )
+-                ->setParameter('minContactId', $minContactId)
+-                ->setParameter('maxContactId', $maxContactId);
++                ->setParameter('minContactId', $minContactId, \PDO::PARAM_INT)
++                ->setParameter('maxContactId', $maxContactId, \PDO::PARAM_INT);
+         } elseif ($minContactId) {
+             $qb->andWhere(
+                 $qb->expr()->gte("$alias.lead_id", ':minContactId')
+             )
+-                ->setParameter('minContactId', $minContactId);
++                ->setParameter('minContactId', $minContactId, \PDO::PARAM_INT);
+         } elseif ($maxContactId) {
+             $qb->andWhere(
+                 $qb->expr()->lte("$alias.lead_id", ':maxContactId')
+             )
+-                ->setParameter('maxContactId', $maxContactId);
++                ->setParameter('maxContactId', $maxContactId, \PDO::PARAM_INT);
+         }
+ 
+         if ($threadId = $contactLimiter->getThreadId()) {
+             if ($maxThreads = $contactLimiter->getMaxThreads()) {
+                 if ($threadId <= $maxThreads) {
+                     $qb->andWhere("MOD(($alias.lead_id + :threadShift), :maxThreads) = 0")
+-                        ->setParameter('threadShift', $threadId - 1)
+-                        ->setParameter('maxThreads', $maxThreads);
++                        ->setParameter('threadShift', $threadId - 1, \PDO::PARAM_INT)
++                        ->setParameter('maxThreads', $maxThreads, \PDO::PARAM_INT);
+                 }
+             }
+         }
+@@ -85,7 +85,7 @@ private function updateOrmQueryFromContactLimiter($alias, OrmQueryBuilder $qb, C
+             $qb->andWhere(
+                 $qb->expr()->eq("IDENTITY($alias.lead)", ':contact')
+             )
+-                ->setParameter('contact', $contactId);
++                ->setParameter('contact', $contactId, \PDO::PARAM_INT);
+         } elseif ($contactIds = $contactLimiter->getContactIdList()) {
+             $qb->andWhere(
+                 $qb->expr()->in("IDENTITY($alias.lead)", ':contactIds')
+@@ -95,25 +95,25 @@ private function updateOrmQueryFromContactLimiter($alias, OrmQueryBuilder $qb, C
+             $qb->andWhere(
+                 "IDENTITY($alias.lead) BETWEEN :minContactId AND :maxContactId"
+             )
+-                ->setParameter('minContactId', $minContactId)
+-                ->setParameter('maxContactId', $maxContactId);
++                ->setParameter('minContactId', $minContactId, \PDO::PARAM_INT)
++                ->setParameter('maxContactId', $maxContactId, \PDO::PARAM_INT);
+         } elseif ($minContactId) {
+             $qb->andWhere(
+                 $qb->expr()->gte("IDENTITY($alias.lead)", ':minContactId')
+             )
+-                ->setParameter('minContactId', $minContactId);
++                ->setParameter('minContactId', $minContactId, \PDO::PARAM_INT);
+         } elseif ($maxContactId) {
+             $qb->andWhere(
+                 $qb->expr()->lte("IDENTITY($alias.lead)", ':maxContactId')
+             )
+-                ->setParameter('maxContactId', $maxContactId);
++                ->setParameter('maxContactId', $maxContactId, \PDO::PARAM_INT);
+         }
+ 
+         if ($threadId = $contactLimiter->getThreadId()) {
+             if ($maxThreads = $contactLimiter->getMaxThreads()) {
+                 $qb->andWhere("MOD((IDENTITY($alias.lead) + :threadShift), :maxThreads) = 0")
+-                    ->setParameter('threadShift', $threadId - 1)
+-                    ->setParameter('maxThreads', $maxThreads);
++                    ->setParameter('threadShift', $threadId - 1, \PDO::PARAM_INT)
++                    ->setParameter('maxThreads', $maxThreads, \PDO::PARAM_INT);
+             }
+         }
+ 
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+index 7f2a3ac01f..c55c4fc6c8 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+@@ -487,8 +487,8 @@ public function getScheduledCounts($campaignId, \DateTime $date, ContactLimiter
+             ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'l')
+             ->join('l', MAUTIC_TABLE_PREFIX.'campaigns', 'c', 'l.campaign_id = c.id')
+             ->join('l', MAUTIC_TABLE_PREFIX.'campaign_events', 'e', 'l.event_id = e.id')
+             ->where($expr)
+-            ->setParameter('campaignId', $campaignId)
++            ->setParameter('campaignId', (int) $campaignId)
+             ->setParameter('now', $now->format('Y-m-d H:i:s'))
+             ->setParameter('true', true, \PDO::PARAM_BOOL)
+             ->groupBy('l.event_id')
