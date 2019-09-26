@@ -40,6 +40,9 @@ while maintaining HIPAA & PCI compliance. Other helpful services such as CloudFl
     MAUTIC_WORKERS_KICKOFF   - Number of concurrent campaign trigger workers running kickoff actions only. Overrides MAUTIC_WORKERS when present.
     MAUTIC_WORKERS_SCHEDULED - Number of concurrent campaign trigger workers running scheduled actions only. Overrides MAUTIC_WORKERS when present.
     MAUTIC_WORKERS_INACTIVE  - Number of concurrent campaign trigger workers running inactive actions only. Overrides MAUTIC_WORKERS when present.
+    MAUTIC_WORKERS_SCHEDULED_MID - Optionally sets a minimum contact ID for the scheduled worker group (for performance at large scale). 
+    MAUTIC_WORKERS_KICKOFF_MID   - Optionally sets a minimum contact ID for the kickoff worker group (for performance at large scale). 
+    MAUTIC_WORKERS_INACTIVE_MID  - Optionally sets a minimum contact ID for the inactive worker group (for performance at large scale). 
     NR_APPNAME               - Newrelic application name.
     NR_APPID                 - Newrelic application ID number for deployment notifications.
     NR_APM_INSTALL_KEY       - NewRelic install key for Application Monitoring.
