@@ -187,3 +187,9 @@ echo "https://github.com/mautic/mautic/pull/7838"
 git apply -v "../scripts/patches/7838.diff"
 git add . ; git commit --author="7838 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7838"
 
+echo "----------------------------------------------------"
+echo "Avoid using the incorrect index with heavy scheduled event count #7901"
+echo "https://github.com/mautic/mautic/pull/7901"
+git apply -v "../scripts/patches/7901.diff"
+git add . ; git commit --author="7901 <info@thedmsgrp.com>" -nm "https://github.com/mautic/mautic/pull/7901"
+

@@ -1,0 +1,22 @@
+diff --git a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+index 7f2a3ac01f..0ceaf1bd40 100644
+--- a/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
++++ b/app/bundles/CampaignBundle/Entity/LeadEventLogRepository.php
+@@ -405,7 +405,7 @@ public function getScheduled($eventId, \DateTime $now, ContactLimiter $limiter)
+         $q->select('o, e, c')
+             ->indexBy('o', 'o.id')
+             ->innerJoin('o.event', 'e')
+-            ->innerJoin('o.campaign', 'c')
++            ->innerJoin('e.campaign', 'c')
+             ->where(
+                 $q->expr()->andX(
+                     $q->expr()->eq('IDENTITY(o.event)', ':eventId'),
+@@ -448,7 +448,7 @@ public function getScheduledByIds(array $ids)
+         $q->select('o, e, c')
+             ->indexBy('o', 'o.id')
+             ->innerJoin('o.event', 'e')
+-            ->innerJoin('o.campaign', 'c')
++            ->innerJoin('e.campaign', 'c')
+             ->where(
+                 $q->expr()->andX(
+                     $q->expr()->in('o.id', $ids),
