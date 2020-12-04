@@ -33,6 +33,6 @@ then
     IFS=','
     for segment in $MAUTIC_HV_SEGMENTS
     do
-        cronloop mautic:segments:update --list-id=$segment --batch-limit=10000 --max-contacts=10000 &
+        cronloop mautic:segments:update --list-id=$segment --batch-limit=500 --max-contacts=500 &
     done
 fi
